@@ -1,5 +1,6 @@
 import React from "react";
 import { Badge, MoreVert } from "@mui/icons-material";
+import { formatMoney } from "@shared/utils/formatters";
 
 export default function ToolCard({
   name,
@@ -33,7 +34,7 @@ export default function ToolCard({
         <div className={`flex-[${100-percentage}]`}></div>
       </div>
       <p className="text-right text-sm">
-        ${amount} / ${max}
+        {formatMoney(amount)} / {formatMoney(max)}
       </p>
     </div>
   );
