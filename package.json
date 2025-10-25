@@ -1,9 +1,10 @@
 {
   "dependencies": {
-    "@react-native-picker/picker": "^2.11.1",
-    "react-native-date-picker": "^5.0.13",
-    "react-native-device-info": "^14.0.4",
-    "react-native-vector-icons": "^10.3.0"
+    "@react-native-picker/picker": "2.11.1",
+    "@supabase/supabase-js": "^2.75.1",
+    "react-native-date-picker": "5.0.13",
+    "react-native-device-info": "14.0.4",
+    "react-native-vector-icons": "10.3.0"
   },
   "eslintConfig": {
     "extends": "./mobile/node_modules/standard/eslintrc.json"
