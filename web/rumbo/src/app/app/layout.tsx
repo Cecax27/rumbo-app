@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <ToolsProvider>
       <div className="flex h-full fixed inset-0">
-        <aside className="inset-0 flex-1 h-full p-10 bg-background-light border-r-2 border-r-neutral-100">
+        <aside className="inset-0 flex-1 h-full p-10 bg-background-light border-r-2 border-r-neutral-100 dark:border-r-neutral-900 dark:bg-neutral-950">
           <div id="logo" className="flex items-center gap-3">
             <Image src="/logo.png" alt="logo" width={30} height={30} />
             <h1 className={`${quicksand.className} font-bold text-2xl`}>

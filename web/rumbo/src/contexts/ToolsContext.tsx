@@ -1,44 +1,51 @@
-'use client'
+"use client";
 
-import { createContext, useState, useEffect } from "react";
-import {getBudgetPlans} from "@shared/supabase/tools";
+import { createContext, useState, useEffect, useContext } from "react";
+import {
+  getBudgetPlans,
+  getBudgetPlanDetails,
+  BudgetPlanWithDetails,
+  BudgetPlan,
+  getUserBudgetPlans,
+} from "@shared/supabase/tools";
 
-interface BudgetPlanGroup {
-  group_name: string;
-  limit_percentage: number;
-  alert_threshold: number;
+type BudgetPlanResponse = BudgetPlan[] | BudgetPlanWithDetails[];
+
+export interface ToolsContextType {
+  budgetPlans: BudgetPlanResponse;
+  loading: boolean;
 }
 
-interface BudgetPlan {
-  id: number;
-  name: string;
-  period_type: string;
-  period_length_days: number;
-  groups: BudgetPlanGroup[];
+const ToolsContext = createContext<ToolsContextType>({
+  budgetPlans: [],
+  loading: true,
+});
+
+export function ToolsProvider({ children }: { children: React.ReactNode }) {
+  const [budgetPlans, setBudgetPlans] = useState<
+    BudgetPlan[] | BudgetPlanWithDetails[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    getUserBudgetPlans()
+      .then((plans) => {
+        setBudgetPlans(plans);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <ToolsContext.Provider value={{ budgetPlans, loading }}>
+      {children}
+    </ToolsContext.Provider>
+  );
 }
 
-type BudgetPlanResponse = BudgetPlan[];
-
-type ToolsContextType = BudgetPlanResponse;
-
-export const ToolsContext = createContext<ToolsContextType | undefined>(undefined);
-
-export function ToolsProvider({ children } : { children: React.ReactNode }) {
-    
-    const [budgetPlans, setBudgetPlans] = useState<ToolsContextType>([]);
-
-    useEffect(() => {
-        async function fetchBudgetPlans() {
-            const plans = await getBudgetPlans();
-            setBudgetPlans(plans);
-        }
-        fetchBudgetPlans();
-    }, []);
-
-    return (
-        <ToolsContext.Provider
-        value ={budgetPlans}>
-            { children }
-        </ToolsContext.Provider>
-    )
-}
+export const useTools = () => {
+  const context = useContext(ToolsContext);
+  if (!context) {
+    throw new Error("useTools must be used within a ToolsProvider");
+  }
+  return context;
+};

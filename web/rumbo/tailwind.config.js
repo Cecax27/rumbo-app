@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+/* @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,7 +8,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "rumbo-red": "#D5513C", // Corresponde a d5513cff
+        "rumbored": {
+          50: "#fdf4f3",
+          100: "#fde7e3",
+          200: "#fbd3cd",
+          300: "#f7b5aa",
+          400: "#f18978",
+          500: "#e6624d",
+          600: "#d5513c",
+          700: "#b13724",
+          800: "#923122",
+          900: "#7a2e22",
+          950: "#42140d",
+        }, // Corresponde a d5513cff
         "amarillo-degradado": "#F4B73B", // Corresponde a f4b73bff
         "background-light": "#F8FAFC",
         "background-dark": "#0B1120",

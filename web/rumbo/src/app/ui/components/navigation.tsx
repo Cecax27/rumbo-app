@@ -38,9 +38,9 @@ function Item({ children, href }: { children: React.ReactNode; href: string }) {
   const isActive = pathname === href;
   return (
     <li
-      className={clsx("rounded-lg hover:bg-blue-100 transition-colors", {
-        "text-blue-700 bg-blue-200": isActive,
-        "text-neutral-600": !isActive,
+      className={clsx("rounded-lg hover:bg-navy-blue-200 transition-colors dark:hover:bg-navy-blue-950/20", {
+        "text-blue-700 bg-blue-200 dark:bg-navy-blue-950/50 dark:text-navy-blue-300": isActive,
+        "text-neutral-600 dark:text-neutral-300": !isActive,
       })}
     >
       <Link
