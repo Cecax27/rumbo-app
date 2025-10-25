@@ -1,4 +1,4 @@
-export const formatMoney = (value) => {
+export const formatMoney = (value: number) :string => {
     if (!value) return '';
     
     // Remove any existing formatting
@@ -10,5 +10,5 @@ export const formatMoney = (value) => {
         currency: 'USD',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-    }).format(cleanedValue);
+    }).format(value);
 };

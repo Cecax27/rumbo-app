@@ -1,7 +1,7 @@
 import { supabase } from "./client";
 import { DatabaseError } from "../errors";
 
-interface Transaction {
+export interface Transaction {
   id: number;
   created_at: string;
   user_id: string;
@@ -17,7 +17,19 @@ interface Transaction {
   saving_goal?: string; // Used in incomes and transfers
 }
 
-const enum TransactionType {
+export interface TransactionDetails {
+  account_color: `#${string}`;
+  account_name: string;
+  budget_group: string;
+  budget_group_id: number;
+  category_icon: string ;
+  category_name: string;
+  transaction_type: TransactionType; 
+}
+
+export interface TransactionWithDetails extends Transaction, TransactionDetails {}
+
+export const enum TransactionType {
   SPENDING = "spending",
   INCOME = "income",
   TRANSFER = "transfer",
@@ -223,12 +235,12 @@ export const getMonthlySpendings = async (month = null) => {
 };
 
 export const getSpendingsTable = async (
-  start_date?:string,
-  end_date?:string,
+  start_date?:Date,
+  end_date?:Date,
   account?:number,
   category?:number,
   budget_group?:number
-) : Promise<Transaction[]> => {
+) :Promise<TransactionWithDetails[]> => {
   const { data, error } = await supabase.rpc("get_filtered_spendings", {
     date_start_range: start_date || null,
     date_end_range: end_date || null,
