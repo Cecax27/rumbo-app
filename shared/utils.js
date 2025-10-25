@@ -48,3 +48,10 @@ export function failIf(condition, message, theme, action) {
       }
       return false;
     }
+
+export function formatWeekLabel(startDate, endDate) {
+            const startMonth = months[startDate.getMonth() ];
+            const endMonth = months[endDate.getMonth() ];
+          
+            return `${t(`common.months.${startMonth}`).substring(0, 3)} ${startDate.getDate()} - ${t(`common.months.${endMonth}`).substring(0, 3)} ${endDate.getDate()}`;
+        }
