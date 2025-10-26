@@ -7,6 +7,7 @@ import NotificationIcon from "@mui/icons-material/Notifications";
 import { useTools } from "@/contexts/ToolsContext";
 import ToolCard from "@/app/ui/components/tool-card";
 import { TransactionsContext } from "@/contexts/TransactionsContext";
+import { AccountsContext } from "@/contexts/AccountsContext";
 import { TransactionType } from "@shared/supabase/transactions";
 import { formatMoney } from "@shared/utils/formatters";
 import * as MuiIcons from "@mui/icons-material";
@@ -24,6 +25,7 @@ const Icon = ({ name }: { name: string }) => {
 export default function Home() {
   const { budgetPlans, loading } = useTools();
   const { data: transactions } = useContext(TransactionsContext);
+  const { accounts } = useContext(AccountsContext);
 
   console.log(transactions);
 
@@ -138,6 +140,29 @@ export default function Home() {
               <Button href="#" secondary>
                 Ver más
               </Button>
+            </div>
+            <div className="flex flex-col gap-4">
+              {accounts.map((account) => (
+                <div
+                  key={account.id}
+                  className="flex justify-between items-center"
+                >
+                  <div className="flex gap-4 items-center">
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: account.color }}
+                    ></div>
+                    <h3 className="font-medium text-neutral-800 dark:text-neutral-200">
+                      {account.name}
+                    </h3>
+                  </div>
+                  <div className="font-semibold text-neutral-800 dark:text-neutral-200">
+                    {account.balance !== undefined
+                      ? formatMoney(account.balance)
+                      : "Cargando..."}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
