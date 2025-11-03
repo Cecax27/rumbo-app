@@ -19,7 +19,7 @@ export default function Navigation() {
         <Item href="/app/home">
           <Dashboard /> Dashboard
         </Item>
-        <Item href="#">
+        <Item href="/app/transactions">
           <SwapHoriz /> Transacciones
         </Item>
         <Item href="#">

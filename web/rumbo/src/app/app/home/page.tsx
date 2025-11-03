@@ -10,17 +10,8 @@ import { TransactionsContext } from "@/contexts/TransactionsContext";
 import { AccountsContext } from "@/contexts/AccountsContext";
 import { TransactionType } from "@shared/supabase/transactions";
 import { formatMoney } from "@shared/utils/formatters";
-import * as MuiIcons from "@mui/icons-material";
+import { Icon } from "@/app/ui/components/icon";
 import clsx from "clsx";
-
-const Icon = ({ name }: { name: string }) => {
-  const formatedName = name
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join("");
-  const IconComponent = (MuiIcons as any)[formatedName];
-  return IconComponent ? <IconComponent /> : null;
-};
 
 export default function Home() {
   const { budgetPlans, loading } = useTools();
