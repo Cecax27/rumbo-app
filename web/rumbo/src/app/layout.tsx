@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Quicksand, Figtree} from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const quicksand = Quicksand({
   variable: "--font-geist-sans",
@@ -23,11 +24,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body
         className={`${quicksand.variable} ${figtree.variable} antialiased ${figtree.className}`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
