@@ -22,10 +22,10 @@ export default function Navigation() {
         <Item href="/app/transactions">
           <SwapHoriz /> Transacciones
         </Item>
-        <Item href="#">
+        <Item href="/app/accounts">
           <AccountBalanceWallet /> Cuentas
         </Item>
-        <Item href="#">
+        <Item href="/app/settings">
           <Settings /> Ajustes
         </Item>
       </ul>
