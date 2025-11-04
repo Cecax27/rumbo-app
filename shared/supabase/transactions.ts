@@ -42,6 +42,12 @@ export const addTransaction = async ({
   description,
   category_id,
   account_id,
+}:{
+  date: Date;
+  amount: number;
+  description: string;
+  category_id: number;
+  account_id: number;
 }) => {
   const { error } = await supabase
     .from("spendings")
@@ -57,8 +63,7 @@ export const addTransaction = async ({
     .select();
 
   if (error) {
-    console.error("Error adding transaction to supabase:", error);
-    return error;
+    throw error;
   }
   return true;
 };
