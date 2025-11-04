@@ -7,7 +7,7 @@ import { DataTable } from "./data-table";
 import { columns } from "./columns";
 
 export default function TransactionsPage() {
-  const { data: transactions } = useContext(TransactionsContext);
+  const { filteredData: transactions } = useContext(TransactionsContext);
 
   return (
     <>

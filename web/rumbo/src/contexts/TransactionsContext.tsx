@@ -48,6 +48,7 @@ export interface TransactionsContextType {
   groupedData: GroupedData[];
   data: TransactionWithDetails[];
   fetchTransactions: () => void;
+  filteredData: TransactionWithDetails[];
 }
 
 export const TransactionsContext = createContext<TransactionsContextType>(
@@ -64,8 +65,9 @@ export function TransactionsProvider({ children }: { children: React.ReactNode }
   });
   const [groupedData, setGroupedData] = useState<GroupedData[]>([]);
   const [data, setData] = useState<TransactionWithDetails[]>([]);
+  const [filteredData, setFilteredData] = useState<TransactionWithDetails[]>([]);
   const prevStartDate = useRef(new Date());
-  const prevEndDate = useRef(new Date);
+  const prevEndDate = useRef(new Date());
 
   useEffect(() => {
     const startChanged =
@@ -89,6 +91,8 @@ export function TransactionsProvider({ children }: { children: React.ReactNode }
       filter.category,
       filter.budget_group
     );
+
+    setFilteredData(filteredData);
 
     const grouped = filteredData.reduce((acc : Record<string, Transaction[]>, transaction) => {
       const date = transaction.date;
@@ -152,6 +156,7 @@ export function TransactionsProvider({ children }: { children: React.ReactNode }
         groupedData,
         data,
         fetchTransactions,
+        filteredData
       }}
     >
       {children}

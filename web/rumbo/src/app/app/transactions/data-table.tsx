@@ -31,18 +31,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { DataTableFacetedFilter } from "@/components/ui/data-table-faceted-filter";
 import {FACETED_TRANSACTION_CATEGORIES} from "../../../../../../shared/constants/appConstans"
 import { AccountsContext } from "@/contexts/AccountsContext";
+import { TransactionsContext } from "@/contexts/TransactionsContext";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRange } from "react-day-picker";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,12 +49,32 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const {accounts} = React.useContext(AccountsContext)
+  const {filter, setFilter} = React.useContext(TransactionsContext)
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+
+  // Convertir el filtro del contexto a DateRange para el componente
+  const dateRange = React.useMemo<DateRange | undefined>(() => {
+    return {
+      from: filter.start_date,
+      to: filter.end_date,
+    };
+  }, [filter.start_date, filter.end_date]);
+
+  // Manejar el cambio de rango de fechas
+  const handleDateRangeChange = React.useCallback((range: DateRange | undefined) => {
+    if (range?.from) {
+      setFilter({
+        ...filter,
+        start_date: range.from,
+        end_date: range.to || range.from,
+      });
+    }
+  }, [filter, setFilter]);
 
   const table = useReactTable({
     data,
@@ -118,7 +133,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex-1 flex flex-col" ref={tableContainerRef}>
-      <div id="table-header" className="flex items-center py-4 gap-2">
+      <div id="table-header" className="flex items-center py-4 gap-2 flex-wrap">
+        <DateRangePicker
+          date={dateRange}
+          onDateChange={handleDateRangeChange}
+        />
         <Input
           placeholder="Buscar por descripción..."
           value={

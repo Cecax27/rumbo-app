@@ -78,7 +78,7 @@ export default function Home() {
               <h2 className="font-semibold text-2xl text-neutral-800 dark:text-neutral-200">
                 Transacciones recientes
               </h2>
-              <Button href="#" secondary>
+              <Button href="/app/transactions" secondary>
                 Ver más
               </Button>
             </div>
@@ -128,7 +128,7 @@ export default function Home() {
               <h2 className="font-semibold text-2xl text-neutral-800 dark:text-neutral-200">
                 Cuentas
               </h2>
-              <Button href="#" secondary>
+              <Button href="/app/accounts" secondary>
                 Ver más
               </Button>
             </div>
