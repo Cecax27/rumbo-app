@@ -3,6 +3,7 @@ import { makeStyles } from '../../../assets/uiStyles'
 import { useTheme } from '../../../theme/useTheme'
 import { useMemo } from 'react'
 import { BudgetPlans } from '../../../components/budgetPlans/budgetPlans'
+import { SavingGoals } from '../../../components/savingGoals/savingGoals'
 import FloatActionButton from '../../../components/floatActionButton'
 import { useRouter, Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -23,6 +24,7 @@ export default function Dashboard() {
         <View style={[styles.container, { backgroundColor: theme.background, color: theme.text }]}> 
             <View style={styles.dashboard}>
                 <BudgetPlans />
+                <SavingGoals />
             </View>
             <FloatActionButton 
             content={<Image source={require('../../../assets/icons/add_tool.png')} style={{width:24, height:24}} />}>
@@ -33,6 +35,13 @@ export default function Dashboard() {
                         <Text style={{fontSize:12, fontFamily:'Montserrat-SemiBold'}}>{t('dashboard.newBudget')}</Text>
                     </View>}
                 onPress={()=>{router.push('/dashboard/newBudget')}}/>
+                <FloatActionButton.Item 
+                content={
+                    <View style={{flexDirection:'row', gap:10, justifyContent:'center'}}>
+                        <Image source={require('../../../assets/icons/budget.png')} style={{width:20,  height:20}}/>
+                        <Text style={{fontSize:12, fontFamily:'Montserrat-SemiBold'}}>{t('dashboard.newSavingGoal')}</Text>
+                    </View>}
+                onPress={()=>{router.push('/dashboard/newSavingGoal')}}/>
             </FloatActionButton>
         </View>
         </>

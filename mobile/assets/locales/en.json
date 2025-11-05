@@ -62,7 +62,9 @@
     "dashboard": {
         "title": "Dashboard",
         "newBudget": "Budget plan",
-        "noBudgetPlans": "Your budget plans are still a blank canvas. Let’s paint the first one!"
+      "noBudgetPlans": "Your budget plans are still a blank canvas. Let’s paint the first one!",
+      "newSavingGoal": "Saving goal",
+      "noSavingGoals": "You don't have saving goals yet. Create your first one!"
     },
     "budget": {
         "title": "Budget",
@@ -327,5 +329,39 @@
         "subtitle": "We sent you a confirmation email. Open it to verify your account.",
         "help": "Can't find it? Check your spam.",
         "button": "Back to login"
+    }
+    ,
+    "savingGoal": {
+      "titleNew": "New Saving Goal",
+      "titleEdit": "Edit Saving Goal",
+      "titleDetail": "Saving Goal",
+      "name": "Name",
+      "namePlaceholder": "Trip to Japan",
+      "account": "Linked account",
+      "goalAmount": "Goal amount",
+      "rangeType": "Period type",
+      "range": "Period length",
+      "annualInterestRate": "Annual interest rate",
+      "initialAmount": "Initial amount",
+      "contribution": "Contribution per period",
+      "totalContributed": "Total contributed",
+      "totalInterest": "Total interest",
+      "parameters": "Parameters",
+      "loading": "Loading saving goal...",
+      "types": {
+        "month": "Monthly",
+        "week": "Weekly",
+        "year": "Yearly"
+      },
+      "alerts": {
+        "title": "Notice",
+        "missingName": "Please enter a name for your saving goal.",
+        "missingAccount": "Please select an account.",
+        "invalidNumbers": "Enter valid amounts and period length.",
+        "createError": "Failed to create saving goal.",
+        "fetchError": "Failed to load saving goal details.",
+        "updateSuccess": "Saving goal updated successfully!",
+        "updateError": "Failed to update saving goal."
+      }
     }
 }

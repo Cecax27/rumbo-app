@@ -62,7 +62,9 @@
     "dashboard": {
         "title": "Panel de Control",
         "newBudget": "Presupuesto",
-        "noBudgetPlans": "Tus planes de presupuesto siguen siendo un lienzo en blanco. ¡Pintemos el primero!"
+        "noBudgetPlans": "Tus planes de presupuesto siguen siendo un lienzo en blanco. ¡Pintemos el primero!",
+        "newSavingGoal": "Meta de ahorro",
+        "noSavingGoals": "Aún no tienes metas de ahorro. ¡Crea la primera!"
     },
     "budget": {
         "title": "Presupuesto",
@@ -327,5 +329,38 @@
         "subtitle": "Te mandamos un correo de confirmación. Ábrelo para confirmar tu cuenta.",
         "help": "¿No lo encontraste? Revisa tu spam.",
         "button": "Iniciar sesión"
+    },
+    "savingGoal": {
+        "titleNew": "Nueva meta de ahorro",
+        "titleEdit": "Editar meta de ahorro",
+        "titleDetail": "Meta de ahorro",
+        "name": "Nombre",
+        "namePlaceholder": "Viaje a Japón",
+        "account": "Cuenta vinculada",
+        "goalAmount": "Monto objetivo",
+        "rangeType": "Tipo de periodo",
+        "range": "Duración del periodo",
+        "annualInterestRate": "Tasa de interés anual",
+        "initialAmount": "Monto inicial",
+        "contribution": "Aportación por periodo",
+        "totalContributed": "Total aportado",
+        "totalInterest": "Intereses totales",
+        "parameters": "Parámetros",
+        "loading": "Cargando meta de ahorro...",
+        "types": {
+            "month": "Mensual",
+            "week": "Semanal",
+            "year": "Anual"
+        },
+        "alerts": {
+            "title": "Aviso",
+            "missingName": "Escribe un nombre para tu meta de ahorro.",
+            "missingAccount": "Selecciona una cuenta.",
+            "invalidNumbers": "Ingresa montos y duración válidos.",
+            "createError": "Error al crear la meta de ahorro.",
+            "fetchError": "Error al cargar los detalles de la meta de ahorro.",
+            "updateSuccess": "¡Meta de ahorro actualizada correctamente!",
+            "updateError": "Error al actualizar la meta de ahorro."
+        }
     }
 }
