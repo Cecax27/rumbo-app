@@ -48,40 +48,54 @@ npm install
 npx expo start
 ```
 
-## 🔐 Security
+---
 
-- The app only uses the anon key from Supabase in the client.
+# Turborepo starter
 
-- RLS (Row-Level Security) should be enabled on all tables to protect user data.
+This Turborepo starter is maintained by the Turborepo core team.
 
-## 📌 Project Status
+## Using this example
 
-🚧 Under active development.
-Currently working on:
+Run the following command:
 
-- Improving user interface.
+```sh
+npx create-turbo@latest
+```
 
-- Adding financial reports and dashboards.
+## What's inside?
 
-- Optimizing Supabase integration.
+This Turborepo includes the following packages/apps:
 
-## 🤝 Contributing
+### Apps and Packages
 
-Contributions are welcome.
-To propose changes:
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-1. Fork the repo.
-2. Create a branch (git checkout -b feature/new-feature).
-3. Commit your changes (git commit -m 'Add new feature').
-4. Push to your branch (git push origin feature/new-feature).
-5. Open a Pull Request.
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-## 📄 License
+### Utilities
 
-This project is licensed under the MIT License
-.
-You are free to use, modify, and distribute it with proper attribution.
+This Turborepo has some additional tools already setup for you:
 
-## ✨ Author
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
 
-Developed by Carlos Cervantes
+### Build
+
+To build all apps and packages, run the following command:
+
+```
+cd my-turborepo
+
+# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+turbo build
+
+# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+npx turbo build
+yarn dlx turbo build
+pnpm exec turbo build
+```
