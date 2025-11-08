@@ -1,6 +1,6 @@
 import { supabase } from "./client";
 
-export async function insertReport({deviceInfoJSON, app_version, message}) {
+export async function insertReport({deviceInfoJSON, app_version, message}:{deviceInfoJSON:string, app_version:string, message:string}) {
     const {error} =  await supabase
         .from('reports')
         .insert([{

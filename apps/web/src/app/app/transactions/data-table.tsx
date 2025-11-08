@@ -98,7 +98,7 @@ export function DataTable<TData, TValue>({
   const facetedAccounts = accounts.map((account) => ({
     label: account.name,
     value: account.name,
-    icon: account.icon
+    icon: account.icon ,
   }));
 
   React.useEffect(() => {

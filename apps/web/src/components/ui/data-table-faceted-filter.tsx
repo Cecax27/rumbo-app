@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Column } from "@tanstack/react-table"
 import { Check, PlusCircle } from "lucide-react"
-
+import Icon from "@mui/material/Icon"
 import { cn } from "@/lib/utils"
 import { Badge } from "./badge"
 import { Button } from "./button"
@@ -27,7 +27,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   options: {
     label: string
     value: string
-    icon?: React.ComponentType<{ className?: string }>
+    icon?: string
   }[]
 }
 
@@ -105,7 +105,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        "flex size-4 items-center justify-center rounded-[4px] border",
+                        "flex size-4 items-center justify-center rounded-lg border",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground"
                           : "border-input [&_svg]:invisible"
@@ -114,7 +114,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <Check className="text-primary-foreground size-3.5" />
                     </div>
                     {option.icon && (
-                      <option.icon className="text-muted-foreground size-4" />
+                      <Icon className="text-muted-foreground size-4">{option.icon}</Icon>
                     )}
                     <span>{option.label}</span>
                     {facets?.get(option.value) && (

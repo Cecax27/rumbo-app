@@ -16,14 +16,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SpendingForm } from "./spending-form";
+import { SpendingForm, type SpendingFormValues } from "./spending-form";
 import { addTransaction } from "@repo/supabase/transactions";
 
 export default function TransactionsPage() {
   const { filteredData: transactions } = useContext(TransactionsContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleSpendingSubmit = async (values: any) => {
+  const handleSpendingSubmit = async (values: SpendingFormValues) => {
     await addTransaction({
       date: values.date,
       amount: parseFloat(values.amount),

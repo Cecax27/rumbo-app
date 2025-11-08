@@ -1,6 +1,5 @@
 import { supabase } from "./client";
 
-
 export interface Transaction {
   id: number;
   created_at: string;
@@ -22,12 +21,14 @@ export interface TransactionDetails {
   account_name: string;
   budget_group: string;
   budget_group_id: number;
-  category_icon: string ;
+  category_icon: string;
   category_name: string;
-  transaction_type: TransactionType; 
+  transaction_type: TransactionType;
 }
 
-export interface TransactionWithDetails extends Transaction, TransactionDetails {}
+export interface TransactionWithDetails
+  extends Transaction,
+    TransactionDetails {}
 
 export const enum TransactionType {
   SPENDING = "spending",
@@ -42,7 +43,7 @@ export const addTransaction = async ({
   description,
   category_id,
   account_id,
-}:{
+}: {
   date: Date;
   amount: number;
   description: string;
@@ -68,7 +69,17 @@ export const addTransaction = async ({
   return true;
 };
 
-export const addIncome = async ({ date, amount, description, account_id }) => {
+export const addIncome = async ({
+  date,
+  amount,
+  description,
+  account_id,
+}: {
+  date: Date;
+  amount: number;
+  description: string;
+  account_id: number;
+}) => {
   const { error } = await supabase
     .from("incomes")
     .insert([
@@ -94,6 +105,12 @@ export const addTransfer = async ({
   description,
   from_account_id,
   to_account_id,
+}: {
+  date: Date;
+  amount: number;
+  description: string;
+  from_account_id: number;
+  to_account_id: number;
 }) => {
   const { error } = await supabase
     .from("transfers")
@@ -123,6 +140,13 @@ export const addDeferred = async ({
   account_id,
   category_id,
   months,
+}: {
+  date: Date;
+  amount: number;
+  description: string;
+  account_id: number;
+  category_id: number;
+  months: number;
 }) => {
   const { error } = await supabase
     .from("deferred_spendings")
@@ -145,7 +169,11 @@ export const addDeferred = async ({
   }
 };
 
-export const updateTransaction = async (transaction_id, type, params) => {
+export const updateTransaction = async (
+  transaction_id: string,
+  type: TransactionType,
+  params: Partial<Transaction>
+) => {
   let table = "";
   if (type === "spending") table = "spendings";
   else if (type === "income") table = "incomes";
@@ -153,7 +181,7 @@ export const updateTransaction = async (transaction_id, type, params) => {
   else if (type === "deferred") table = "deferred_spendings";
   else return Error("Invalid transaction type");
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(table)
     .update(params)
     .eq("id", transaction_id);
@@ -170,7 +198,6 @@ export const getTransaction = async (
   transaction_id: number,
   type: TransactionType
 ): Promise<Transaction> => {
-
   let data, error;
   if (type === "spending") {
     ({ data, error } = await supabase
@@ -196,10 +223,12 @@ export const getTransaction = async (
     throw error;
   }
   return data;
-
 };
 
-export const deleteTransaction = async (transaction_id, type) => {
+export const deleteTransaction = async (
+  transaction_id: string,
+  type: TransactionType
+) => {
   let table = "";
   if (type === "spending") table = "spendings";
   else if (type === "income") table = "incomes";
@@ -207,7 +236,7 @@ export const deleteTransaction = async (transaction_id, type) => {
   else if (type === "deferred") table = "deferred_spendings";
   else return Error("Invalid transaction type");
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from(table)
     .delete()
     .eq("id", transaction_id);
@@ -240,12 +269,12 @@ export const getMonthlySpendings = async (month = null) => {
 };
 
 export const getSpendingsTable = async (
-  start_date?:Date,
-  end_date?:Date,
-  account?:number,
-  category?:number,
-  budget_group?:number
-) :Promise<TransactionWithDetails[]> => {
+  start_date?: Date,
+  end_date?: Date,
+  account?: number,
+  category?: number,
+  budget_group?: number
+): Promise<TransactionWithDetails[]> => {
   const { data, error } = await supabase.rpc("get_filtered_spendings", {
     date_start_range: start_date || null,
     date_end_range: end_date || null,
@@ -260,7 +289,6 @@ export const getSpendingsTable = async (
     return data;
   }
 };
-
 
 export const getCategories = async () => {
   const { data, error } = await supabase
@@ -281,5 +309,3 @@ export const getBudgetGroups = async () => {
     return data;
   }
 };
-
-

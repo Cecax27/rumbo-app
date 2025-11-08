@@ -133,7 +133,7 @@ export const updateAccount = async (params:{
     loan_amount?: number;
     interest_rate?: number;
 }) => {
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("accounts")
     .update({
       name: params.name,
@@ -183,16 +183,12 @@ export const getAccount = async (account_id: number) : Promise<Account> => {
 };
 
 export const deleteAccount = async (account_id: number) => {
-  try {
     const { error } = await supabase
       .from("accounts")
       .delete()
       .eq("id", account_id);
     if (error) throw new Error(error.message);
     return true;
-  } catch (error) {
-    throw error;
-  }
 };
 
 export const getAccountsTypes = async () => {

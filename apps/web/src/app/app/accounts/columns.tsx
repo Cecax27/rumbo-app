@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Account } from "@repo/supabase/accounts";
-import { Icon } from "@/app/ui/components/icon";
+import Icon from "@mui/material/Icon";
 import { formatMoney } from "@repo/formatters";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
@@ -40,7 +40,7 @@ export const columns: ColumnDef<Account>[] = [
             className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{ backgroundColor: color }}
           >
-            <Icon name={icon} className="text-white text-sm" />
+            <Icon className="text-white text-sm" >{icon}</Icon>
           </div>
           <span className="font-medium">{name}</span>
         </div>

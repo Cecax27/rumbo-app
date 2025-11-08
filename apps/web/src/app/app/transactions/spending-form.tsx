@@ -57,7 +57,7 @@ const spendingFormSchema = z.object({
   path: ["deferred_months"],
 });
 
-type SpendingFormValues = z.infer<typeof spendingFormSchema>;
+export type SpendingFormValues = z.infer<typeof spendingFormSchema>;
 
 interface SpendingFormProps {
   onSubmit: (values: SpendingFormValues) => void;
@@ -94,7 +94,7 @@ export function SpendingForm({ onSubmit, onCancel }: SpendingFormProps) {
 
   const isDeferred = form.watch("is_deferred");
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: SpendingFormValues) => {
     onSubmit(values);
   };
 

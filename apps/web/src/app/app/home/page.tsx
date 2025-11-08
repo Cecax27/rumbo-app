@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useContext } from "react";
-import { quicksand, figtree } from "../../ui/fonts";
+import React, { useContext } from "react";
+import { quicksand } from "../../ui/fonts";
 import Button from "../../ui/components/button";
 import NotificationIcon from "@mui/icons-material/Notifications";
 import { useTools } from "@/contexts/ToolsContext";
@@ -10,8 +10,10 @@ import { TransactionsContext } from "@/contexts/TransactionsContext";
 import { AccountsContext } from "@/contexts/AccountsContext";
 import { TransactionType } from "@repo/supabase/transactions";
 import { formatMoney } from "@repo/formatters";
-import { Icon } from "@/app/ui/components/icon";
+import Icon from "@mui/material/Icon";
 import clsx from "clsx";
+import { BudgetPlanWithDetails, BudgetPlanGroupDetails } from "@repo/supabase/tools";
+import { parse } from "path";
 
 export default function Home() {
   const { budgetPlans, loading } = useTools();
@@ -54,11 +56,11 @@ export default function Home() {
                 <ToolCard
                   key={budgetPlan.name}
                   name={budgetPlan.name}
-                  date={budgetPlan.start_date}
-                  amount={budgetPlan.groups
+                  date={(budgetPlan as BudgetPlanWithDetails).start_date}
+                  amount={parseFloat(((budgetPlan as BudgetPlanWithDetails).groups as BudgetPlanGroupDetails[])
                     .reduce((sum, group) => sum + group.real_amount, 0)
-                    .toFixed(2)}
-                  max={budgetPlan.total_incomes.toFixed(2)}
+                    .toFixed(2))}
+                  max={parseFloat((budgetPlan as BudgetPlanWithDetails).total_incomes.toFixed(2))}
                 />
               ))
             ) : (
@@ -97,7 +99,7 @@ export default function Home() {
                       "bg-punch-800/50 text-punch-300": transaction.transaction_type === TransactionType.SPENDING,
                       "bg-navy-blue-800/50 text-navy-blue-300": transaction.transaction_type === TransactionType.TRANSFER
                     })}>
-                      <Icon name={transaction.category_icon} />
+                      <Icon>{transaction.category_icon} </Icon>
                     </div>
                     <div>
                       <h3 className="font-medium text-neutral-800 dark:text-neutral-200">
