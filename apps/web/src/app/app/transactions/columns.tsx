@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { TransactionWithDetails } from "@repo/supabase/transactions";
 import Icon from "@mui/material/Icon";
-import { formatMoney } from "@repo/formatters";
+import { formatMoney, formatIcon } from "@repo/formatters";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react"
@@ -82,7 +82,7 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
         variant="secondary"
           className="gap-2 "
         >
-          <Icon>{iconName}</Icon>
+          <Icon>{formatIcon(iconName)}</Icon>
           {category}
         </Badge>
       );

@@ -25,6 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"></link>
       <body
         className={`${quicksand.variable} ${figtree.variable} antialiased ${figtree.className}`}
       >

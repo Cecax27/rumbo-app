@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Account } from "@repo/supabase/accounts";
 import Icon from "@mui/material/Icon";
-import { formatMoney } from "@repo/formatters";
+import { formatMoney, formatIcon } from "@repo/formatters";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export const columns: ColumnDef<Account>[] = [
     },
     cell: ({ row }) => {
       const name = row.original.name;
-      const icon = row.original.icon || "wallet";
+      const icon = row.original.icon || "account-balance-wallet";
       const color = row.original.color;
       return (
         <div className="flex items-center gap-2">
@@ -40,7 +40,7 @@ export const columns: ColumnDef<Account>[] = [
             className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{ backgroundColor: color }}
           >
-            <Icon className="text-white text-sm" >{icon}</Icon>
+            <Icon className="text-white text-sm">{formatIcon(icon)}</Icon>
           </div>
           <span className="font-medium">{name}</span>
         </div>

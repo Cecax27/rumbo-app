@@ -60,7 +60,7 @@ export default function LoginPage() {
               type="email"
               name="email"
               id="email"
-              className="border-neutral-400 border-1 rounded-lg px-2 py-1"
+              className="border-neutral-400 border rounded-lg px-2 py-1"
             />
             <label
               htmlFor="password"
@@ -72,7 +72,7 @@ export default function LoginPage() {
               type="password"
               name="password"
               id="password"
-              className="border-neutral-400 border-1 rounded-lg px-2 py-1"
+              className="border-neutral-400 border rounded-lg px-2 py-1"
             />
             {mode === "login" && (
               <Button href="" secondary className="text-sm">
@@ -91,7 +91,7 @@ export default function LoginPage() {
                   type="password"
                   name="confirm-password"
                   id="confirm-password"
-                  className="border-neutral-400 border-1 rounded-lg px-2 py-1"
+                  className="border-neutral-400 border rounded-lg px-2 py-1"
                 />
               </>
             )}

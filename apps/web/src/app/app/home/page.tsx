@@ -9,7 +9,7 @@ import ToolCard from "@/app/ui/components/tool-card";
 import { TransactionsContext } from "@/contexts/TransactionsContext";
 import { AccountsContext } from "@/contexts/AccountsContext";
 import { TransactionType } from "@repo/supabase/transactions";
-import { formatMoney } from "@repo/formatters";
+import { formatIcon, formatMoney } from "@repo/formatters";
 import Icon from "@mui/material/Icon";
 import clsx from "clsx";
 import { BudgetPlanWithDetails, BudgetPlanGroupDetails } from "@repo/supabase/tools";
@@ -99,7 +99,7 @@ export default function Home() {
                       "bg-punch-800/50 text-punch-300": transaction.transaction_type === TransactionType.SPENDING,
                       "bg-navy-blue-800/50 text-navy-blue-300": transaction.transaction_type === TransactionType.TRANSFER
                     })}>
-                      <Icon>{transaction.category_icon} </Icon>
+                      <Icon>{formatIcon(transaction.category_icon)} </Icon>
                     </div>
                     <div>
                       <h3 className="font-medium text-neutral-800 dark:text-neutral-200">
