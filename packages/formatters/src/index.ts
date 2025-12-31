@@ -14,9 +14,6 @@ export const formatMoney = (value: number) :string => {
 };
 
 export const formatIcon = (iconName: string) :string => {
-    console.log(iconName);
-    const formattedIconName = iconName.replace(/-/g, '_').toLowerCase();
-    console.log(formattedIconName);
-    
+    const formattedIconName = iconName.replace(/-/g, '_').toLowerCase();   
     return formattedIconName;
 };

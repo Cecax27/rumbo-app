@@ -152,6 +152,10 @@ export const TRANSACTION_CATEGORIES = [
   },
 ];
 
+export const CATEGORIES = TRANSACTION_CATEGORIES.flatMap((group) =>
+  group.categories.map((category) => (category.name))
+);
+
 export const FACETED_TRANSACTION_CATEGORIES = TRANSACTION_CATEGORIES.flatMap(
   (group) =>
     group.categories.map((category) => ({

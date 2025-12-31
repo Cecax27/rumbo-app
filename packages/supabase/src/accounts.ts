@@ -1,39 +1,40 @@
+import { UUID } from "crypto";
 import { supabase } from "./client";
 
 export type Account = {
-    id: number;
-    user_id: string;
-    created_at: string;
-    name: string;
-    account_type: number;
-    cutt_off_day: number | null;
-    color: string;
-    icon: string;
-    bank_name: string;
-    is_primary_account: boolean;
-    credit_limit: number | null;
-    platform: string | null;
-    initial_amount: number | null;
-    estimated_return_rate: number | null;
-    loan_amount: number | null;
-    interest_rate: number | null;
-    balance?: number;
-}
+  id: number;
+  user_id: string;
+  created_at: string;
+  name: string;
+  account_type: number;
+  cutt_off_day: number | null;
+  color: string;
+  icon: string;
+  bank_name: string;
+  is_primary_account: boolean;
+  credit_limit: number | null;
+  platform: string | null;
+  initial_amount: number | null;
+  estimated_return_rate: number | null;
+  loan_amount: number | null;
+  interest_rate: number | null;
+  balance?: number;
+};
 
 export const addAccount = async (params: {
-    name: string;
-    account_type: number;
-    color: string;
-    icon: string;
-    bank_name: string;
-    is_primary_account: boolean;
-    cutoff_day?: number;
-    credit_limit?: number;
-    platform?: string;
-    initial_amount?: number;
-    estimated_return_rate?: number;
-    loan_amount?: number;
-    interest_rate?: number;
+  name: string;
+  account_type: number;
+  color: string;
+  icon: string;
+  bank_name: string;
+  is_primary_account: boolean;
+  cutoff_day?: number;
+  credit_limit?: number;
+  platform?: string;
+  initial_amount?: number;
+  estimated_return_rate?: number;
+  loan_amount?: number;
+  interest_rate?: number;
 }) => {
   if (params.account_type === 1 || params.account_type === 3) {
     const { data, error } = await supabase.from("accounts").insert([
@@ -117,21 +118,21 @@ export const addAccount = async (params: {
   }
 };
 
-export const updateAccount = async (params:{
-    id: number;
-    name: string;
-    account_type: number;
-    color: string;
-    icon: string;
-    bank_name: string;
-    is_primary_account: boolean;
-    cutoff_day?: number;
-    credit_limit?: number;
-    platform?: string;
-    initial_amount?: number;
-    estimated_return_rate?: number;
-    loan_amount?: number;
-    interest_rate?: number;
+export const updateAccount = async (params: {
+  id: number;
+  name: string;
+  account_type: number;
+  color: string;
+  icon: string;
+  bank_name: string;
+  is_primary_account: boolean;
+  cutoff_day?: number;
+  credit_limit?: number;
+  platform?: string;
+  initial_amount?: number;
+  estimated_return_rate?: number;
+  loan_amount?: number;
+  interest_rate?: number;
 }) => {
   const { error } = await supabase
     .from("accounts")
@@ -159,7 +160,7 @@ export const updateAccount = async (params:{
   }
 };
 
-export const getAccounts = async () : Promise<Account[]> => {
+export const getAccounts = async (): Promise<Account[]> => {
   const { data, error } = await supabase
     .from("accounts_with_balance")
     .select("*");
@@ -170,7 +171,7 @@ export const getAccounts = async () : Promise<Account[]> => {
   }
 };
 
-export const getAccount = async (account_id: number) : Promise<Account> => {
+export const getAccount = async (account_id: number): Promise<Account> => {
   const { data, error } = await supabase
     .from("accounts")
     .select("*")
@@ -183,12 +184,12 @@ export const getAccount = async (account_id: number) : Promise<Account> => {
 };
 
 export const deleteAccount = async (account_id: number) => {
-    const { error } = await supabase
-      .from("accounts")
-      .delete()
-      .eq("id", account_id);
-    if (error) throw new Error(error.message);
-    return true;
+  const { error } = await supabase
+    .from("accounts")
+    .delete()
+    .eq("id", account_id);
+  if (error) throw new Error(error.message);
+  return true;
 };
 
 export const getAccountsTypes = async () => {
@@ -200,7 +201,11 @@ export const getAccountsTypes = async () => {
   }
 };
 
-export const getCreditCardSpendings = async (account_id: number, year: number, month:number) => {
+export const getCreditCardSpendings = async (
+  account_id: number,
+  year: number,
+  month: number
+) => {
   const { data, error } = await supabase.rpc("get_credit_card_spendings", {
     p_account_id: account_id,
     p_year: year,
@@ -214,15 +219,66 @@ export const getCreditCardSpendings = async (account_id: number, year: number, m
   }
 };
 
-export const getBalanceByAccount = async (account_id: number) => {
+export type Balance = {
+  balance: number;
+  id: number;
+  user_id: UUID;
+};
+
+export const getBalanceByAccount = async (
+  account_id: number
+): Promise<Balance> => {
   const { data, error } = await supabase
     .from("balance_by_account")
     .select("*")
     .eq("id", account_id);
 
   if (error) {
-    return error;
+    throw error;
   } else {
     return data[0];
+  }
+};
+
+export const getSpendingsByCategories = async (
+  account_id: number,
+  start_date: Date,
+  end_date: Date
+) => {
+  const { data, error } = await supabase
+    .from("spendings")
+    .select("amount, spendings_categories!inner(name, icon)") // Usamos `!inner` para asegurar que sea tratado como un objeto
+    .eq("account_id", account_id)
+    .gte("date", start_date.toISOString())
+    .lte("date", end_date.toISOString())
+    .order("date", { ascending: true }); // Mantengo la consulta para múltiples resultados
+
+  const formattedData = data
+    ?.map((item) => {
+        const spendingsCategory = item.spendings_categories as unknown as { name: string; icon: string };
+      return {
+        category: spendingsCategory.name,
+        amount: item.amount,
+        icon: spendingsCategory.icon,
+      };
+    })
+    .reduce(
+      (acc: { category: string; icon: string; amount: number }[], curr) => {
+        const category = curr.category;
+        const icon = curr.icon;
+        const existing = acc.find((item) => item.category === category);
+        if (!existing) {
+          acc.push({ category, icon, amount: 0 });
+        }
+        acc.find((item) => item.category === category)!.amount += curr.amount;
+        return acc;
+      },
+      []
+    );
+
+  if (error) {
+    throw error;
+  } else {
+    return formattedData;
   }
 };

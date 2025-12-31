@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import Link from "next/link";
 
 const accountTypeLabels: { [key: number]: string } = {
   1: "Débito",
@@ -35,6 +36,7 @@ export const columns: ColumnDef<Account>[] = [
       const icon = row.original.icon || "account-balance-wallet";
       const color = row.original.color;
       return (
+        <Link href={`/app/accounts/details?id=${row.original.id}`}>
         <div className="flex items-center gap-2">
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -44,6 +46,7 @@ export const columns: ColumnDef<Account>[] = [
           </div>
           <span className="font-medium">{name}</span>
         </div>
+        </Link>
       );
     },
   },
