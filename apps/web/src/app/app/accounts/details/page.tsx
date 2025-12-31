@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAccount } from "@/hooks/useAccount";
 import { Spinner } from "@/components/ui/spinner";
@@ -10,7 +10,10 @@ import { Button } from "@/components/ui/button";
 import { MoreVert } from "@mui/icons-material";
 import { ChartBarMixed } from "./chart-bar";
 
-export default function DetailsAccount() {
+// Force dynamic rendering - prevents static generation at build time
+export const dynamic = 'force-dynamic';
+
+function DetailsAccountContent() {
   const searchParams = useSearchParams();
   const accountId = searchParams.get("id");
 
@@ -93,5 +96,13 @@ export default function DetailsAccount() {
         />
       </section>
     </article>
+  );
+}
+
+export default function DetailsAccount() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center flex-1"><Spinner className="size-6" /></div>}>
+      <DetailsAccountContent />
+    </Suspense>
   );
 }
