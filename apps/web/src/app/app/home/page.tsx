@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { quicksand } from "../../ui/fonts";
 import Button from "../../ui/components/button";
 import NotificationIcon from "@mui/icons-material/Notifications";
@@ -13,9 +13,10 @@ import { formatIcon, formatMoney } from "@repo/formatters";
 import Icon from "@mui/material/Icon";
 import clsx from "clsx";
 import { BudgetPlanWithDetails, BudgetPlanGroupDetails } from "@repo/supabase/tools";
-import { parse } from "path";
+import AddToolModal from "@/app/ui/components/add-tool-modal";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { budgetPlans, loading } = useTools();
   const { data: transactions } = useContext(TransactionsContext);
   const { accounts } = useContext(AccountsContext);
@@ -46,7 +47,7 @@ export default function Home() {
             <h2 className="font-semibold text-2xl text-neutral-800 dark:text-neutral-200">
               Herramientas
             </h2>
-            <Button href="#">+ Agregar</Button>
+            <Button onClick={() => setIsModalOpen(true)} type="button">+ Agregar</Button>
           </div>
           <div>
             {loading ? (
@@ -160,6 +161,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <AddToolModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }
