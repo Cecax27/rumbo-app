@@ -29,6 +29,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@repo/app-constants": "workspace:^",
     "@repo/formatters": "workspace:^",
+    "@repo/retirement-plan-calculation": "workspace:^",
     "@repo/shared": "workspace:*",
     "@repo/supabase": "workspace:*",
     "@supabase/supabase-js": "2.79.0",

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { quicksand } from "../fonts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ import {
 import Icon from "@mui/material/Icon";
 import { AccountsContext } from "@/contexts/AccountsContext";
 import { formatMoney } from "@repo/formatters";
+import { calculateRetirementPlan } from "@repo/retirement-plan-calculation"
 
 interface RetirementWizardProps {
   onClose: () => void;
@@ -66,7 +67,7 @@ export default function RetirementWizard({
     currentAge: 0,
     retirementAge: 65,
     retirementDuration: 20,
-    monthlyContribution: 500,
+    monthlyContribution: 0, // This will be calculated, not user input
     monthlyRetirementIncome: 2000,
     estimatedInterestRate: 7,
     interestRateVarianceMin: 5,
@@ -74,6 +75,12 @@ export default function RetirementWizard({
     inflationRate: 3,
     initialAmount: 0,
   });
+
+  // State for calculated values
+  const [monthlyContribution, setMonthlyContribution] = useState(0);
+  const [totalAccumulated, setTotalAccumulated] = useState(0);
+  const [totalContributed, setTotalContributed] = useState(0);
+  const [interestGenerated, setInterestGenerated] = useState(0);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -92,7 +99,11 @@ export default function RetirementWizard({
 
   const handleComplete = () => {
     if (onComplete) {
-      onComplete(formData);
+      // Include the calculated monthlyContribution in the final data
+      onComplete({
+        ...formData,
+        monthlyContribution: monthlyContribution,
+      });
     }
     onClose();
   };
@@ -103,6 +114,36 @@ export default function RetirementWizard({
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  useEffect(()=>{
+    const calc = calculateRetirementPlan(
+      formData.currentAge,
+      formData.retirementAge,
+      formData.retirementDuration,
+      formData.monthlyRetirementIncome,
+      formData.initialAmount,
+      formData.estimatedInterestRate,
+      formData.inflationRate,
+      formData.interestRateVarianceMin,
+      formData.interestRateVarianceMax,
+    )
+    
+    // Update state variables with calculated values
+    setMonthlyContribution(calc.month_contribution)
+    setTotalAccumulated(calc.total_acumulated)
+    setTotalContributed(calc.total_contributed)
+    setInterestGenerated(calc.interest_acumulated)
+  }, [
+    formData.currentAge,
+    formData.retirementAge,
+    formData.retirementDuration,
+    formData.monthlyRetirementIncome,
+    formData.initialAmount,
+    formData.estimatedInterestRate,
+    formData.inflationRate,
+    formData.interestRateVarianceMin,
+    formData.interestRateVarianceMax,
+  ])
 
   const isStepValid = () => {
     switch (currentStep) {
@@ -118,7 +159,7 @@ export default function RetirementWizard({
         );
       case 4:
         return (
-          formData.monthlyContribution > 0 &&
+          monthlyContribution > 0 &&
           formData.monthlyRetirementIncome > 0 &&
           formData.estimatedInterestRate > 0 &&
           formData.interestRateVarianceMin < formData.estimatedInterestRate &&
@@ -391,39 +432,6 @@ export default function RetirementWizard({
                             </div>
                           </div>
 
-                          {/* Monthly Contribution Slider */}
-                          <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                              <div className="flex items-center gap-2">
-                                <Label htmlFor="monthlyContribution" className="text-sm">Contribución mensual</Label>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Icon className="text-neutral-400 text-base cursor-help">info</Icon>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p className="max-w-xs">Cantidad que planeas aportar cada mes a tu fondo de retiro. Este monto se acumulará y generará intereses.</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </div>
-                              <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">
-                                {formatMoney(formData.monthlyContribution)}
-                              </span>
-                            </div>
-                            <Slider
-                              id="monthlyContribution"
-                              min={0}
-                              max={10000}
-                              step={50}
-                              value={[formData.monthlyContribution]}
-                              onValueChange={([value]) => updateFormData("monthlyContribution", value)}
-                              className="py-2"
-                            />
-                            <div className="flex justify-between text-xs text-neutral-500">
-                              <span>$0</span>
-                              <span>$10,000</span>
-                            </div>
-                          </div>
-
                           {/* Monthly Retirement Income Slider */}
                           <div className="space-y-2">
                             <div className="flex justify-between items-center">
@@ -578,13 +586,26 @@ export default function RetirementWizard({
                   </h4>
                   
                   <div className="space-y-4">
-                    {/* Placeholder for calculations - will be implemented */}
+                    {/* Monthly Contribution - Calculated Output */}
+                    <div className="bg-white dark:bg-neutral-800 rounded-lg p-4 shadow-sm border-2 border-orange-300 dark:border-orange-700">
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+                        💰 Contribución mensual requerida
+                      </p>
+                      <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                        {formatMoney(monthlyContribution)}
+                      </p>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                        Para alcanzar tu meta de retiro
+                      </p>
+                    </div>
+
+                    {/* Total acumulado al retiro */}
                     <div className="bg-white dark:bg-neutral-800 rounded-lg p-4 shadow-sm">
                       <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">
                         Total acumulado al retiro
                       </p>
                       <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                        {formatMoney(0)}
+                        {formatMoney(totalAccumulated)}
                       </p>
                     </div>
 
@@ -593,7 +614,7 @@ export default function RetirementWizard({
                         Total contribuido
                       </p>
                       <p className="text-xl font-semibold text-navy-blue-600 dark:text-navy-blue-400">
-                        {formatMoney(0)}
+                        {formatMoney(totalContributed)}
                       </p>
                     </div>
 
@@ -602,7 +623,7 @@ export default function RetirementWizard({
                         Intereses generados
                       </p>
                       <p className="text-xl font-semibold text-shamrock-600 dark:text-shamrock-400">
-                        {formatMoney(0)}
+                        {formatMoney(interestGenerated)}
                       </p>
                     </div>
 

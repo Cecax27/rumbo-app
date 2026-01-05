@@ -1,5 +1,5 @@
 export const formatMoney = (value: number) :string => {
-    if (!value) return '';
+    //if (!value) return '';
     
     // Remove any existing formatting
     const cleanedValue = value.toString().replace(/[^0-9.]/g, '');
