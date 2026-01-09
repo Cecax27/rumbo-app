@@ -129,7 +129,7 @@ export default function RetirementWizard({
     )
     
     // Update state variables with calculated values
-    setMonthlyContribution(calc.month_contribution)
+    setMonthlyContribution(calc.years_contributions[0].contribution/12) // First year's monthly contribution
     setTotalAccumulated(calc.total_acumulated)
     setTotalContributed(calc.total_contributed)
     setInterestGenerated(calc.interest_acumulated)
