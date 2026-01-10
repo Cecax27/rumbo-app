@@ -13,11 +13,12 @@ import { formatIcon, formatMoney } from "@repo/formatters";
 import Icon from "@mui/material/Icon";
 import clsx from "clsx";
 import { BudgetPlanWithDetails, BudgetPlanGroupDetails } from "@repo/supabase/tools";
+import { RetirementPlanWithDetails } from "@repo/supabase/retirementPlans";
 import AddToolModal from "@/app/ui/components/add-tool-modal";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { budgetPlans, loading } = useTools();
+  const { budgetPlans, loading, retirementPlans } = useTools();
   const { data: transactions } = useContext(TransactionsContext);
   const { accounts } = useContext(AccountsContext);
 
@@ -49,14 +50,15 @@ export default function Home() {
             </h2>
             <Button onClick={() => setIsModalOpen(true)} type="button">+ Agregar</Button>
           </div>
-          <div>
+          <div className="flex gap-6 overflow-x-auto pb-4">
             {loading ? (
-              <p>Loading budget plans...</p>
+              <p>Loading tools...</p>
             ) : budgetPlans && budgetPlans.length > 0 ? (
               budgetPlans.map((budgetPlan) => (
                 <ToolCard
                   key={budgetPlan.name}
                   name={budgetPlan.name}
+                  type="budgetPlan"
                   date={(budgetPlan as BudgetPlanWithDetails).start_date}
                   amount={parseFloat(((budgetPlan as BudgetPlanWithDetails).groups as BudgetPlanGroupDetails[])
                     .reduce((sum, group) => sum + group.real_amount, 0)
@@ -67,6 +69,19 @@ export default function Home() {
             ) : (
               <p>No hay planes de presupuesto disponibles</p>
             )}
+            {retirementPlans && retirementPlans.length > 0 ? (
+              retirementPlans.map((retirementPlan) => (
+                <ToolCard
+                  key={retirementPlan.id}
+                  name={retirementPlan.name}
+                  type="retirementPlan"
+                  date={(retirementPlan as RetirementPlanWithDetails).created_at}
+                  amount={(retirementPlan as RetirementPlanWithDetails).total_accumulated || 0}
+                  max={(retirementPlan as RetirementPlanWithDetails).monthly_contribution || 0}
+                />
+              ))
+            ) : (
+              <></>)}
           </div>
         </div>
         <div id="row" className="flex gap-10 overflow-hidden flex-1">

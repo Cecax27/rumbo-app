@@ -1,5 +1,31 @@
 import { supabase } from "./client";
 
+export interface RetirementPlan {
+  id: number;
+  name: string;
+  account_id: number;
+  actual_age: number;
+  retirement_age: number;
+  retirement_duration: number;
+  retirement_pay: number;
+  initial_amount: number;
+  interest_rate: number;
+  inflation_rate: number;
+  min_variation_interest: number;
+  max_variation_interest: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface RetirementPlanDetails {
+  monthly_contribution: number;
+  total_contributions: number;
+  total_accumulated: number;
+  years_until_retirement: number;
+}
+
+export type RetirementPlanWithDetails = RetirementPlan & RetirementPlanDetails;
+
 // Creates a retirement plan and returns its created ID (or data depending on RPC)
 export const createRetirementPlans = async ({
     name,
@@ -108,12 +134,14 @@ export const updateRetirementPlan = async ({
 };
 
 // Returns all retirement plans
-export const getRetirementPlans = async () => {
+export const getRetirementPlans = async (): Promise<RetirementPlan[]> => {
   const { data, error } = await supabase
     .from("retirement_plans")
     .select("*")
     .order("id", { ascending: false });
-  if (error) return error;
-  return data || [];
+  if (error) {
+    throw error;
+  }
+  return (data as RetirementPlan[]) || [];
 };
 
