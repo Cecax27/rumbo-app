@@ -26,23 +26,28 @@ export function calculateRetirementPlan(
   const plan_duration_months = plan_duration * 12;
   const retirement_duration_months = retirement_duration * 12;
 
-  const future_retirement_pay = calculateInflation(retirement_pay, inflation_rate, plan_duration);
+  const future_retirement_pays = [];
+  for (let year = 0; year < retirement_duration; year++) {
+    const future_pay = calculateInflation(retirement_pay, inflation_rate, plan_duration+year) * 12;
+    future_retirement_pays.push(future_pay);
+  }
 
-  const real_interest_rate = ((1 + interest_rate / 100) / (1 + inflation_rate / 100)) - 1;
+  const real_interest_rate = ((1 + (interest_rate / 100)) / (1 + (inflation_rate / 100))) - 1;
   const real_interest_rate_month = (1 + real_interest_rate)**(1/12) - 1;
 
-  total_acumulated = future_retirement_pay * ((1 - (1 + real_interest_rate_month)**-retirement_duration_months) / real_interest_rate_month);
+  //total_acumulated = future_retirement_pay * ((1 - (1 + real_interest_rate_month)**-retirement_duration_months) / real_interest_rate_month);
+  total_acumulated = future_retirement_pays.reduce((acummulator, currentValue)=> acummulator + currentValue, 0);
+  
+  month_contribution = ((total_acumulated - initial_amount) * real_interest_rate_month) / ((1 + real_interest_rate_month)**plan_duration_months - 1);
 
-  month_contribution = (total_acumulated - initial_amount) * real_interest_rate_month / ((1 + real_interest_rate_month)**plan_duration_months - 1);
-
-  total_contributed = month_contribution * retirement_duration_months;
+  total_contributed = month_contribution * plan_duration_months;
 
   interest_acumulated = total_acumulated - total_contributed;
 
   let years_contributions = [];
 
   for (let year = 1; year <= plan_duration; year++) {
-    const contribution = ((1+inflation_rate/100)**year-1)*((total_acumulated*(((interest_rate-inflation_rate)/100)))/(((1+(interest_rate/100))**(plan_duration))-((1+(inflation_rate/100))**(plan_duration-year))));
+    const contribution = (((1+(inflation_rate/100))**(year-1))*((total_acumulated*(((interest_rate-inflation_rate)/100))))/(((1+(interest_rate/100))**(plan_duration))-((1+(inflation_rate/100))**(plan_duration-year))));
     years_contributions.push({
       year,
       contribution
@@ -57,13 +62,14 @@ export function calculateRetirementPlan(
   for (let month = 1; month <= plan_duration_months; month++) {
     const interest_gained = current_acumulated * real_interest_rate_month;
     current_acumulated += month_contribution + interest_gained;
-    current_contributed += month_contribution;
+    let this_month_contribution = years_contributions[Math.floor((month - 1) / 12)].contribution / 12;
+    current_contributed += this_month_contribution;
     current_interest += interest_gained;
 
     table.push({
-      month,
+      month: month % 12 === 0 ? 12 : month % 12, // Mes calculado
       year: Math.floor((actual_age * 12 + month) / 12), // Año calculado
-      contribution: month_contribution,
+      contribution: this_month_contribution,
       total_contributed: current_contributed,
       interest_gained,
       total_interest: current_interest,
@@ -81,6 +87,6 @@ export function calculateRetirementPlan(
 }
 
 export function calculateInflation(amount: number, inflation_rate: number, years: number) {
-    const calculated_amount = amount * (1 + inflation_rate / 100) ** years;
+    const calculated_amount = amount * (1 + (inflation_rate / 100)) ** years;
     return calculated_amount;
 }

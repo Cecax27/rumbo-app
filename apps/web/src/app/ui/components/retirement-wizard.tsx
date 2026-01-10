@@ -28,7 +28,9 @@ import {
 import Icon from "@mui/material/Icon";
 import { AccountsContext } from "@/contexts/AccountsContext";
 import { formatMoney } from "@repo/formatters";
-import { calculateRetirementPlan } from "@repo/retirement-plan-calculation"
+import RetirementChart from "./RetirementChart";
+import { calculateRetirementPlan } from "@repo/retirement-plan-calculation";
+import { createRetirementPlans } from "@repo/supabase/retirementPlans";
 
 interface RetirementWizardProps {
   onClose: () => void;
@@ -81,6 +83,12 @@ export default function RetirementWizard({
   const [totalAccumulated, setTotalAccumulated] = useState(0);
   const [totalContributed, setTotalContributed] = useState(0);
   const [interestGenerated, setInterestGenerated] = useState(0);
+  const [tableData, setTableData] = useState<Array<{
+    year: number;
+    month: number;
+    contribution: number;
+    total_acumulated: number;
+  }>>([]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -97,15 +105,33 @@ export default function RetirementWizard({
     }
   };
 
-  const handleComplete = () => {
-    if (onComplete) {
-      // Include the calculated monthlyContribution in the final data
-      onComplete({
-        ...formData,
-        monthlyContribution: monthlyContribution,
-      });
+  const handleComplete = async () => {
+    const response = await createRetirementPlans({
+      name: formData.name,
+      account_id: parseInt(formData.accountId),
+      actual_age: formData.currentAge,
+      retirement_age: formData.retirementAge,
+      retirement_duration: formData.retirementDuration,
+      retirement_pay: formData.monthlyRetirementIncome,
+      initial_amount: formData.initialAmount,
+      interest_rate: formData.estimatedInterestRate,
+      inflation_rate: formData.inflationRate,
+      min_variation_interest: formData.interestRateVarianceMin,
+      max_variation_interest: formData.interestRateVarianceMax
+    });
+    if (response instanceof Error) {
+      // TODO: Handle error (show message to user)
     }
-    onClose();
+    else {
+      if (onComplete) {
+        // Include the calculated monthlyContribution in the final data
+        onComplete({
+          ...formData,
+          monthlyContribution: monthlyContribution,
+        });
+      }
+      onClose();
+    }
   };
 
   const updateFormData = <K extends keyof RetirementPlanData>(
@@ -133,6 +159,7 @@ export default function RetirementWizard({
     setTotalAccumulated(calc.total_acumulated)
     setTotalContributed(calc.total_contributed)
     setInterestGenerated(calc.interest_acumulated)
+    setTableData(calc.table)
   }, [
     formData.currentAge,
     formData.retirementAge,
@@ -159,7 +186,6 @@ export default function RetirementWizard({
         );
       case 4:
         return (
-          monthlyContribution > 0 &&
           formData.monthlyRetirementIncome > 0 &&
           formData.estimatedInterestRate > 0 &&
           formData.interestRateVarianceMin < formData.estimatedInterestRate &&
@@ -452,8 +478,8 @@ export default function RetirementWizard({
                             </div>
                             <Slider
                               id="monthlyRetirementIncome"
-                              min={0}
-                              max={15000}
+                              min={5000}
+                              max={50000}
                               step={100}
                               value={[formData.monthlyRetirementIncome]}
                               onValueChange={([value]) => updateFormData("monthlyRetirementIncome", value)}
@@ -642,6 +668,11 @@ export default function RetirementWizard({
                       </p>
                     </div>
                   </div>
+                </div>
+
+                {/* Third Row - Chart */}
+                <div className="col-span-2">
+                  <RetirementChart table={tableData} />
                 </div>
               </div>
             </div>

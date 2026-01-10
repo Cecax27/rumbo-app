@@ -110,7 +110,7 @@ export default function AddToolModal({ isOpen, onClose }: AddToolModalProps) {
       onClick={handleClose}
     >
       <div
-        className="bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl p-8 max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl p-8  w-full mx-4 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {selectedTool === "retirement" ? (
