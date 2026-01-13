@@ -78,6 +78,7 @@ export default function Home() {
                   date={(retirementPlan as RetirementPlanWithDetails).created_at}
                   amount={(retirementPlan as RetirementPlanWithDetails).total_accumulated || 0}
                   max={(retirementPlan as RetirementPlanWithDetails).monthly_contribution || 0}
+                  id={retirementPlan.id}
                 />
               ))
             ) : (

@@ -1,7 +1,7 @@
 import { supabase } from "./client";
 
 export interface RetirementPlan {
-  id: number;
+  id: string;
   name: string;
   account_id: number;
   actual_age: number;
@@ -13,7 +13,7 @@ export interface RetirementPlan {
   inflation_rate: number;
   min_variation_interest: number;
   max_variation_interest: number;
-  created_at?: string;
+  created_at: string;
   updated_at?: string;
 }
 
