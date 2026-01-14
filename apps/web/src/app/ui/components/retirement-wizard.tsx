@@ -155,11 +155,11 @@ export default function RetirementWizard({
     )
     
     // Update state variables with calculated values
-    setMonthlyContribution(calc.years_contributions[0].contribution/12) // First year's monthly contribution
-    setTotalAccumulated(calc.total_acumulated)
-    setTotalContributed(calc.total_contributed)
-    setInterestGenerated(calc.interest_acumulated)
-    setTableData(calc.table)
+    setMonthlyContribution(calc.normal.years_contributions[0].contribution/12) // First year's monthly contribution
+    setTotalAccumulated(calc.normal.total_acumulated)
+    setTotalContributed(calc.normal.total_contributed)
+    setInterestGenerated(calc.normal.interest_acumulated)
+    setTableData(calc.normal.table)
   }, [
     formData.currentAge,
     formData.retirementAge,

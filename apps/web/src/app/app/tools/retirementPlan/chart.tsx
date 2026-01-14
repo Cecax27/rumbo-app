@@ -22,7 +22,8 @@ import {
 import { useTools } from "@/contexts/ToolsContext"
 import { useAccount } from "@/hooks/useAccount"
 
-import { getTransactionsByAccount, type Transaction } from "@repo/supabase/transactions"
+import { getTransactionsByAccount } from "@repo/supabase/transactions"
+import { calculateRetirementPlan } from "@repo/retirement-plan-calculation"
 
 export const description = "A line chart with dots"
 
@@ -44,28 +45,48 @@ export function ChartLineDots(
     const retirementPlan = retirementPlans.find(plan => plan.id === planId);
     const { account } = useAccount(retirementPlan?.account_id || null);
     
-    const [chartData, setChartData] = useState<Array<{ month: string; range: [number, number]; real: number }>>([]);
+    const [chartData, setChartData] = useState<Array<{ 
+      date: Date; 
+      range: [number, number]; 
+      real?: number;
+      normal?: number;
+    }>>([]);
     const [isLoading, setIsLoading] = useState(true);
+    
 
     useEffect(() => {
         const fetchTransactions = async () => {
-            if (!account?.id) {
+            // Validar que retirementPlan exista antes de continuar
+            if (!retirementPlan || !account?.id) {
                 setIsLoading(false);
                 return;
             }
 
             try {
+                // Calcular el plan de retiro con las 3 variantes
+                const plan = calculateRetirementPlan(
+                    retirementPlan.actual_age,
+                    retirementPlan.retirement_age,
+                    retirementPlan.retirement_duration,
+                    retirementPlan.retirement_pay,
+                    retirementPlan.initial_amount,
+                    retirementPlan.interest_rate,
+                    retirementPlan.inflation_rate,
+                    retirementPlan.min_variation_interest,
+                    retirementPlan.max_variation_interest
+                );
+
+                // Obtener transacciones reales
                 const transactions = await getTransactionsByAccount(account.id);
                 
                 // Agrupar transacciones por mes
                 const transactionsByMonth = transactions.reduce((acc, transaction) => {
                     const date = new Date(transaction.date);
                     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    const monthName = date.toLocaleString('en-US', { month: 'long' });
                     
                     if (!acc[monthKey]) {
                         acc[monthKey] = {
-                            month: monthName,
+                            date: date,
                             incomes: 0,
                             spendings: 0,
                             count: 0
@@ -81,28 +102,71 @@ export function ChartLineDots(
                     acc[monthKey].count += 1;
                     
                     return acc;
-                }, {} as Record<string, { month: string; incomes: number; spendings: number; count: number }>);
+                }, {} as Record<string, { date: Date; incomes: number; spendings: number; count: number }>);
 
                 // Convertir a formato de gráfico
-                const formattedData = Object.entries(transactionsByMonth)
+                const realData = Object.entries(transactionsByMonth)
                     .sort(([a], [b]) => a.localeCompare(b))
-                    .reduce((acc, [, data]) => {
+                    .reduce((acc, [, data], index) => {
                         const balance = data.incomes - data.spendings;
                         const previousReal = acc.length > 0 ? acc[acc.length - 1].real : 0;
                         const cumulativeBalance = previousReal + balance;
-                        const minRange = 0;
-                        const maxRange = 0;
+                        
+                        // Obtener los valores del plan calculado para el mes actual si existen
+                        const planMin = plan.min.table[index];
+                        const planMax = plan.max.table[index];
+                        
+                        const minRange = planMin ? planMin.total_acumulated : cumulativeBalance * 0.8;
+                        const maxRange = planMax ? planMax.total_acumulated : cumulativeBalance * 1.2;
                         
                         acc.push({
-                            month: data.month,
+                            date: data.date,
                             range: [minRange, maxRange] as [number, number],
                             real: cumulativeBalance
                         });
                         
                         return acc;
-                    }, [] as Array<{ month: string; range: [number, number]; real: number }>);
+                    }, [] as Array<{ date: Date; range: [number, number]; real: number }>);
 
-                setChartData(formattedData);
+                const initialDate = new Date(retirementPlan.created_at)
+                console.log(plan.normal.table[0].year);
+                const normalPlanData = plan.normal.table.map(entry => ({
+                  date: new Date(entry.year + initialDate.getFullYear() - retirementPlan.actual_age, entry.month),
+                  normal: entry.total_acumulated
+                }))
+                const rangePlanData = plan.min.table.map((entry,index) => ({
+                  date: new Date(entry.year + initialDate.getFullYear() - retirementPlan.actual_age, entry.month),
+                  range: [entry.total_acumulated, plan.max.table[index].total_acumulated] as [number, number]
+                }))
+
+                //Combine all the data
+                const allDates = new Set([
+                  ...realData.map(d => d.date.getTime()),
+                  ...normalPlanData.map(d => d.date.getTime()),
+                  ...rangePlanData.map(d => d.date.getTime())
+                ]);
+
+                const formattedData = Array.from(allDates)
+                  .sort((a, b) => a - b)
+                  .map(timestamp => {
+                    const date = new Date(timestamp);
+                    const realEntry = realData.find(d => d.date.getTime() === timestamp);
+                    const normalEntry = normalPlanData.find(d => d.date.getTime() === timestamp);
+                    const rangeEntry = rangePlanData.find(d => d.date.getTime() === timestamp);
+
+                    return {
+                      date,
+                      real: realEntry?.real,
+                      normal: normalEntry?.normal,
+                      range: rangeEntry?.range || [0, 0] as [number, number]
+                    };
+                  }); 
+
+                  const nextYearhDate = new Date()
+                  nextYearhDate.setFullYear(nextYearhDate.getFullYear() + 1);
+                  const filteredData = formattedData.filter(entry => entry.date < nextYearhDate);
+
+                setChartData(filteredData);
             } catch (error) {
                 console.error('Error fetching transactions:', error);
             } finally {
@@ -111,8 +175,9 @@ export function ChartLineDots(
         };
 
         fetchTransactions();
-    }, [account?.id]);
+    }, [account?.id, retirementPlan]);
 
+    
     if (isLoading) {
         return (
             <Card>
@@ -139,11 +204,11 @@ export function ChartLineDots(
           >
             <CartesianGrid vertical={true} horizontal={false} />
             <XAxis
-              dataKey="month"
+              dataKey="date"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value) => value.toLocaleDateString(undefined, { month: "short", year: "2-digit" })}
             />
             <ChartTooltip
               cursor={false}
@@ -156,6 +221,18 @@ export function ChartLineDots(
               strokeWidth={2}
               dot={{
                 fill: "var(--chart-3)",
+              }}
+              activeDot={{
+                r: 6,
+              }}
+            />
+            <Line
+              dataKey="normal"
+              type="natural"
+              stroke="var(--chart-4)"
+              strokeWidth={2}
+              dot={{
+                fill: "var(--chart-4)",
               }}
               activeDot={{
                 r: 6,
