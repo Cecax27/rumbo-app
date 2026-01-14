@@ -309,3 +309,28 @@ export const getBudgetGroups = async () => {
     return data;
   }
 };
+
+export const getTransactionsByAccount = async (account_id: number, only_incomes: boolean = false, only_spendings: boolean = false) => {
+  /* Fetch transactions (spendings, incomes, transfers, deferred spendings) for a specific account using a stored procedure.
+  */
+  let spendings: Transaction[] = [];
+  let incomes: Transaction[] = [];
+  let error;
+  
+  if (!only_spendings) {
+    const incomesResponse = await supabase.from("incomes").select("*");
+    incomes = incomesResponse.data || [];
+    error = incomesResponse.error;
+  }
+  if (!only_incomes) {
+    const spendingsResponse = await supabase.from("spendings").select("*");
+    spendings = spendingsResponse.data || [];
+    error = spendingsResponse.error;
+  }
+
+  if (error) {
+    throw error;
+  } else {
+    return spendings.concat(incomes);
+  }
+};
