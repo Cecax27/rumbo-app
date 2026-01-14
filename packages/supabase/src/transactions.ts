@@ -315,17 +315,34 @@ export const getTransactionsByAccount = async (account_id: number, only_incomes:
   */
   let spendings: Transaction[] = [];
   let incomes: Transaction[] = [];
+  let transfers: Transaction[] = [];
   let error;
   
+  const transfersResponse = await supabase.from("transfers").select("*").or(`from_account_id.eq.${account_id},to_account_id.eq.${account_id}`);
+  transfers = transfersResponse.data || [];
+  error = transfersResponse.error;
+
   if (!only_spendings) {
-    const incomesResponse = await supabase.from("incomes").select("*");
+    const incomesResponse = await supabase.from("incomes").select("*").eq("account_id", account_id);
     incomes = incomesResponse.data || [];
     error = incomesResponse.error;
+
+    incomes = incomes.concat(transfers.filter(transfer => transfer.to_account_id === account_id).map(transfer => ({
+      ...transfer,
+      amount: transfer.amount,
+      description: `Transfer from account ${transfer.from_account_id}`,
+    })));
   }
   if (!only_incomes) {
-    const spendingsResponse = await supabase.from("spendings").select("*");
+    const spendingsResponse = await supabase.from("spendings").select("*").eq("account_id", account_id);
     spendings = spendingsResponse.data || [];
     error = spendingsResponse.error;
+
+    spendings = spendings.concat(transfers.filter(transfer => transfer.from_account_id === account_id).map(transfer => ({
+      ...transfer,
+      amount: -transfer.amount,
+      description: `Transfer to account ${transfer.to_account_id}`,
+    })));
   }
 
   if (error) {
