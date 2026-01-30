@@ -1,11 +1,21 @@
 {
-  "dependencies": {
-    "@react-native-picker/picker": "^2.11.1",
-    "react-native-date-picker": "^5.0.13",
-    "react-native-device-info": "^14.0.4",
-    "react-native-vector-icons": "^10.3.0"
+  "name": "rumbo",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "build:remote": "turbo run build --remote-cache",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
   },
-  "eslintConfig": {
-    "extends": "./mobile/node_modules/standard/eslintrc.json"
+  "devDependencies": {
+    "prettier": "3.6.2",
+    "turbo": "2.6.0",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
   }
 }

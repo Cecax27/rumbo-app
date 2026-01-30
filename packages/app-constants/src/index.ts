@@ -1,0 +1,168 @@
+export const ACCOUNT_TYPES = [
+  { id: 1, type: "debit_card" },
+  { id: 2, type: "credit_card" },
+  { id: 3, type: "cash" },
+  { id: 4, type: "investment" },
+  { id: 5, type: "loan" },
+];
+
+export const TRANSACTION_CATEGORIES = [
+  {
+    id: 1,
+    budget_group: "essentials",
+    categories: [
+      {
+        id: 4,
+        name: "public_transport",
+        icon: "directions-bus",
+      },
+      {
+        id: 21,
+        name: "gym",
+        icon: "fitness-center",
+      },
+      {
+        id: 7,
+        name: "insurance",
+        icon: "health-and-safety",
+      },
+      {
+        id: 5,
+        name: "phone_and_internet",
+        icon: "cell-wifi",
+      },
+      {
+        id: 2,
+        name: "groceries",
+        icon: "local-grocery-store",
+      },
+      {
+        id: 6,
+        name: "childcare",
+        icon: "child-friendly",
+      },
+      {
+        id: 3,
+        name: "gasoline",
+        icon: "local-gas-station",
+      },
+      {
+        id: 22,
+        name: "therapy",
+        icon: "psychology",
+      },
+      {
+        id: 23,
+        name: "medical_bills",
+        icon: "medical-services",
+      },
+      {
+        id: 24,
+        name: "supplements",
+        icon: "medication",
+      },
+      {
+        id: 1,
+        name: "rent",
+        icon: "home",
+      },
+    ],
+  },
+  {
+    id: 2,
+    budget_group: "savings",
+    categories: [
+      {
+        id: 8,
+        name: "emergency_fund",
+        icon: "emergency",
+      },
+      {
+        id: 9,
+        name: "retirement",
+        icon: "personal-injury",
+      },
+      {
+        id: 10,
+        name: "investments",
+        icon: "trending-up",
+      },
+    ],
+  },
+  {
+    id: 3,
+    budget_group: "discretionary",
+    categories: [
+      {
+        id: 25,
+        name: "donations",
+        icon: "money",
+      },
+      {
+        id: 11,
+        name: "dining_out",
+        icon: "local-dining",
+      },
+      {
+        id: 12,
+        name: "streaming_services",
+        icon: "live-tv",
+      },
+      {
+        id: 13,
+        name: "online_shopping",
+        icon: "shopping-basket",
+      },
+      {
+        id: 14,
+        name: "travel",
+        icon: "travel-explore",
+      },
+      {
+        id: 15,
+        name: "hobbies",
+        icon: "brush",
+      },
+      {
+        id: 16,
+        name: "entertainment",
+        icon: "local-movies",
+      },
+      {
+        id: 17,
+        name: "clothing",
+        icon: "cases",
+      },
+      {
+        id: 18,
+        name: "subscriptions",
+        icon: "newspaper",
+      },
+      {
+        id: 19,
+        name: "courses",
+        icon: "school",
+      },
+      {
+        id: 20,
+        name: "books",
+        icon: "menu-book",
+      },
+    ],
+  },
+];
+
+export const CATEGORIES = TRANSACTION_CATEGORIES.flatMap((group) =>
+  group.categories.map((category) => (category.name))
+);
+
+export const FACETED_TRANSACTION_CATEGORIES = TRANSACTION_CATEGORIES.flatMap(
+  (group) =>
+    group.categories.map((category) => ({
+      label: category.name
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase()),
+      value: category.name,
+      icon: category.icon
+    }))
+);

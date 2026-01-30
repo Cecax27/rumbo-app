@@ -1,0 +1,246 @@
+"use client";
+
+import * as React from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
+import { DataTableFacetedFilter } from "@/components/ui/data-table-faceted-filter";
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
+
+const accountTypeOptions = [
+  { label: "Débito", value: "1" },
+  { label: "Crédito", value: "2" },
+  { label: "Efectivo", value: "3" },
+  { label: "Inversión", value: "4" },
+  { label: "Préstamo", value: "5" },
+];
+
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+    },
+  });
+
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const updatePageSize = () => {
+      if (tableContainerRef.current) {
+        const containerHeight = tableContainerRef.current.offsetHeight;
+        const rowHeight = 50; // Estima la altura de cada fila en píxeles
+        const headerHeight = 56; // Altura del encabezado de la tabla
+        const footerHeight = 56; // Altura del pie de página de la tabla
+        const availableHeight = containerHeight - headerHeight - footerHeight;
+        const itemsPerPage = Math.max(
+          1,
+          Math.floor(availableHeight / rowHeight)
+        );
+        table.setPageSize(itemsPerPage);
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(updatePageSize);
+    if (tableContainerRef.current) {
+      resizeObserver.observe(tableContainerRef.current);
+    }
+
+    window.addEventListener("resize", updatePageSize);
+    updatePageSize();
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updatePageSize);
+    };
+  }, [table]);
+
+  return (
+    <div className="flex-1 flex flex-col" ref={tableContainerRef}>
+      <div id="table-header" className="flex items-center py-4 gap-2">
+        <Input
+          placeholder="Buscar por nombre..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <DataTableFacetedFilter
+          column={table.getColumn("account_type")}
+          title="Tipo"
+          options={accountTypeOptions}
+        />
+        <DataTableViewOptions table={table} />
+      </div>
+      <div
+        id="table-container"
+        className="overflow-hidden rounded-md border flex-1"
+      >
+        <Table className="">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No hay cuentas registradas.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div id="table-footer" className="select-none">
+        <Pagination className="pt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => {
+                  if (table.getCanPreviousPage()) table.previousPage();
+                }}
+                aria-disabled={!table.getCanPreviousPage()}
+                className={`${
+                  !table.getCanPreviousPage()
+                    ? "opacity-50 pointer-events-none"
+                    : undefined
+                } cursor-pointer`}
+              />
+            </PaginationItem>
+
+            {/* Dynamically render page numbers based on pageCount */}
+            {Array.from({ length: Math.max(1, table.getPageCount()) }).map(
+              (_, i) => {
+                const pageIndex = i;
+                const isActive =
+                  table.getState().pagination.pageIndex === pageIndex;
+                return (
+                  <PaginationItem key={pageIndex}>
+                    <PaginationLink
+                      href="#"
+                      isActive={isActive}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        table.setPageIndex(pageIndex);
+                      }}
+                    >
+                      {pageIndex + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              }
+            )}
+
+            {/* Show ellipsis only if there are many pages (optional) */}
+            {table.getPageCount() > 7 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => {
+                  if (table.getCanNextPage()) table.nextPage();
+                }}
+                aria-disabled={!table.getCanNextPage()}
+                className={`${
+                  !table.getCanNextPage()
+                    ? "opacity-50 pointer-events-none"
+                    : undefined
+                } cursor-pointer`}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
+    </div>
+  );
+}
