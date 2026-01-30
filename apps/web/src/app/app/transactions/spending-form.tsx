@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { AccountsContext } from "@/contexts/AccountsContext";
-import { TRANSACTION_CATEGORIES } from "@repo/app-constants";
+import CategoryPopOver from "./components/category-pop-over";
 
 // Schema de validación
 const spendingFormSchema = z.object({
@@ -66,18 +66,6 @@ interface SpendingFormProps {
 
 export function SpendingForm({ onSubmit, onCancel }: SpendingFormProps) {
   const { accounts } = useContext(AccountsContext);
-
-  // Aplanar las categorías para el select
-  const categories = TRANSACTION_CATEGORIES.flatMap((group) =>
-    group.categories.map((category) => ({
-      id: category.id.toString(),
-      name: category.name
-        .replace(/_/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase()),
-      icon: category.icon,
-      budget_group: group.budget_group,
-    }))
-  );
 
   const form = useForm({
     resolver: zodResolver(spendingFormSchema),
@@ -122,29 +110,8 @@ export function SpendingForm({ onSubmit, onCancel }: SpendingFormProps) {
         />
 
         {/* Categoría */}
-        <FormField
-          control={form.control}
-          name="category_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Categoría</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona una categoría" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+        <CategoryPopOver 
+          control={form.control} 
         />
 
         {/* Fecha */}
