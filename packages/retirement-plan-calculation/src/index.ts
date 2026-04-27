@@ -72,7 +72,7 @@ function generateSimulationTable(
   for (let month = 1; month <= plan_duration_months; month++) {
     const interest_gained = current_acumulated * real_interest_rate_month;
     current_acumulated += month_contribution + interest_gained;
-    const this_month_contribution = years_contributions[Math.floor((month - 1) / 12)].contribution / 12;
+    const this_month_contribution = years_contributions[Math.floor((month - 1) / 12)]!.contribution / 12;
     current_contributed += this_month_contribution;
     current_interest += interest_gained;
 

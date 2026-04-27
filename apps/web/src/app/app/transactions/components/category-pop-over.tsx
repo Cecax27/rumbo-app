@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Control, FieldValues } from "react-hook-form";
+import { Control, FieldValues, Path } from "react-hook-form";
 import {
   FormField,
   FormItem,
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { TRANSACTION_CATEGORIES } from "@repo/app-constants";
 import Icon from "@mui/material/Icon";
 import { formatIcon } from "@repo/formatters";
-interface CategoryPopOverProps<T extends FieldValues> {
+interface CategoryPopOverProps<T extends FieldValues & { category_id: string }> {
   control: Control<T>;
 }
 
@@ -35,7 +35,7 @@ const categories = TRANSACTION_CATEGORIES.flatMap((group) =>
   })),
 );
 
-export default function CategoryPopOver<T extends FieldValues>({
+export default function CategoryPopOver<T extends FieldValues & { category_id: string }>({
   control,
 }: CategoryPopOverProps<T>) {
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
@@ -44,7 +44,7 @@ export default function CategoryPopOver<T extends FieldValues>({
   return (
     <FormField
       control={control}
-      name="category_id"
+      name={"category_id" as Path<T>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Categoría</FormLabel>

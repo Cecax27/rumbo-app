@@ -1,16 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTools } from "@/contexts/ToolsContext";
 import { useSearchParams } from "next/navigation";
 import { ChartLineDots } from "./chart";
 
-// Force dynamic rendering - prevents static generation at build time
 export const dynamic = 'force-dynamic';
 
-export default function RetirementPlanPage() {
+function RetirementPlanContent() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
 
@@ -35,5 +34,13 @@ export default function RetirementPlanPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function RetirementPlanPage() {
+  return (
+    <Suspense fallback={null}>
+      <RetirementPlanContent />
+    </Suspense>
   );
 }

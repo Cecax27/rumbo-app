@@ -51,6 +51,8 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
+
 const chartConfig = {
 	objetivo: {
 		label: "Objetivo",
@@ -68,7 +70,7 @@ const isBudgetPlanWithDetails = (
 	return "total_incomes" in plan && "start_date" in plan && "end_date" in plan;
 };
 
-export default function BudgetPlanPage() {
+function BudgetPlanContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const id = searchParams.get("id");
@@ -457,5 +459,13 @@ export default function BudgetPlanPage() {
 				</DialogContent>
 			</Dialog>
 		</div>
+	);
+}
+
+export default function BudgetPlanPage() {
+	return (
+		<Suspense fallback={null}>
+			<BudgetPlanContent />
+		</Suspense>
 	);
 }

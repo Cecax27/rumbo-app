@@ -39,7 +39,7 @@ const Chart: React.FC<ChartProps> = ({ data, xKey, series, xAxisLabel, yAxisLabe
       backgroundColor: s.color,
       tension: 0.4,
       borderWidth: 1,
-      pointStyle: false
+      pointStyle: false as const
     })),
   };
 
