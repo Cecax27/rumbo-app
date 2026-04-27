@@ -22,8 +22,6 @@ export default function Home() {
   const { data: transactions } = useContext(TransactionsContext);
   const { accounts } = useContext(AccountsContext);
 
-  console.log(transactions);
-
   return (
     <>
       <div id="header" className="flex justify-between items-center">

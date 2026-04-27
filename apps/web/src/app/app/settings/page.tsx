@@ -1,16 +1,22 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { quicksand } from "../../ui/fonts";
 import { useTheme } from "next-themes";
+import { signOut } from "@repo/supabase/auth";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Moon, Sun, Monitor } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
+  const [isSigningOut, setIsSigningOut] = React.useState(false);
 
   // useEffect only runs on the client, so now we can safely show the UI
   React.useEffect(() => {
@@ -20,6 +26,20 @@ export default function SettingsPage() {
   if (!mounted) {
     return null;
   }
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    const { error } = await signOut();
+
+    if (error) {
+      console.error("Error al cerrar sesión:", error.message);
+      setIsSigningOut(false);
+      return;
+    }
+
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <>
@@ -92,6 +112,26 @@ export default function SettingsPage() {
                 </Label>
               </div>
             </RadioGroup>
+
+            <div className="mt-6 border-t border-neutral-200 pt-4 dark:border-neutral-800">
+              <Link
+                href="/privacy"
+                className="inline-flex text-sm font-medium text-neutral-700 underline underline-offset-4 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
+              >
+                Ver política de privacidad
+              </Link>
+
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleSignOut}
+                  disabled={isSigningOut}
+                >
+                  {isSigningOut ? "Cerrando sesión..." : "Cerrar sesión"}
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

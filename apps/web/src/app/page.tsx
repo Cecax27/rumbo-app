@@ -36,7 +36,8 @@ export default function Home() {
             <Button href="/login?mode=register">Comienza ahora</Button>
           </div>
         </main>
-        <footer className="p-6 text-right text-sm">
+        <footer className="p-6 flex justify-between text-sm">
+          <p><a href="/privacy">Política de privacidad</a></p>
           <p className="text-shadow-black/10 text-shadow-lg">
             Este es un proyecto de código abierto.{" "}
             <a
