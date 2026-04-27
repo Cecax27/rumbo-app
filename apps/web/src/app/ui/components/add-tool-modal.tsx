@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Icon from "@mui/material/Icon";
 import { quicksand } from "../fonts";
 import RetirementWizard from "./retirement-wizard";
+import BudgetPlanWizard, { type BudgetPlanData } from "./budgetplan-wizard";
 
 interface AddToolModalProps {
   isOpen: boolean;
@@ -78,19 +79,24 @@ export default function AddToolModal({ isOpen, onClose }: AddToolModalProps) {
 
   const handleToolSelect = (toolId: string) => {
     console.log("Selected tool:", toolId);
-    
-    if (toolId === "retirement") {
-      setSelectedTool("retirement");
+
+    if (toolId === "retirement" || toolId === "budget") {
+      setSelectedTool(toolId);
       return;
     }
-    
+
     // TODO: Navigate to tool configuration page or open configuration modal for other tools
     onClose();
   };
 
   const handleRetirementComplete = (data: RetirementPlanData) => {
     console.log("Retirement plan created:", data);
-    // TODO: Save the retirement plan data
+    setSelectedTool(null);
+    onClose();
+  };
+
+  const handleBudgetComplete = (data: BudgetPlanData) => {
+    console.log("Budget plan created:", data);
     setSelectedTool(null);
     onClose();
   };
@@ -117,6 +123,12 @@ export default function AddToolModal({ isOpen, onClose }: AddToolModalProps) {
           <RetirementWizard
             onClose={handleClose}
             onComplete={handleRetirementComplete}
+            onBack={handleBackToTools}
+          />
+        ) : selectedTool === "budget" ? (
+          <BudgetPlanWizard
+            onClose={handleClose}
+            onComplete={handleBudgetComplete}
             onBack={handleBackToTools}
           />
         ) : (
