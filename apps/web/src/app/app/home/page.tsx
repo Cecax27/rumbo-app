@@ -35,10 +35,7 @@ export default function Home() {
             Bienvenido a tu dashboard financiero
           </p>
         </div>
-        <div className="flex items-center gap-5">
-          <NotificationIcon className="text-neutral-600 dark:text-neutral-200" />
-          <div className="rounded-full bg-amber-100 w-10 h-10"></div>
-        </div>
+
       </div>
       <div id="main" className="flex flex-col gap-6 flex-1 overflow-hidden">
         <div id="tools">
@@ -62,6 +59,7 @@ export default function Home() {
                     .reduce((sum, group) => sum + group.real_amount, 0)
                     .toFixed(2))}
                   max={parseFloat((budgetPlan as BudgetPlanWithDetails).total_incomes.toFixed(2))}
+                  id={budgetPlan.id}
                 />
               ))
             ) : (
