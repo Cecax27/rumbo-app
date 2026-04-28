@@ -20,7 +20,7 @@ import { SpendingForm, type SpendingFormValues } from "./spending-form";
 import { IncomeForm, type IncomeFormValues } from "./income-form";
 import { TransferForm, type TransferFormValues } from "./transfer-form";
 import { ImportBankDialog } from "./import-bank-dialog";
-import { addIncome, addTransaction, addTransfer } from "@repo/supabase/transactions";
+import { addIncome, addTransaction, addTransfer, deleteTransaction, TransactionType } from "@repo/supabase/transactions";
 import { toast } from "sonner";
 
 export default function TransactionsPage() {
@@ -75,6 +75,16 @@ export default function TransactionsPage() {
       toast.success("Transferencia guardada correctamente");
     } catch {
       toast.error("No se pudo guardar la transferencia");
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId: string, type: TransactionType) => {
+    try {
+      await deleteTransaction(transactionId, type);
+      fetchTransactions();
+      toast.success("Transacción eliminada correctamente");
+    } catch {
+      toast.error("No se pudo eliminar la transacción");
     }
   };
 
@@ -149,7 +159,11 @@ export default function TransactionsPage() {
         id="main"
         className="flex flex-col gap-6 flex-1 overflow-hidden"
       >
-        <DataTable columns={columns} data={transactions}/>
+        <DataTable
+          columns={columns}
+          data={transactions}
+          onDeleteTransaction={handleDeleteTransaction}
+        />
       </div>
     </>
   );

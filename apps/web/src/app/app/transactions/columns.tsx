@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TransactionWithDetails } from "@repo/supabase/transactions";
+import { TransactionType, TransactionWithDetails } from "@repo/supabase/transactions";
 import Icon from "@mui/material/Icon";
 import { formatMoney, formatIcon } from "@repo/formatters";
 import { format } from "date-fns";
@@ -17,6 +17,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+
+interface TransactionsTableMeta {
+  onDeleteTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
+}
 
 export const columns: ColumnDef<TransactionWithDetails>[] = [
   {
@@ -128,8 +132,23 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ }) => {
- 
+    cell: ({ row, table }) => {
+      const meta = table.options.meta as TransactionsTableMeta | undefined;
+
+      const handleDelete = async () => {
+        const transaction = row.original;
+        const confirmed = window.confirm("¿Seguro que quieres eliminar esta transacción?");
+
+        if (!confirmed || !meta?.onDeleteTransaction) {
+          return;
+        }
+
+        await meta.onDeleteTransaction(
+          transaction.id.toString(),
+          transaction.transaction_type as TransactionType
+        );
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -147,7 +166,9 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
             {/* TODO Add link to edit */}
             <DropdownMenuItem>Editar</DropdownMenuItem>
             {/* TODO Add link to remove */}
-            <DropdownMenuItem className="text-punch-500">Eliminar</DropdownMenuItem>
+            <DropdownMenuItem className="text-punch-500" onClick={handleDelete}>
+              Eliminar
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
