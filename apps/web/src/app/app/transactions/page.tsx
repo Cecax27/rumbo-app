@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SpendingForm, type SpendingFormValues } from "./spending-form";
+import { IncomeForm, type IncomeFormValues } from "./income-form";
+import { TransferForm, type TransferFormValues } from "./transfer-form";
 import { ImportBankDialog } from "./import-bank-dialog";
-import { addTransaction } from "@repo/supabase/transactions";
+import { addIncome, addTransaction, addTransfer } from "@repo/supabase/transactions";
 
 export default function TransactionsPage() {
   const { filteredData: transactions } = useContext(TransactionsContext);
@@ -32,6 +34,27 @@ export default function TransactionsPage() {
       description: values.description || "",
       category_id: parseInt(values.category_id),
       account_id: parseInt(values.account_id),
+    });
+    setIsDialogOpen(false);
+  };
+
+  const handleIncomeSubmit = async (values: IncomeFormValues) => {
+    await addIncome({
+      date: values.date,
+      amount: parseFloat(values.amount),
+      description: values.description || "",
+      account_id: parseInt(values.account_id),
+    });
+    setIsDialogOpen(false);
+  };
+
+  const handleTransferSubmit = async (values: TransferFormValues) => {
+    await addTransfer({
+      date: values.date,
+      amount: parseFloat(values.amount),
+      description: values.description || "",
+      from_account_id: parseInt(values.from_account_id),
+      to_account_id: parseInt(values.to_account_id),
     });
     setIsDialogOpen(false);
   };
@@ -83,10 +106,16 @@ export default function TransactionsPage() {
                   />
                 </TabsContent>
                 <TabsContent value="income" className="space-y-4">
-                  {/* Contenido del formulario de ingreso */}
+                  <IncomeForm
+                    onSubmit={handleIncomeSubmit}
+                    onCancel={() => setIsDialogOpen(false)}
+                  />
                 </TabsContent>
                 <TabsContent value="transfer" className="space-y-4">
-                  {/* Contenido del formulario de transferencia */}
+                  <TransferForm
+                    onSubmit={handleTransferSubmit}
+                    onCancel={() => setIsDialogOpen(false)}
+                  />
                 </TabsContent>
               </Tabs>
             </DialogContent>
