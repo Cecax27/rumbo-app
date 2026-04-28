@@ -21,6 +21,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table-column-header"
 interface TransactionsTableMeta {
   onDeleteTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
   onEditTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
+  onViewTransactionDetails?: (transactionId: string, type: TransactionType) => void;
 }
 
 export const columns: ColumnDef<TransactionWithDetails>[] = [
@@ -163,6 +164,19 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
         );
       };
 
+      const handleViewDetails = () => {
+        const transaction = row.original;
+
+        if (!meta?.onViewTransactionDetails) {
+          return;
+        }
+
+        meta.onViewTransactionDetails(
+          transaction.id.toString(),
+          transaction.transaction_type as TransactionType
+        );
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -175,9 +189,7 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
             {/* TODO Add ignore */}
             <DropdownMenuCheckboxItem>Ignorar en resúmen</DropdownMenuCheckboxItem>
             <DropdownMenuSeparator />
-            {/* TODO Add link to details */}
-            <DropdownMenuItem>Detalles</DropdownMenuItem>
-            {/* TODO Add link to edit */}
+            <DropdownMenuItem onClick={handleViewDetails}>Detalles</DropdownMenuItem>
             <DropdownMenuItem onClick={handleEdit}>Editar</DropdownMenuItem>
             <DropdownMenuItem className="text-punch-500" onClick={handleDelete}>
               Eliminar

@@ -45,6 +45,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   onDeleteTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
   onEditTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
+  onViewTransactionDetails?: (transactionId: string, type: TransactionType) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -52,6 +53,7 @@ export function DataTable<TData, TValue>({
   data,
   onDeleteTransaction,
   onEditTransaction,
+  onViewTransactionDetails,
 }: DataTableProps<TData, TValue>) {
   const {accounts} = React.useContext(AccountsContext)
   const {filter, setFilter} = React.useContext(TransactionsContext)
@@ -87,6 +89,7 @@ export function DataTable<TData, TValue>({
     meta: {
       onDeleteTransaction,
       onEditTransaction,
+      onViewTransactionDetails,
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

@@ -1,6 +1,7 @@
 "use client"
 
 import React, {useContext, useState} from "react";
+import { useRouter } from "next/navigation";
 import { quicksand } from "../../ui/fonts";
 import { TransactionsContext } from "@/contexts/TransactionsContext";
 import { DataTable } from "./data-table";
@@ -34,6 +35,7 @@ import { toast } from "sonner";
 type TransactionTab = "expense" | "income" | "transfer";
 
 export default function TransactionsPage() {
+  const router = useRouter();
   const { filteredData: transactions, fetchTransactions } = useContext(TransactionsContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
@@ -103,6 +105,15 @@ export default function TransactionsPage() {
     } catch {
       toast.error("No se pudo eliminar la transacción");
     }
+  };
+
+  const handleViewTransactionDetails = (transactionId: string, type: TransactionType) => {
+    const params = new URLSearchParams({
+      id: transactionId,
+      type,
+    });
+
+    router.push(`/app/transactions/details?${params.toString()}`);
   };
 
   const clearEditState = () => {
@@ -379,6 +390,7 @@ export default function TransactionsPage() {
           data={transactions}
           onDeleteTransaction={handleDeleteTransaction}
           onEditTransaction={handleEditTransaction}
+          onViewTransactionDetails={handleViewTransactionDetails}
         />
       </div>
     </>
