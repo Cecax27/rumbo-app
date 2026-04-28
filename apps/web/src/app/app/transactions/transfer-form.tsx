@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -52,21 +52,40 @@ export type TransferFormValues = z.infer<typeof transferFormSchema>;
 interface TransferFormProps {
   onSubmit: (values: TransferFormValues) => void;
   onCancel?: () => void;
+  initialValues?: Partial<TransferFormValues>;
+  submitLabel?: string;
 }
 
-export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
+export function TransferForm({
+  onSubmit,
+  onCancel,
+  initialValues,
+  submitLabel = "Guardar transferencia",
+}: TransferFormProps) {
   const { accounts } = useContext(AccountsContext);
+
+  const defaultValues: TransferFormValues = {
+    amount: "",
+    date: new Date(),
+    description: "",
+    from_account_id: "",
+    to_account_id: "",
+  };
 
   const form = useForm({
     resolver: zodResolver(transferFormSchema),
     defaultValues: {
-      amount: "",
-      date: new Date(),
-      description: "",
-      from_account_id: "",
-      to_account_id: "",
+      ...defaultValues,
+      ...initialValues,
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      ...defaultValues,
+      ...initialValues,
+    });
+  }, [form, initialValues]);
 
   const handleSubmit = (values: TransferFormValues) => {
     onSubmit(values);
@@ -155,7 +174,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Cuenta origen</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una cuenta" />
@@ -180,7 +199,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Cuenta destino</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una cuenta" />
@@ -205,7 +224,7 @@ export function TransferForm({ onSubmit, onCancel }: TransferFormProps) {
               Cancelar
             </Button>
           )}
-          <Button type="submit">Guardar transferencia</Button>
+          <Button type="submit">{submitLabel}</Button>
         </div>
       </form>
     </Form>

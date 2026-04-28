@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -62,23 +62,42 @@ export type SpendingFormValues = z.infer<typeof spendingFormSchema>;
 interface SpendingFormProps {
   onSubmit: (values: SpendingFormValues) => void;
   onCancel?: () => void;
+  initialValues?: Partial<SpendingFormValues>;
+  submitLabel?: string;
 }
 
-export function SpendingForm({ onSubmit, onCancel }: SpendingFormProps) {
+export function SpendingForm({
+  onSubmit,
+  onCancel,
+  initialValues,
+  submitLabel = "Guardar gasto",
+}: SpendingFormProps) {
   const { accounts } = useContext(AccountsContext);
+
+  const defaultValues: SpendingFormValues = {
+    amount: "",
+    category_id: "",
+    date: new Date(),
+    description: "",
+    account_id: "",
+    is_deferred: false,
+    deferred_months: "1",
+  };
 
   const form = useForm({
     resolver: zodResolver(spendingFormSchema),
     defaultValues: {
-      amount: "",
-      category_id: "",
-      date: new Date(),
-      description: "",
-      account_id: "",
-      is_deferred: false,
-      deferred_months: "1",
+      ...defaultValues,
+      ...initialValues,
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      ...defaultValues,
+      ...initialValues,
+    });
+  }, [form, initialValues]);
 
   const isDeferred = form.watch("is_deferred");
 
@@ -178,7 +197,7 @@ export function SpendingForm({ onSubmit, onCancel }: SpendingFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Cuenta</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una cuenta" />
@@ -251,7 +270,7 @@ export function SpendingForm({ onSubmit, onCancel }: SpendingFormProps) {
               Cancelar
             </Button>
           )}
-          <Button type="submit">Guardar gasto</Button>
+          <Button type="submit">{submitLabel}</Button>
         </div>
       </form>
     </Form>

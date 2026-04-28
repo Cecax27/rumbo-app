@@ -20,13 +20,30 @@ import { SpendingForm, type SpendingFormValues } from "./spending-form";
 import { IncomeForm, type IncomeFormValues } from "./income-form";
 import { TransferForm, type TransferFormValues } from "./transfer-form";
 import { ImportBankDialog } from "./import-bank-dialog";
-import { addIncome, addTransaction, addTransfer, deleteTransaction, TransactionType } from "@repo/supabase/transactions";
+import {
+  addIncome,
+  addTransaction,
+  addTransfer,
+  deleteTransaction,
+  getTransaction,
+  TransactionType,
+  updateTransaction,
+} from "@repo/supabase/transactions";
 import { toast } from "sonner";
+
+type TransactionTab = "expense" | "income" | "transfer";
 
 export default function TransactionsPage() {
   const { filteredData: transactions, fetchTransactions } = useContext(TransactionsContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editTab, setEditTab] = useState<TransactionTab>("expense");
+  const [editingTransactionId, setEditingTransactionId] = useState<string | null>(null);
+  const [editingTransactionType, setEditingTransactionType] = useState<TransactionType | null>(null);
+  const [editingSpendingValues, setEditingSpendingValues] = useState<SpendingFormValues | undefined>(undefined);
+  const [editingIncomeValues, setEditingIncomeValues] = useState<IncomeFormValues | undefined>(undefined);
+  const [editingTransferValues, setEditingTransferValues] = useState<TransferFormValues | undefined>(undefined);
 
   const handleSpendingSubmit = async (values: SpendingFormValues) => {
     try {
@@ -86,6 +103,146 @@ export default function TransactionsPage() {
     } catch {
       toast.error("No se pudo eliminar la transacción");
     }
+  };
+
+  const clearEditState = () => {
+    setEditingTransactionId(null);
+    setEditingTransactionType(null);
+    setEditingSpendingValues(undefined);
+    setEditingIncomeValues(undefined);
+    setEditingTransferValues(undefined);
+  };
+
+  const handleEditTransaction = async (transactionId: string, type: TransactionType) => {
+    try {
+      const transaction = await getTransaction(parseInt(transactionId), type);
+
+      setEditingTransactionId(transactionId);
+      setEditingTransactionType(type);
+
+      if (type === TransactionType.SPENDING) {
+        setEditTab("expense");
+        setEditingSpendingValues({
+          amount: transaction.amount.toString(),
+          category_id: transaction.category_id?.toString() || "",
+          date: new Date(transaction.date),
+          description: transaction.description || "",
+          account_id: transaction.account_id.toString(),
+          is_deferred: false,
+          deferred_months: "1",
+        });
+      }
+
+      if (type === TransactionType.INCOME) {
+        setEditTab("income");
+        setEditingIncomeValues({
+          amount: transaction.amount.toString(),
+          date: new Date(transaction.date),
+          description: transaction.description || "",
+          account_id: transaction.account_id.toString(),
+        });
+      }
+
+      if (type === TransactionType.TRANSFER) {
+        setEditTab("transfer");
+        setEditingTransferValues({
+          amount: transaction.amount.toString(),
+          date: new Date(transaction.date),
+          description: transaction.description || "",
+          from_account_id: transaction.from_account_id?.toString() || "",
+          to_account_id: transaction.to_account_id?.toString() || "",
+        });
+      }
+
+      setIsEditDialogOpen(true);
+    } catch {
+      toast.error("No se pudo cargar la transacción para editar");
+    }
+  };
+
+  const handleSpendingEditSubmit = async (values: SpendingFormValues) => {
+    if (!editingTransactionId || editingTransactionType !== TransactionType.SPENDING) {
+      return;
+    }
+
+    try {
+      await updateTransaction(editingTransactionId, TransactionType.SPENDING, {
+        date: values.date.toISOString(),
+        amount: parseFloat(values.amount),
+        description: values.description || "",
+        category_id: parseInt(values.category_id),
+        account_id: parseInt(values.account_id),
+      });
+      fetchTransactions();
+      setIsEditDialogOpen(false);
+      clearEditState();
+      toast.success("Transacción actualizada correctamente");
+    } catch {
+      toast.error("No se pudo actualizar la transacción");
+    }
+  };
+
+  const handleIncomeEditSubmit = async (values: IncomeFormValues) => {
+    if (!editingTransactionId || editingTransactionType !== TransactionType.INCOME) {
+      return;
+    }
+
+    try {
+      await updateTransaction(editingTransactionId, TransactionType.INCOME, {
+        date: values.date.toISOString(),
+        amount: parseFloat(values.amount),
+        description: values.description || "",
+        account_id: parseInt(values.account_id),
+      });
+      fetchTransactions();
+      setIsEditDialogOpen(false);
+      clearEditState();
+      toast.success("Transacción actualizada correctamente");
+    } catch {
+      toast.error("No se pudo actualizar la transacción");
+    }
+  };
+
+  const handleTransferEditSubmit = async (values: TransferFormValues) => {
+    if (!editingTransactionId || editingTransactionType !== TransactionType.TRANSFER) {
+      return;
+    }
+
+    try {
+      await updateTransaction(editingTransactionId, TransactionType.TRANSFER, {
+        date: values.date.toISOString(),
+        amount: parseFloat(values.amount),
+        description: values.description || "",
+        from_account_id: parseInt(values.from_account_id),
+        to_account_id: parseInt(values.to_account_id),
+      });
+      fetchTransactions();
+      setIsEditDialogOpen(false);
+      clearEditState();
+      toast.success("Transacción actualizada correctamente");
+    } catch {
+      toast.error("No se pudo actualizar la transacción");
+    }
+  };
+
+  const isEditTabDisabled = (tab: TransactionTab) => {
+    if (!editingTransactionType) {
+      return false;
+    }
+
+    if (editingTransactionType === TransactionType.SPENDING) {
+      return tab !== "expense";
+    }
+
+    if (editingTransactionType === TransactionType.INCOME) {
+      return tab !== "income";
+    }
+
+    if (editingTransactionType === TransactionType.TRANSFER) {
+      return tab !== "transfer";
+    }
+
+    return false;
   };
 
   return (
@@ -155,6 +312,64 @@ export default function TransactionsPage() {
         open={isImportDialogOpen} 
         onOpenChange={setIsImportDialogOpen}
       />
+      <Dialog
+        open={isEditDialogOpen}
+        onOpenChange={(open) => {
+          setIsEditDialogOpen(open);
+          if (!open) {
+            clearEditState();
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Editar transacción</DialogTitle>
+            <DialogDescription>
+              Actualiza los datos de la transacción seleccionada
+            </DialogDescription>
+          </DialogHeader>
+          <Tabs value={editTab} onValueChange={(value) => setEditTab(value as TransactionTab)} className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="expense" disabled={isEditTabDisabled("expense")}>Gasto</TabsTrigger>
+              <TabsTrigger value="income" disabled={isEditTabDisabled("income")}>Ingreso</TabsTrigger>
+              <TabsTrigger value="transfer" disabled={isEditTabDisabled("transfer")}>Transferencia</TabsTrigger>
+            </TabsList>
+            <TabsContent value="expense" className="space-y-4">
+              <SpendingForm
+                onSubmit={handleSpendingEditSubmit}
+                onCancel={() => {
+                  setIsEditDialogOpen(false);
+                  clearEditState();
+                }}
+                initialValues={editingSpendingValues}
+                submitLabel="Guardar cambios"
+              />
+            </TabsContent>
+            <TabsContent value="income" className="space-y-4">
+              <IncomeForm
+                onSubmit={handleIncomeEditSubmit}
+                onCancel={() => {
+                  setIsEditDialogOpen(false);
+                  clearEditState();
+                }}
+                initialValues={editingIncomeValues}
+                submitLabel="Guardar cambios"
+              />
+            </TabsContent>
+            <TabsContent value="transfer" className="space-y-4">
+              <TransferForm
+                onSubmit={handleTransferEditSubmit}
+                onCancel={() => {
+                  setIsEditDialogOpen(false);
+                  clearEditState();
+                }}
+                initialValues={editingTransferValues}
+                submitLabel="Guardar cambios"
+              />
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
       <div
         id="main"
         className="flex flex-col gap-6 flex-1 overflow-hidden"
@@ -163,6 +378,7 @@ export default function TransactionsPage() {
           columns={columns}
           data={transactions}
           onDeleteTransaction={handleDeleteTransaction}
+          onEditTransaction={handleEditTransaction}
         />
       </div>
     </>

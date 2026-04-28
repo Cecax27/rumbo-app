@@ -20,6 +20,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table-column-header"
 
 interface TransactionsTableMeta {
   onDeleteTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
+  onEditTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
 }
 
 export const columns: ColumnDef<TransactionWithDetails>[] = [
@@ -149,6 +150,19 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
         );
       };
 
+      const handleEdit = async () => {
+        const transaction = row.original;
+
+        if (!meta?.onEditTransaction) {
+          return;
+        }
+
+        await meta.onEditTransaction(
+          transaction.id.toString(),
+          transaction.transaction_type as TransactionType
+        );
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -164,8 +178,7 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
             {/* TODO Add link to details */}
             <DropdownMenuItem>Detalles</DropdownMenuItem>
             {/* TODO Add link to edit */}
-            <DropdownMenuItem>Editar</DropdownMenuItem>
-            {/* TODO Add link to remove */}
+            <DropdownMenuItem onClick={handleEdit}>Editar</DropdownMenuItem>
             <DropdownMenuItem className="text-punch-500" onClick={handleDelete}>
               Eliminar
             </DropdownMenuItem>

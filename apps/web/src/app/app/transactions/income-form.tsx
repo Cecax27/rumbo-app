@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -46,20 +46,39 @@ export type IncomeFormValues = z.infer<typeof incomeFormSchema>;
 interface IncomeFormProps {
   onSubmit: (values: IncomeFormValues) => void;
   onCancel?: () => void;
+  initialValues?: Partial<IncomeFormValues>;
+  submitLabel?: string;
 }
 
-export function IncomeForm({ onSubmit, onCancel }: IncomeFormProps) {
+export function IncomeForm({
+  onSubmit,
+  onCancel,
+  initialValues,
+  submitLabel = "Guardar ingreso",
+}: IncomeFormProps) {
   const { accounts } = useContext(AccountsContext);
+
+  const defaultValues: IncomeFormValues = {
+    amount: "",
+    date: new Date(),
+    description: "",
+    account_id: "",
+  };
 
   const form = useForm({
     resolver: zodResolver(incomeFormSchema),
     defaultValues: {
-      amount: "",
-      date: new Date(),
-      description: "",
-      account_id: "",
+      ...defaultValues,
+      ...initialValues,
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      ...defaultValues,
+      ...initialValues,
+    });
+  }, [form, initialValues]);
 
   const handleSubmit = (values: IncomeFormValues) => {
     onSubmit(values);
@@ -148,7 +167,7 @@ export function IncomeForm({ onSubmit, onCancel }: IncomeFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Cuenta</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una cuenta" />
@@ -173,7 +192,7 @@ export function IncomeForm({ onSubmit, onCancel }: IncomeFormProps) {
               Cancelar
             </Button>
           )}
-          <Button type="submit">Guardar ingreso</Button>
+          <Button type="submit">{submitLabel}</Button>
         </div>
       </form>
     </Form>
