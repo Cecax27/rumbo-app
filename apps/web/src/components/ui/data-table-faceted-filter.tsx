@@ -50,32 +50,10 @@ export function DataTableFacetedFilter<TData, TValue>({
               <Separator orientation="vertical" className="mx-2 h-4" />
               <Badge
                 variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
+                className="rounded-sm px-1 font-normal"
               >
-                {selectedValues.size}
+                {selectedValues.size} seleccionad{selectedValues.size === 1 ? "a" : "as"}
               </Badge>
-              <div className="hidden gap-1 lg:flex">
-                {selectedValues.size > 2 ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
-                    {selectedValues.size} selected
-                  </Badge>
-                ) : (
-                  options
-                    .filter((option) => selectedValues.has(option.value))
-                    .map((option) => (
-                      <Badge
-                        variant="secondary"
-                        key={option.value}
-                        className="rounded-sm px-1 font-normal"
-                      >
-                        {option.label}
-                      </Badge>
-                    ))
-                )}
-              </div>
             </>
           )}
         </Button>

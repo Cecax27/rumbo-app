@@ -37,7 +37,7 @@ export const columns: ColumnDef<TransactionWithDetails>[] = [
     cell: ({ row }) => {
       const description = row.original.description;
       return (
-        <span>
+        <span className="block max-w-[260px] overflow-hidden text-ellipsis whitespace-nowrap">
           {description.split(/(\d+\/\d+)/).map((part, index) =>
             /\d+\/\d+/.test(part) ? (
               <span key={index} className="text-gray-500 text-sm">

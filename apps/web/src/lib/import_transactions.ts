@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
 import { BankTransactionType } from "@repo/bbva-parser";
 import { addTransaction, addIncome } from "@repo/supabase/transactions";
 
@@ -24,33 +23,29 @@ interface ImportResponse {
   }>;
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ImportResponse>> {
+export async function importTransactions(request: ImportRequest): Promise<ImportResponse> {
   try {
-    const body = (await request.json()) as ImportRequest;
 
-    const { transactions, accountId } = body;
+    const { transactions, accountId } = request;
 
     if (!transactions || transactions.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          imported: 0,
-          skipped: 0,
-          errors: [
+      return {
+        success: false,
+        imported: 0,
+        skipped: 0,
+        errors: [
             {
               index: -1,
               transaction: {} as ImportRequest["transactions"][0],
               error: "No transactions provided",
             },
           ],
-        },
-        { status: 400 }
-      );
+        };
     }
 
     if (!accountId) {
-      return NextResponse.json(
-        {
+      return {
+
           success: false,
           imported: 0,
           skipped: 0,
@@ -61,17 +56,14 @@ export async function POST(request: NextRequest): Promise<NextResponse<ImportRes
               error: "Account ID is required",
             },
           ],
-        },
-        { status: 400 }
-      );
+        };
     }
 
     const accountIdNum = parseInt(accountId, 10);
     if (isNaN(accountIdNum)) {
-      return NextResponse.json(
-        {
-          success: false,
-          imported: 0,
+      return {
+        success: false,
+        imported: 0,
           skipped: 0,
           errors: [
             {
@@ -80,10 +72,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<ImportRes
               error: "Invalid account ID format",
             },
           ],
-        },
-        { status: 400 }
-      );
-    }
+        };
+      }
 
     let imported = 0;
     let skipped = 0;
@@ -171,33 +161,27 @@ export async function POST(request: NextRequest): Promise<NextResponse<ImportRes
       }
     }
 
-    return NextResponse.json(
-      {
-        success: errors.length === 0,
-        imported,
-        skipped,
-        errors,
-      },
-      { status: errors.length === 0 ? 200 : 207 } // 207 Partial Content if some failed
-    );
+    return {
+      success: errors.length === 0,
+      imported,
+      skipped,
+      errors,
+      };
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     console.error("Error in import-transactions API:", err);
 
-    return NextResponse.json(
-      {
-        success: false,
-        imported: 0,
-        skipped: 0,
-        errors: [
+    return {
+      success: false,
+      imported: 0,
+      skipped: 0,
+      errors: [
           {
             index: -1,
             transaction: {} as ImportRequest["transactions"][0],
             error: `Server error: ${errorMessage}`,
           },
         ],
-      },
-      { status: 500 }
-    );
+      };
   }
 }

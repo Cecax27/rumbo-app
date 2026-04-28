@@ -146,7 +146,7 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("description")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-32 sm:w-40 md:w-52 lg:w-64"
         />
         <DataTableFacetedFilter column={table.getColumn("account_name")} title="Cuenta" options={facetedAccounts} />
         <DataTableFacetedFilter column={table.getColumn("category_name")} title="Categoría" options={FACETED_TRANSACTION_CATEGORIES} />

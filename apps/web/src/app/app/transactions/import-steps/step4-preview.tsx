@@ -9,7 +9,10 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -18,14 +21,17 @@ import { es } from "date-fns/locale";
 import { type ParsedTransaction, BankTransactionType } from "@repo/bbva-parser";
 import { TRANSACTION_CATEGORIES } from "@repo/app-constants";
 
-const CATEGORY_OPTIONS = TRANSACTION_CATEGORIES.flatMap((group) =>
-  group.categories.map((category) => ({
+const formatCategoryLabel = (value: string) =>
+  value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+const CATEGORY_GROUPS = TRANSACTION_CATEGORIES.map((group) => ({
+  groupId: group.id,
+  groupLabel: formatCategoryLabel(group.budget_group),
+  categories: group.categories.map((category) => ({
     id: category.id,
-    label: category.name
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase()),
-  }))
-);
+    label: formatCategoryLabel(category.name),
+  })),
+}));
 
 interface PreviewTransaction extends ParsedTransaction {
   categoryId?: number;
@@ -175,10 +181,18 @@ export function ImportStep4Preview({
                         <SelectValue placeholder="Selecciona" />
                       </SelectTrigger>
                       <SelectContent>
-                        {CATEGORY_OPTIONS.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.id.toString()}>
-                            {cat.label}
-                          </SelectItem>
+                        {CATEGORY_GROUPS.map((group, groupIndex) => (
+                          <React.Fragment key={group.groupId}>
+                            {groupIndex > 0 && <SelectSeparator />}
+                            <SelectGroup>
+                              <SelectLabel>{group.groupLabel}</SelectLabel>
+                              {group.categories.map((cat) => (
+                                <SelectItem key={cat.id} value={cat.id.toString()}>
+                                  {cat.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </React.Fragment>
                         ))}
                       </SelectContent>
                     </Select>

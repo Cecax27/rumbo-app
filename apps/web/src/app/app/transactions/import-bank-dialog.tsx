@@ -49,6 +49,7 @@ import { ImportStep1FileSelection } from "./import-steps/step1-file-selection";
 import { ImportStep2AccountSelection } from "./import-steps/step2-account-selection";
 import { ImportStep3DuplicateDetection } from "./import-steps/step3-duplicate-detection";
 import { ImportStep4Preview } from "./import-steps/step4-preview";
+import { importTransactions } from "@/lib/import_transactions";
 
 type ImportStep = 1 | 2 | 3 | 4;
 
@@ -184,18 +185,12 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
     setError(null);
 
     try {
-      const response = await fetch("/api/import-transactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          transactions: transactionsToImport,
-          accountId: selectedAccountId,
-        }),
+      const response = await importTransactions({
+        accountId: selectedAccountId,
+        transactions: transactionsToImport
       });
 
-      const result = (await response.json()) as ImportApiResult;
-
-      if (!response.ok && !result) {
+      if (response.errors.length > 0) {
         throw new Error("Failed to import transactions");
       }
 
@@ -204,10 +199,10 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
 
       // Show result summary modal with API response
       setImportResult({
-        success: result?.success ?? false,
-        imported: result?.imported ?? 0,
-        skipped: result?.skipped ?? 0,
-        errors: result?.errors ?? [],
+        success: response.success,
+        imported: response.imported,
+        skipped: response.skipped,
+        errors: response.errors,
       });
       setShowResultModal(true);
 
