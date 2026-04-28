@@ -77,9 +77,6 @@ importers:
       '@repo/app-constants':
         specifier: 'workspace:'
         version: link:../../packages/app-constants
-      '@repo/bbva-parser':
-        specifier: workspace:*
-        version: link:../../packages/bbva-parser
       '@repo/formatters':
         specifier: 'workspace:'
         version: link:../../packages/formatters
@@ -92,6 +89,9 @@ importers:
       '@repo/supabase':
         specifier: workspace:*
         version: link:../../packages/supabase
+      '@repo/transactions-parser':
+        specifier: workspace:*
+        version: link:../../packages/transactions-parser
       '@supabase/supabase-js':
         specifier: 2.79.0
         version: 2.79.0
@@ -219,37 +219,6 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
-
-  packages/bbva-parser:
-    dependencies:
-      date-fns:
-        specifier: ^3.6.0
-        version: 3.6.0
-      xlsx:
-        specifier: ^0.18.5
-        version: 0.18.5
-      zod:
-        specifier: ^3.23.8
-        version: 3.25.76
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/node':
-        specifier: 22.15.3
-        version: 22.15.3
-      eslint:
-        specifier: 9.38.0
-        version: 9.38.0(jiti@2.6.1)
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: 4.0.16
-        version: 4.0.16(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@1.10.2)
 
   packages/eslint-config:
     devDependencies:
@@ -384,6 +353,37 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+
+  packages/transactions-parser:
+    dependencies:
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: 22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: 9.38.0
+        version: 9.38.0(jiti@2.6.1)
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: 4.0.16
+        version: 4.0.16(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@1.10.2)
 
   packages/typescript-config: {}
 

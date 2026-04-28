@@ -36,13 +36,15 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AccountsContext } from "@/contexts/AccountsContext";
 import { TransactionsContext } from "@/contexts/TransactionsContext";
 import {
-  parseBBVAFile,
+  parseBBVADebitFile,
+  parseBBVACreditFile,
+  TRANSACTION_PARSERS,
+  type TransactionParserId,
   detectDuplicates,
-  BankTransactionType,
   type ParsedTransaction,
   type DuplicateMatch,
   type ExistingTransaction,
-} from "@repo/bbva-parser";
+} from "@repo/transactions-parser";
 import { getSpendingsTable } from "@repo/supabase/transactions";
 
 import { ImportStep1FileSelection } from "./import-steps/step1-file-selection";
@@ -81,7 +83,7 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
 
   // Step 1: File & Bank
   const [file, setFile] = useState<File | null>(null);
-  const [bank, setBank] = useState<string>("BBVA");
+  const [bank, setBank] = useState<TransactionParserId>("bbva-debit");
 
   // Step 2: Account
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
@@ -92,9 +94,19 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
   const [duplicateDecisions, setDuplicateDecisions] = useState<Map<number, boolean>>(new Map());
 
   // Step 4: Preview
-  const [previewTransactions, setPreviewTransactions] = useState<Array<ParsedTransaction & { categoryId?: number; skip?: boolean }>>(
-    []
-  );
+  const [previewTransactions, setPreviewTransactions] = useState<
+    Array<
+      ParsedTransaction & {
+        categoryId?: number;
+        skip?: boolean;
+        convertToTransfer?: boolean;
+        fromAccountId?: number;
+      }
+    >
+  >([]);
+
+  const selectedParser =
+    TRANSACTION_PARSERS.find((parser) => parser.id === bank) || TRANSACTION_PARSERS[0];
 
   const handleFileSelect = async (selectedFile: File) => {
     setFile(selectedFile);
@@ -102,7 +114,8 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
     setIsLoading(true);
 
     try {
-      const parseResult = await parseBBVAFile(selectedFile);
+      const parseFn = bank === "bbva-credit" ? parseBBVACreditFile : parseBBVADebitFile;
+      const parseResult = await parseFn(selectedFile);
 
       if (!parseResult.success) {
         setError(parseResult.error || "Error parsing file");
@@ -180,7 +193,15 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
     setCurrentStep(4);
   };
 
-  const handlePreviewComplete = async (transactionsToImport: Array<ParsedTransaction & { categoryId?: number }>) => {
+  const handlePreviewComplete = async (
+    transactionsToImport: Array<
+      ParsedTransaction & {
+        categoryId?: number;
+        convertToTransfer?: boolean;
+        fromAccountId?: number;
+      }
+    >
+  ) => {
     setIsLoading(true);
     setError(null);
 
@@ -220,7 +241,7 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
   const resetDialog = () => {
     setCurrentStep(1);
     setFile(null);
-    setBank("BBVA");
+    setBank("bbva-debit");
     setSelectedAccountId("");
     setParsedTransactions([]);
     setDuplicateMatches([]);
@@ -248,7 +269,7 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Upload className="w-5 h-5" />
-            Importar Transacciones desde {bank}
+            Importar Transacciones desde {selectedParser?.labels.es}
           </DialogTitle>
           <DialogDescription>
             Paso {currentStep} de 4
@@ -301,6 +322,7 @@ export function ImportBankDialog({ open, onOpenChange }: ImportBankDialogProps) 
             <ImportStep4Preview
               transactions={previewTransactions}
               selectedAccountId={selectedAccountId}
+              accounts={accounts}
               onImport={handlePreviewComplete}
               isLoading={isLoading}
             />

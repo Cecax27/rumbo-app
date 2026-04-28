@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/select";
 import { formatDate } from "date-fns";
 import { es } from "date-fns/locale";
-import { type ParsedTransaction, BankTransactionType } from "@repo/bbva-parser";
+import { type ParsedTransaction, BankTransactionType } from "@repo/transactions-parser";
 import { TRANSACTION_CATEGORIES } from "@repo/app-constants";
+import { type Account } from "@repo/supabase/accounts";
 
 const formatCategoryLabel = (value: string) =>
   value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -36,11 +37,14 @@ const CATEGORY_GROUPS = TRANSACTION_CATEGORIES.map((group) => ({
 interface PreviewTransaction extends ParsedTransaction {
   categoryId?: number;
   skip?: boolean;
+  convertToTransfer?: boolean;
+  fromAccountId?: number;
 }
 
 interface ImportStep4PreviewProps {
   transactions: PreviewTransaction[];
   selectedAccountId: string;
+  accounts: Account[];
   onImport: (transactions: Array<PreviewTransaction & { categoryId?: number }>) => Promise<void>;
   isLoading: boolean;
 }
@@ -48,11 +52,18 @@ interface ImportStep4PreviewProps {
 export function ImportStep4Preview({
   transactions: initialTransactions,
   selectedAccountId,
+  accounts,
   onImport,
   isLoading,
 }: ImportStep4PreviewProps) {
   const [transactions, setTransactions] = useState<PreviewTransaction[]>(initialTransactions);
   const [isImporting, setIsImporting] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const destinationAccountId = selectedAccountId ? parseInt(selectedAccountId, 10) : NaN;
+  const destinationAccount = accounts.find((account) => account.id === destinationAccountId);
+  const isCreditDestination = destinationAccount?.account_type === 2;
+  const sourceAccounts = accounts.filter((account) => account.id !== destinationAccountId);
 
   // Filter out skipped transactions
   const validTransactions = useMemo(
@@ -87,11 +98,58 @@ export function ImportStep4Preview({
     setTransactions(newTransactions);
   };
 
+  const handleConvertToTransferToggle = (index: number) => {
+    const current = transactions[index];
+    if (!current || current.transactionType !== BankTransactionType.INCOME) {
+      return;
+    }
+
+    const newTransactions = [...transactions];
+    const nextValue = !current.convertToTransfer;
+    newTransactions[index] = {
+      ...current,
+      convertToTransfer: nextValue,
+      fromAccountId: nextValue ? current.fromAccountId : undefined,
+    };
+    setTransactions(newTransactions);
+  };
+
+  const handleFromAccountChange = (index: number, fromAccountId: string) => {
+    const newTransactions = [...transactions];
+    newTransactions[index] = {
+      ...newTransactions[index]!,
+      fromAccountId: fromAccountId ? parseInt(fromAccountId, 10) : undefined,
+    };
+    setTransactions(newTransactions);
+  };
+
   const handleImport = async () => {
+    setValidationError(null);
+
+    for (const tx of validTransactions) {
+      if (tx.transactionType !== BankTransactionType.INCOME || !tx.convertToTransfer) {
+        continue;
+      }
+
+      if (!tx.fromAccountId) {
+        setValidationError("Selecciona una cuenta origen para cada movimiento convertido.");
+        return;
+      }
+
+      if (tx.fromAccountId === destinationAccountId) {
+        setValidationError("La cuenta origen no puede ser la misma que la cuenta destino.");
+        return;
+      }
+    }
+
     const transactionsToImport = validTransactions.map((tx) => ({
       ...tx,
+      transactionType:
+        tx.transactionType === BankTransactionType.INCOME && tx.convertToTransfer
+          ? BankTransactionType.TRANSFER
+          : tx.transactionType,
       categoryId:
-        tx.transactionType === BankTransactionType.INCOME
+        tx.transactionType !== BankTransactionType.SPENDING
           ? undefined
           : tx.categoryId || 7, // Default to "Otros Gastos" for spendings
     }));
@@ -114,6 +172,24 @@ export function ImportStep4Preview({
           <strong>{validTransactions.length}</strong> transacciones.
         </AlertDescription>
       </Alert>
+
+      {isCreditDestination && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Cuenta destino de credito detectada</AlertTitle>
+          <AlertDescription>
+            Para ingresos puedes activar "Convertir a movimiento" y seleccionar una cuenta origen.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {validationError && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Validacion requerida</AlertTitle>
+          <AlertDescription>{validationError}</AlertDescription>
+        </Alert>
+      )}
 
       <div className="max-h-[200px] overflow-y-auto border rounded-lg">
         <table className="w-full text-sm">
@@ -168,10 +244,47 @@ export function ImportStep4Preview({
                 </td>
                 <td className="px-3 py-2">
                   {tx.transactionType === BankTransactionType.INCOME ? (
-                    <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                      No aplica
-                    </span>
+                    isCreditDestination ? (
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300">
+                          <Checkbox
+                            checked={tx.convertToTransfer || false}
+                            onCheckedChange={() => handleConvertToTransferToggle(index)}
+                            disabled={tx.skip || isImporting}
+                          />
+                          Convertir a movimiento
+                        </label>
+                        {tx.convertToTransfer && (
+                          <Select
+                            value={tx.fromAccountId?.toString() || ""}
+                            onValueChange={(value) => handleFromAccountChange(index, value)}
+                            disabled={tx.skip || isImporting}
+                          >
+                            <SelectTrigger className="text-xs">
+                              <SelectValue placeholder="Cuenta origen" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {sourceAccounts.map((account) => (
+                                <SelectItem key={account.id} value={account.id.toString()}>
+                                  {account.name} ({account.bank_name})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                        No aplica
+                      </span>
+                    )
                   ) : (
+                    <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                      {tx.transactionType === BankTransactionType.TRANSFER ? "Movimiento" : "No aplica"}
+                    </span>
+                  )}
+
+                  {tx.transactionType === BankTransactionType.SPENDING && (
                     <Select
                       value={tx.categoryId?.toString() || ""}
                       onValueChange={(value) => handleCategoryChange(index, value)}

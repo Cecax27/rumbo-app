@@ -1,13 +1,14 @@
-import { BankTransactionType } from "@repo/bbva-parser";
-import { addTransaction, addIncome } from "@repo/supabase/transactions";
+import { BankTransactionType } from "@repo/transactions-parser";
+import { addTransaction, addIncome, addTransfer } from "@repo/supabase/transactions";
 
 interface ImportRequest {
   transactions: Array<{
     date: Date | string;
     amount: number;
     description: string;
-    transactionType: "spending" | "income";
+    transactionType: "spending" | "income" | "transfer";
     categoryId?: number;
+    fromAccountId?: number;
   }>;
   accountId: string;
 }
@@ -138,6 +139,34 @@ export async function importTransactions(request: ImportRequest): Promise<Import
             amount: tx.amount,
             description: tx.description,
             account_id: accountIdNum,
+          });
+        } else if (tx.transactionType === BankTransactionType.TRANSFER) {
+          if (!tx.fromAccountId) {
+            errors.push({
+              index: i,
+              transaction: tx,
+              error: "Source account is required for transfers",
+            });
+            skipped++;
+            continue;
+          }
+
+          if (tx.fromAccountId === accountIdNum) {
+            errors.push({
+              index: i,
+              transaction: tx,
+              error: "Source account cannot be the same as destination account",
+            });
+            skipped++;
+            continue;
+          }
+
+          await addTransfer({
+            date: txDate,
+            amount: tx.amount,
+            description: tx.description,
+            from_account_id: tx.fromAccountId,
+            to_account_id: accountIdNum,
           });
         } else {
           errors.push({

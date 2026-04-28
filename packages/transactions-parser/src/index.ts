@@ -1,5 +1,8 @@
 // Types
 export {
+  TRANSACTION_PARSERS,
+  type TransactionParserId,
+  type TransactionParserDefinition,
   BankTransactionType,
   type ParsedTransaction,
   type DuplicateMatch,
@@ -8,7 +11,7 @@ export {
 } from "./types";
 
 // Parsers
-export { parseBBVAFile } from "./parsers";
+export { parseBBVADebitFile, parseBBVACreditFile } from "./parsers";
 
 // Validators
 export {

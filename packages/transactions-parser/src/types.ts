@@ -1,9 +1,30 @@
+export type TransactionParserId = "bbva-debit" | "bbva-credit";
+
+export interface TransactionParserDefinition {
+  id: TransactionParserId;
+  labels: {
+    es: string;
+  };
+}
+
+export const TRANSACTION_PARSERS: TransactionParserDefinition[] = [
+  {
+    id: "bbva-debit",
+    labels: { es: "BBVA Cuenta de debito" },
+  },
+  {
+    id: "bbva-credit",
+    labels: { es: "BBVA Tarjeta de credito" },
+  },
+];
+
 /**
- * Transaction type enum - determines whether it's spending or income
+ * Transaction type enum - determines whether it's spending, income or transfer
  */
 export enum BankTransactionType {
   SPENDING = "spending",
   INCOME = "income",
+  TRANSFER = "transfer",
 }
 
 /**
@@ -14,6 +35,7 @@ export interface ParsedTransaction {
   description: string;
   amount: number; // Always positive, type determines direction
   transactionType: BankTransactionType;
+  fromAccountId?: number;
   originalCargo?: number;
   originalAbono?: number;
 }

@@ -14,13 +14,19 @@ export const ParsedTransactionSchema = z.object({
     .number()
     .positive("Amount must be greater than 0"),
   transactionType: z.enum(
-    [BankTransactionType.SPENDING, BankTransactionType.INCOME],
+    [
+      BankTransactionType.SPENDING,
+      BankTransactionType.INCOME,
+      BankTransactionType.TRANSFER,
+    ],
     {
       errorMap: () => ({
-        message: `Transaction type must be either '${BankTransactionType.SPENDING}' or '${BankTransactionType.INCOME}'`,
+        message:
+          "Transaction type must be one of spending, income or transfer",
       }),
     }
   ),
+  fromAccountId: z.number().int().positive().optional(),
   originalCargo: z.number().optional(),
   originalAbono: z.number().optional(),
 }) satisfies z.ZodType<ParsedTransaction>;

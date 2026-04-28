@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { type DuplicateMatch } from "@repo/bbva-parser";
+import { type DuplicateMatch } from "@repo/transactions-parser";
 
 interface ImportStep3DuplicateDetectionProps {
   matches: DuplicateMatch[];
