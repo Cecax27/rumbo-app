@@ -21,42 +21,61 @@ import { IncomeForm, type IncomeFormValues } from "./income-form";
 import { TransferForm, type TransferFormValues } from "./transfer-form";
 import { ImportBankDialog } from "./import-bank-dialog";
 import { addIncome, addTransaction, addTransfer } from "@repo/supabase/transactions";
+import { toast } from "sonner";
 
 export default function TransactionsPage() {
-  const { filteredData: transactions } = useContext(TransactionsContext);
+  const { filteredData: transactions, fetchTransactions } = useContext(TransactionsContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
   const handleSpendingSubmit = async (values: SpendingFormValues) => {
-    await addTransaction({
-      date: values.date,
-      amount: parseFloat(values.amount),
-      description: values.description || "",
-      category_id: parseInt(values.category_id),
-      account_id: parseInt(values.account_id),
-    });
-    setIsDialogOpen(false);
+    try {
+      await addTransaction({
+        date: values.date,
+        amount: parseFloat(values.amount),
+        description: values.description || "",
+        category_id: parseInt(values.category_id),
+        account_id: parseInt(values.account_id),
+      });
+      fetchTransactions();
+      setIsDialogOpen(false);
+      toast.success("Gasto guardado correctamente");
+    } catch {
+      toast.error("No se pudo guardar el gasto");
+    }
   };
 
   const handleIncomeSubmit = async (values: IncomeFormValues) => {
-    await addIncome({
-      date: values.date,
-      amount: parseFloat(values.amount),
-      description: values.description || "",
-      account_id: parseInt(values.account_id),
-    });
-    setIsDialogOpen(false);
+    try {
+      await addIncome({
+        date: values.date,
+        amount: parseFloat(values.amount),
+        description: values.description || "",
+        account_id: parseInt(values.account_id),
+      });
+      fetchTransactions();
+      setIsDialogOpen(false);
+      toast.success("Ingreso guardado correctamente");
+    } catch {
+      toast.error("No se pudo guardar el ingreso");
+    }
   };
 
   const handleTransferSubmit = async (values: TransferFormValues) => {
-    await addTransfer({
-      date: values.date,
-      amount: parseFloat(values.amount),
-      description: values.description || "",
-      from_account_id: parseInt(values.from_account_id),
-      to_account_id: parseInt(values.to_account_id),
-    });
-    setIsDialogOpen(false);
+    try {
+      await addTransfer({
+        date: values.date,
+        amount: parseFloat(values.amount),
+        description: values.description || "",
+        from_account_id: parseInt(values.from_account_id),
+        to_account_id: parseInt(values.to_account_id),
+      });
+      fetchTransactions();
+      setIsDialogOpen(false);
+      toast.success("Transferencia guardada correctamente");
+    } catch {
+      toast.error("No se pudo guardar la transferencia");
+    }
   };
 
   return (
