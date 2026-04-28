@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -68,7 +68,7 @@ const getTypeBadgeClass = (type: TransactionType) => {
   return "bg-neutral-100 text-neutral-700";
 };
 
-export default function TransactionDetailsPage() {
+function TransactionDetailsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { accounts } = useContext(AccountsContext);
@@ -364,5 +364,19 @@ export default function TransactionDetailsPage() {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+export default function TransactionDetailsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center flex-1">
+          <Spinner className="size-6" />
+        </div>
+      }
+    >
+      <TransactionDetailsContent />
+    </Suspense>
   );
 }
