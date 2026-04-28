@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -26,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -35,57 +33,40 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { AccountsContext } from "@/contexts/AccountsContext";
-import CategoryPopOver from "./components/category-pop-over";
 
-// Schema de validación
-const spendingFormSchema = z.object({
+const incomeFormSchema = z.object({
   amount: z.string().min(1, "El monto es requerido"),
-  category_id: z.string().min(1, "La categoría es requerida"),
   date: z.date(),
   description: z.string().optional(),
   account_id: z.string().min(1, "La cuenta es requerida"),
-  is_deferred: z.boolean().default(false),
-  deferred_months: z.string().optional(),
-}).refine((data) => {
-  // Si es gasto diferido, los meses son requeridos
-  if (data.is_deferred) {
-    return data.deferred_months && parseInt(data.deferred_months) > 0;
-  }
-  return true;
-}, {
-  message: "Los meses son requeridos para gastos diferidos",
-  path: ["deferred_months"],
 });
 
-export type SpendingFormValues = z.infer<typeof spendingFormSchema>;
+export type IncomeFormValues = z.infer<typeof incomeFormSchema>;
 
-interface SpendingFormProps {
-  onSubmit: (values: SpendingFormValues) => void;
+interface IncomeFormProps {
+  onSubmit: (values: IncomeFormValues) => void;
   onCancel?: () => void;
-  initialValues?: Partial<SpendingFormValues>;
+  initialValues?: Partial<IncomeFormValues>;
   submitLabel?: string;
 }
 
-export function SpendingForm({
+export function IncomeForm({
   onSubmit,
   onCancel,
   initialValues,
-  submitLabel = "Guardar gasto",
-}: SpendingFormProps) {
+  submitLabel = "Guardar ingreso",
+}: IncomeFormProps) {
   const { accounts } = useContext(AccountsContext);
 
-  const defaultValues: SpendingFormValues = {
+  const defaultValues: IncomeFormValues = {
     amount: "",
-    category_id: "",
     date: new Date(),
     description: "",
     account_id: "",
-    is_deferred: false,
-    deferred_months: "1",
   };
 
   const form = useForm({
-    resolver: zodResolver(spendingFormSchema),
+    resolver: zodResolver(incomeFormSchema),
     defaultValues: {
       ...defaultValues,
       ...initialValues,
@@ -99,16 +80,13 @@ export function SpendingForm({
     });
   }, [form, initialValues]);
 
-  const isDeferred = form.watch("is_deferred");
-
-  const handleSubmit = (values: SpendingFormValues) => {
+  const handleSubmit = (values: IncomeFormValues) => {
     onSubmit(values);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        {/* Monto */}
         <FormField
           control={form.control}
           name="amount"
@@ -128,12 +106,6 @@ export function SpendingForm({
           )}
         />
 
-        {/* Categoría */}
-        <CategoryPopOver 
-          control={form.control} 
-        />
-
-        {/* Fecha */}
         <FormField
           control={form.control}
           name="date"
@@ -175,7 +147,6 @@ export function SpendingForm({
           )}
         />
 
-        {/* Descripción */}
         <FormField
           control={form.control}
           name="description"
@@ -183,14 +154,13 @@ export function SpendingForm({
             <FormItem>
               <FormLabel>Descripción (opcional)</FormLabel>
               <FormControl>
-                <Input placeholder="Detalles del gasto" {...field} />
+                <Input placeholder="Detalles del ingreso" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Cuenta */}
         <FormField
           control={form.control}
           name="account_id"
@@ -216,54 +186,6 @@ export function SpendingForm({
           )}
         />
 
-        {/* Switch para gasto diferido */}
-        <FormField
-          control={form.control}
-          name="is_deferred"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-              <div className="space-y-0.5">
-                <FormLabel>Gasto diferido</FormLabel>
-                <FormDescription>
-                  Divide este gasto en varios meses
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        {/* Meses (solo si es gasto diferido) */}
-        {isDeferred && (
-          <FormField
-            control={form.control}
-            name="deferred_months"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Número de meses</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min="1"
-                    placeholder="6"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  El gasto se dividirá en esta cantidad de meses
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
-        {/* Botones */}
         <div className="flex justify-end gap-2 pt-4">
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>

@@ -38,15 +38,22 @@ import { AccountsContext } from "@/contexts/AccountsContext";
 import { TransactionsContext } from "@/contexts/TransactionsContext";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
+import { TransactionType } from "@repo/supabase/transactions";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onDeleteTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
+  onEditTransaction?: (transactionId: string, type: TransactionType) => Promise<void>;
+  onViewTransactionDetails?: (transactionId: string, type: TransactionType) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onDeleteTransaction,
+  onEditTransaction,
+  onViewTransactionDetails,
 }: DataTableProps<TData, TValue>) {
   const {accounts} = React.useContext(AccountsContext)
   const {filter, setFilter} = React.useContext(TransactionsContext)
@@ -79,6 +86,11 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    meta: {
+      onDeleteTransaction,
+      onEditTransaction,
+      onViewTransactionDetails,
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
