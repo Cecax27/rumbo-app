@@ -14,6 +14,15 @@ export default function Home() {
             </h1>
           </div>
           <nav className="flex items-center gap-6">
+            <Button
+              href="/docs"
+              secondary
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ver documentacion de Rumbo (abre en nueva pestana)"
+            >
+              Documentación
+            </Button>
             <Button href="/login?mode=login" secondary>Iniciar sesión</Button>
             <Button href="/login?mode=register">Regístrate </Button>
           </nav>

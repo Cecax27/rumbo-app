@@ -8,6 +8,8 @@ import {
   SwapHoriz,
   AccountBalanceWallet,
   Settings,
+  MenuBook,
+  OpenInNew,
 } from "@mui/icons-material";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -28,6 +30,17 @@ export default function Navigation() {
         <Item href="/app/settings">
           <Settings /> Ajustes
         </Item>
+        <li className="rounded-lg hover:bg-navy-blue-200 transition-colors dark:hover:bg-navy-blue-950/20 text-neutral-600 dark:text-neutral-300">
+          <Link
+            href="/docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Documentacion (abre en nueva pestana)"
+            className={`flex gap-4 p-3 ${figtree.className} font-semibold`}
+          >
+            <MenuBook /> Documentacion <OpenInNew fontSize="small" />
+          </Link>
+        </li>
       </ul>
     </nav>
   );
