@@ -28,6 +28,7 @@
     "@radix-ui/react-tabs": "1.1.13",
     "@radix-ui/react-tooltip": "1.2.8",
     "@repo/app-constants": "workspace:",
+    "@repo/transactions-parser": "workspace:*",
     "@repo/formatters": "workspace:",
     "@repo/retirement-plan-calculation": "workspace:",
     "@repo/shared": "workspace:*",

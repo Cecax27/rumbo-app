@@ -80,6 +80,7 @@ export const addIncome = async ({
   description: string;
   account_id: number;
 }) => {
+  console.log(date, amount, description, account_id);
   const { error } = await supabase
     .from("incomes")
     .insert([

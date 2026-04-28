@@ -6,7 +6,7 @@ import { TransactionsContext } from "@/contexts/TransactionsContext";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Download } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,11 +17,13 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SpendingForm, type SpendingFormValues } from "./spending-form";
+import { ImportBankDialog } from "./import-bank-dialog";
 import { addTransaction } from "@repo/supabase/transactions";
 
 export default function TransactionsPage() {
   const { filteredData: transactions } = useContext(TransactionsContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
   const handleSpendingSubmit = async (values: SpendingFormValues) => {
     await addTransaction({
@@ -47,7 +49,14 @@ export default function TransactionsPage() {
             Revisa todas tus transacciones aquí
           </p>
         </div>
-        <div>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            onClick={() => setIsImportDialogOpen(true)}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Importar desde Banco
+          </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="create">
@@ -84,6 +93,10 @@ export default function TransactionsPage() {
           </Dialog>
         </div>
       </div>
+      <ImportBankDialog 
+        open={isImportDialogOpen} 
+        onOpenChange={setIsImportDialogOpen}
+      />
       <div
         id="main"
         className="flex flex-col gap-6 flex-1 overflow-hidden"
