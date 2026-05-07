@@ -30,4 +30,9 @@ export const docsSections: DocsSection[] = [
     title: "FAQ y roadmap",
     description: "Preguntas frecuentes, próximos pasos y canal para pedir features.",
   },
+  {
+    href: "/docs/borrar-cuenta",
+    title: "Borrar cuenta",
+    description: "Instrucciones para eliminar tu cuenta y datos asociados.",
+  }
 ];
