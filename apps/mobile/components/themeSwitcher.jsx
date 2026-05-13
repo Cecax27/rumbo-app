@@ -1,13 +1,13 @@
 // src/components/ThemeSwitcher.jsx
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useTheme } from '../theme/useTheme';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function ThemeSwitcher() {
-  const { theme, mode, setMode, toggle, followSystem } = useTheme();
+  const { colors, mode, setMode, toggle, followSystem } = useThemeColors();
 
   return (
-    <View style={[styles.row, { borderColor: theme.border }]}>
+    <View style={[styles.row, { borderColor: colors.border }]}>
       <Chip label="Sistema" active={mode === 'system'} onPress={followSystem} />
       <Chip label="Claro"   active={mode === 'light'}   onPress={() => setMode('light')} />
       <Chip label="Oscuro"  active={mode === 'dark'}    onPress={() => setMode('dark')} />
@@ -17,19 +17,19 @@ export default function ThemeSwitcher() {
 }
 
 function Chip({ label, active, onPress }) {
-  const { theme } = useTheme();
+  const { colors } = useThemeColors();
   return (
     <Pressable
       onPress={onPress}
       style={[
         styles.chip,
         { 
-          backgroundColor: active ? theme.primary : theme.surface,
-          borderColor: theme.border
+          backgroundColor: active ? colors.primary : colors.surface,
+          borderColor: colors.border
         }
       ]}
     >
-      <Text style={{ color: active ? theme.background : theme.text }}>{label}</Text>
+      <Text style={{ color: active ? colors.background : colors.text }}>{label}</Text>
     </Pressable>
   );
 }

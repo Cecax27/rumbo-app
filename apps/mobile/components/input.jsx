@@ -1,5 +1,5 @@
 import { View, TextInput, Text, TouchableOpacity } from "react-native";
-import { useTheme } from "../theme/useTheme";
+import { useThemeColors } from "../theme/useThemeColors";
 import { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -24,8 +24,8 @@ export default function Input({
   editable = true,
   clear = true
 }) {
-  const { theme } = useTheme();
-  const borderColor = focusColor || theme.border;
+  const { colors } = useThemeColors();
+  const borderColor = focusColor || colors.border;
   const {t} = useTranslation();
 
   const [focus, setFocus] = useState(false);
@@ -35,8 +35,8 @@ export default function Input({
       {!labelInline && (
         <Text
           style={{
-            backgroundColor: theme.background,
-            color: theme.subtext,
+            backgroundColor: colors.background,
+            color: colors.subtext,
             paddingHorizontal: 6,
             fontSize: 12,
             fontFamily: focus ? "Montserrat-SemiBold" : "Montserrat-Regular",
@@ -49,7 +49,7 @@ export default function Input({
         style={{
           borderWidth: focus ? 2 : 1,
           borderRadius: 25,
-          borderColor: focus ? borderColor : theme.border,
+          borderColor: focus ? borderColor : colors.border,
           height: 60,
           justifyContent: "center",
           paddingHorizontal: 8,
@@ -61,8 +61,8 @@ export default function Input({
               position: "absolute",
               top: -10,
               left: 25,
-              backgroundColor: theme.background,
-              color: theme.subtext,
+              backgroundColor: colors.background,
+              color: colors.subtext,
               paddingHorizontal: 6,
               fontSize: 12,
               fontFamily: focus ? "Montserrat-SemiBold" : "Montserrat-Regular",
@@ -90,7 +90,7 @@ export default function Input({
             {icon && (
               <MaterialIcons
                 name={icon}
-                color={theme.border}
+                color={colors.border}
                 size={18}
                 style={{ marginRight: 4 }}
               />
@@ -98,16 +98,16 @@ export default function Input({
             <TextInput
               style={{
                 outlineWidth: 0,
-                color: theme.text,
+                color: colors.text,
                 fontFamily: "Montserrat-Medium",
                 fontSize: 14,
               }}
               placeholder={placeholder}
-              placeholderTextColor={theme.border}
+              placeholderTextColor={colors.border}
               inputMode={numeric ? "numeric" : email ? "email" : "text"}
               onFocus={() => setFocus(true)}
               onBlur={() => setFocus(false)}
-              selectionColor={theme.primary}
+              selectionColor={colors.primary}
               value={value}
               onChangeText={(text) => onChange(text)}
               autoCapitalize={autoCapitalize}
@@ -121,7 +121,7 @@ export default function Input({
             onPress={() => onChange("")}
             style={{ marginRight: 6 }}
           >
-            <MaterialIcons name="clear" color={theme.border} size={18} />
+            <MaterialIcons name="clear" color={colors.border} size={18} />
           </TouchableOpacity>}
         </View>
       </View>

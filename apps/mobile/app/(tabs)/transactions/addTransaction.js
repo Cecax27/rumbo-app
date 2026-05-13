@@ -5,7 +5,7 @@ import { getAccounts, getCategories, addTransaction, addIncome, addTransfer, add
 import { Picker } from '@react-native-picker/picker'
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { useTheme } from '../../../theme/useTheme';
+import { useThemeColors } from '../../../theme/useThemeColors';
 import Snackbar from '../../../components/Snackbar';
 import { useTranslation } from 'react-i18next';
 import FButton from '../../../components/fbutton'
@@ -19,7 +19,7 @@ export default function AddTransaction() {
     const { t } = useTranslation();
     const { type:typeParam } = useLocalSearchParams()
     
-    const { theme } = useTheme();
+    const { colors: theme } = useThemeColors();
     const styles = useMemo(() => makeStyles(theme), [theme]);
 
     const [type, setType] = useState(typeParam || 'spending')

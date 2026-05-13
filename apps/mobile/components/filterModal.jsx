@@ -1,15 +1,13 @@
 import { View, Pressable, Text, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { makeStyles } from '../assets/uiStyles'
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAccounts, getCategories, getBudgetGroups } from '../lib/supabase/transactions';
-import { useTheme } from '../theme/useTheme';
+import { useThemeColors } from '../theme/useThemeColors';
 
 import { Picker } from '@react-native-picker/picker';
 
 export default function FilterModal ({visible, onClose, filter, setFilter}) {
-  const { theme } = useTheme();
-  const styles = useMemo(() => makeStyles(theme), [theme]);
+  const { colors } = useThemeColors();
 
     const [selectedStartDate, setSelectedStartDate] = useState(new Date());
     const [selectedEndDate, setSelectedEndDate] = useState(new Date());
@@ -64,6 +62,10 @@ export default function FilterModal ({visible, onClose, filter, setFilter}) {
           setEndDateVisible(!endDateVisible)
         }
 
+    const inputStyle = { borderColor: colors.border, borderWidth: 1, borderRadius: 100, padding: 10, marginBottom: 10, fontFamily: 'Montserrat-Medium', color: colors.text };
+    const labelStyle = { fontSize: 12, fontFamily: 'Montserrat-Regular', marginBottom: 8, color: colors.subtext };
+    const pickerStyle = { borderRadius: 100, fontSize: 14, fontFamily: 'Montserrat-Medium', color: colors.text, flex: 1, borderWidth: 1, borderColor: colors.border, padding: 10, marginBottom: 10 };
+
     return (
         <Modal
         animationType="slide"
@@ -71,19 +73,19 @@ export default function FilterModal ({visible, onClose, filter, setFilter}) {
         visible={visible}
         onRequestClose={onClose}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Filter Transactions</Text>
+        <View style={{ flex:1, justifyContent:'center', alignItems:'center', marginTop:22 }}>
+          <View style={{ margin:10, backgroundColor:colors.background, borderRadius:30, padding:35, shadowColor:'#000', shadowOpacity:1, shadowRadius:1, elevation:5, width:'90%' }}>
+            <View style={{ width:'100%', flexDirection:'row', justifyContent:'space-between', marginBottom:20 }}>
+              <Text style={{ fontSize:20, fontFamily:'Quicksand-Bold', color:colors.text }}>Filter Transactions</Text>
               <TouchableOpacity onPress={onClose}>
-                <Text style={styles.closeButton}>x</Text>
+                <Text style={{ color:colors.primary, fontFamily:'Quicksand-Bold' }}>x</Text>
               </TouchableOpacity>
             </View>
             
-            <ScrollView style={styles.modalContent}>
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Date Range</Text>
-                <View style={styles.dateInputs}>
+            <ScrollView style={{ width:'100%' }}>
+              <View style={{ marginBottom:20, width:'100%' }}>
+                <Text style={labelStyle}>Date Range</Text>
+                <View style={{ flexDirection:'row', justifyContent:'space-between', width:'100%' }}>
                   {startDateVisible && (
                     <DateTimePicker 
                       mode='date'
@@ -97,12 +99,12 @@ export default function FilterModal ({visible, onClose, filter, setFilter}) {
                       placeholder='Start date'
                       value={selectedStartDate.toLocaleDateString()}
                       onChangeText={(text) => setSelectedStartDate(new Date(text))}
-                      placeholderTextColor="#11182744"
-                      style={styles.dateInput}
+                      placeholderTextColor={colors.border}
+                      style={inputStyle}
                       editable={false}
                     />  
                   </Pressable>
-                  <Text>-</Text>
+                  <Text style={{ color: colors.text }}>-</Text>
                   {endDateVisible && (
                     <DateTimePicker 
                       mode='date'
@@ -116,20 +118,20 @@ export default function FilterModal ({visible, onClose, filter, setFilter}) {
                       placeholder='End date'
                       value={selectedEndDate.toLocaleDateString()}
                       onChangeText={(text) => setSelectedEndDate(new Date(text))}
-                      placeholderTextColor="#11182744"
-                      style={styles.dateInput}
+                      placeholderTextColor={colors.border}
+                      style={inputStyle}
                       editable={false}
                     />
                   </Pressable>
                 </View>
               </View>
 
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Account</Text>
+              <View style={{ marginBottom:20, width:'100%' }}>
+                <Text style={labelStyle}>Account</Text>
                 <Picker
                   selectedValue={filter.account}
                   onValueChange={(itemValue) => setFilter(prev => ({ ...prev, account: itemValue }))}
-                  style={styles.picker}
+                  style={pickerStyle}
                 >
                   <Picker.Item label="All Accounts" value={null} />
                   {accounts.map((account) => (
@@ -138,12 +140,12 @@ export default function FilterModal ({visible, onClose, filter, setFilter}) {
                 </Picker>
               </View>
 
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Category</Text>
+              <View style={{ marginBottom:20, width:'100%' }}>
+                <Text style={labelStyle}>Category</Text>
                 <Picker
                   selectedValue={filter.category}
                   onValueChange={(itemValue) => setFilter(prev => ({ ...prev, category: itemValue }))}
-                  style={styles.picker}
+                  style={pickerStyle}
                 >
                   <Picker.Item label="All Categories" value={null} />
                   {categories.map((item) => (
@@ -152,12 +154,12 @@ export default function FilterModal ({visible, onClose, filter, setFilter}) {
                 </Picker>
               </View>
 
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Budget Group</Text>
+              <View style={{ marginBottom:20, width:'100%' }}>
+                <Text style={labelStyle}>Budget Group</Text>
                 <Picker
                   selectedValue={filter.budget_group}
                   onValueChange={(itemValue) => setFilter(prev => ({ ...prev, budget_group: itemValue }))}
-                  style={styles.picker}
+                  style={pickerStyle}
                 >
                   <Picker.Item label="All Budget Groups" value={null} />
                   {budgetGroups.map((item) => (
@@ -167,12 +169,12 @@ export default function FilterModal ({visible, onClose, filter, setFilter}) {
               </View>
             </ScrollView>
 
-            <View style={styles.modalFooter}>
+            <View style={{ marginTop:20, width:'100%' }}>
               <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
+                style={{ backgroundColor:colors.primary, padding:13, paddingHorizontal:20, borderRadius:50, alignItems:'center', justifyContent:'center' }}
                 onPress={onClose}
               >
-                <Text style={styles.textStyle}>Apply Filters</Text>
+                <Text style={{ color:'#1A1A1A', fontFamily:'Quicksand-Bold' }}>Apply Filters</Text>
               </TouchableOpacity>
             </View>
           </View>

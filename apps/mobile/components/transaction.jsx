@@ -2,26 +2,26 @@ import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { formatCurrency } from '../lib/utils';
 import { useRouter } from 'expo-router';
-import { useTheme } from '../theme/useTheme';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function Transaction ({icon, description, account, amount, color, id, type, to_account=null}) {
   const router = useRouter();
 
-  const { theme } = useTheme();
+  const { colors } = useThemeColors();
 
   return (
     <TouchableOpacity onPress={() => {router.push({pathname: `/transactions/details/${id}`, params: {type}})}}>
     <View style={styles.container}>
-      <MaterialIcons name={ icon } style={[styles.icon, { borderColor: color, backgroundColor: theme.background }]} size={28} color={color}/>
+      <MaterialIcons name={ icon } style={[styles.icon, { borderColor: color, backgroundColor: colors.background }]} size={28} color={color}/>
       <View style={styles.info}>
-        <Text style={[styles.description, { color: theme.text }]}>
+        <Text style={[styles.description, { color: colors.text }]}> 
           {description}
         </Text>
-        <Text style={[styles.account, { color: theme.text }]}>
+        <Text style={[styles.account, { color: colors.text }]}> 
           {account}{to_account ? ` → ${to_account}` : ''}
         </Text>
       </View>
-      <Text style={[styles.amount, type==='income' ? {color:theme.income} : {color:theme.spending}]}>
+      <Text style={[styles.amount, type==='income' ? {color:colors.income} : {color:colors.spending}]}> 
         {(type==='income' ? '+ ' : '- ' )+ formatCurrency(amount)}
       </Text>
     </View> 

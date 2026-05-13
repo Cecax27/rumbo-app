@@ -5,7 +5,7 @@ import React, { useState, useMemo } from 'react'
 import { supabase } from '../lib/supabase/client'
 import { Link, useRouter } from 'expo-router';
 import { makeStyles } from '../assets/uiStyles'
-import { useTheme } from '../theme/useTheme'
+import { useThemeColors } from '../theme/useThemeColors'
 import LanguageSelector from '../components/languageSelector';
 import { useTranslation } from 'react-i18next';
 import { failIf, validateEmail } from '../lib/utils';
@@ -16,7 +16,7 @@ const logo = require('../assets/icon.png')
 
 export default function SignUp() {
   const { t } = useTranslation();
-  const { theme } = useTheme()
+  const { colors: theme } = useThemeColors()
   const styles = useMemo(() => makeStyles(theme), [theme])
 
   const router = useRouter()

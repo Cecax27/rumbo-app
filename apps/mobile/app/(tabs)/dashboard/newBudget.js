@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { useTheme } from '../../../theme/useTheme';
+import { useThemeColors } from '../../../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '../../../assets/uiStyles';
 import { Picker } from '@react-native-picker/picker';
@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { addBudget } from '../../../lib/supabase/tools';
 
 export default function NewBudget() {
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const router = useRouter();

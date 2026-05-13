@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { useTheme } from '../../../theme/useTheme';
+import { useThemeColors } from '../../../theme/useThemeColors';
 import { makeStyles } from '../../../assets/uiStyles';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,7 +10,7 @@ import { createSavingGoal } from '../../../lib/supabase/savingGoals';
 import { getAccounts } from '../../../lib/supabase/transactions';
 
 export default function NewSavingGoal() {
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const { t } = useTranslation();
   const router = useRouter();

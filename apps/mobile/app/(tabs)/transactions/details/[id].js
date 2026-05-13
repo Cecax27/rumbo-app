@@ -3,8 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from 'react-i18next';
 import { deleteTransaction, getTransaction } from "../../../../lib/supabase/transactions";
-import { useTheme } from "../../../../theme/useTheme";
-import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useThemeColors } from "../../../../theme/useThemeColors";
 import { makeStyles } from "../../../../assets/uiStyles";
 import { APP_COLORS } from "../../../../constants/colors";
 import { formatCurrency } from "../../../../lib/utils";
@@ -25,7 +24,7 @@ const getTransactionTypeIcon = (type) => {
 };
 
 export default function TransactionDetails() {
-  const { theme } = useTheme()
+  const { colors: theme } = useThemeColors()
   const styles = useMemo(() => makeStyles(theme), [theme])
   const router = useRouter()
   const { t } = useTranslation()

@@ -2,14 +2,14 @@ import { View, Text, Pressable, Alert, ScrollView, Image } from 'react-native'
 import { makeStyles } from '../../../assets/uiStyles'
 import { supabase } from '../../../lib/supabase/client'
 import { useRouter, Stack } from 'expo-router'
-import { useTheme } from '../../../theme/useTheme'
+import { useThemeColors } from '../../../theme/useThemeColors'
 import { useMemo, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
 
 
 const SettingItem = ({ icon, title, onPress, rightComponent, titleStyle = {} , hideArrow = false}) => {
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   
   return (
@@ -35,7 +35,7 @@ const SettingItem = ({ icon, title, onPress, rightComponent, titleStyle = {} , h
 };
 
 export default function Configuration() {
-  const { theme, toggle } = useTheme();
+  const { colors: theme, toggle } = useThemeColors();
   const styles = useMemo(() =>  makeStyles(theme), [theme]);
   const { t, i18n} = useTranslation();
   const router = useRouter();

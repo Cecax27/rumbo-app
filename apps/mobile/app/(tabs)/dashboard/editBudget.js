@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
-import { useTheme } from '../../../theme/useTheme';
+import { useThemeColors } from '../../../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '../../../assets/uiStyles';
 import { Picker } from '@react-native-picker/picker';
@@ -13,7 +13,7 @@ export default function EditBudget() {
   const { plan } = useLocalSearchParams();
   const parsedPlan = plan ? JSON.parse(plan) : null;
   
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const router = useRouter();

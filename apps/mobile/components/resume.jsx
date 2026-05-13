@@ -1,12 +1,11 @@
-import { View, Text, Alert, StyleSheet} from "react-native";
-import { useState, useEffect, useMemo } from "react";
+import { View, Text, Alert } from "react-native";
+import { useState, useEffect } from "react";
 import { getMonthlyBalance, getMonthlyIncomes, getMonthlySpendings } from '../lib/supabase/transactions'
-import { useTheme } from "../theme/useTheme";
+import { useThemeColors } from "../theme/useThemeColors";
 
 
 export default function Resume() {
-    const { theme } = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]); 
+    const { colors } = useThemeColors();
 
     const [monthBalance, setMonthBalance] = useState(0.0)
     const [incomes, setIncomes] = useState(0.0)
@@ -44,27 +43,27 @@ export default function Resume() {
     }, [incomes, spendings])
       
     return (
-        <View style={styles.resumeContainer}>
-            <Text style={styles.monthBalance}>
+        <View style={{alignItems:'center', justifyContent:'center'}}>
+            <Text style={{fontSize:48, fontFamily:'Montserrat-SemiBold', color:colors.text}}>
                 ${monthBalance?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
             </Text>
-            <Text style={styles.percentage}>
+            <Text style={{fontSize:18, color:colors.primary}}>
                 {percentage.toFixed(1)}% left
             </Text>
-            <View style={styles.detailsContainer}>
-                <View style={styles.detailContainer}>
-                    <Text style={styles.label}>
+            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                <View style={{width:'50%'}}>
+                    <Text style={{fontSize:18, color:colors.subtext, opacity:.4}}>
                         Incomes
                     </Text>
-                    <Text style={styles.incomes}>
+                    <Text style={{fontSize:24, fontFamily:'Montserrat-SemiBold', color:colors.text}}>
                         ${incomes?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                     </Text>
                 </View>
                 <View>
-                    <Text style={styles.label}>
+                    <Text style={{fontSize:18, color:colors.subtext, opacity:.4}}>
                         Spendings
                     </Text>
-                    <Text style={styles.spendings}>
+                    <Text style={{fontSize:24, fontFamily:'Montserrat-SemiBold', color:colors.text}}>
                         ${spendings?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                     </Text>
                 </View>
@@ -73,42 +72,3 @@ export default function Resume() {
     )
 }
 
-function makeStyles(theme){ 
-    return StyleSheet.create({
-    resumeContainer:{
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    monthBalance:{
-        fontSize: 48,
-        fontFamily: 'Montserrat-SemiBold',
-        color: theme.text,
-    }, 
-    percentage:{
-        fontSize: 18,
-        color: theme.primary
-    },
-    incomes:{
-        fontSize: 24, 
-        fontFamily: 'Montserrat-SemiBold',
-        color: theme.text,
-    },
-    spendings:{
-        fontSize: 24,
-        fontFamily: 'Montserrat-SemiBold',
-        color: theme.text,    
-    },
-    detailsContainer:{
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    detailContainer:{
-        width: '50%',
-
-    },
-    label:{
-        fontSize: 18,
-        color:theme.subtext,
-        opacity:.4
-    }
-})}

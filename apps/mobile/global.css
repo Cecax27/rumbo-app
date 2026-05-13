@@ -4,18 +4,35 @@
 
 @layer base {
   :root {
-    --color-text-primary: #3e3e3e;
-    --color-primary: #0d2e4f;
-    --color-secondary: #0fa3b1;
-    --color-success: #22c58e;
-    --color-emphasis: #f6b23a;
-    --color-warning: #f97316;
-    --color-light: #f7f3e8;
-    --color-background: rgb(237, 237, 237);
+    --background: 237 237 237;
+    --surface: 246 246 246;
+    --text: 36 36 36;
+    --subtext: 67 67 67;
+    --primary: 255 186 25;
+    --border: 153 153 153;
+    --success: 47 158 68;
+    --error: 224 49 49;
+    --income: 100 211 171;
+    --spending: 255 111 97;
+    --mint: 100 211 171;
+    --mustard: 255 186 25;
+    --coral: 255 111 97;
+  }
 
-    /* Dark mode overrides */
-    --color-background-dark: #1a1a2e;
-    --color-text-primary-dark: #e0e0e0;
+  .dark {
+    --background: 36 36 36;
+    --surface: 49 49 49;
+    --text: 246 246 246;
+    --subtext: 184 184 184;
+    --primary: 255 209 102;
+    --border: 110 110 110;
+    --success: 47 158 68;
+    --error: 224 49 49;
+    --income: 168 230 207;
+    --spending: 255 111 97;
+    --mint: 168 230 207;
+    --mustard: 255 209 102;
+    --coral: 255 111 97;
   }
 }
 
@@ -51,5 +68,12 @@
   }
   .font-body-bold {
     font-family: 'Inter_700Bold';
+  }
+  .input {
+    font-family: 'Inter_400Regular';
+    color: '#e8e8e8';
+    text-align: left;
+    width: 100%;
+    background-color: #e8e8e8;
   }
 }

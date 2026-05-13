@@ -5,7 +5,7 @@ import * as Font from 'expo-font';
 import { useEffect, useState, useMemo } from 'react';
 import 'react-native-url-polyfill/auto'
 import { MaterialIcons } from '@expo/vector-icons';
-import { useTheme } from '../../theme/useTheme';
+import { useThemeColors } from '../../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
 
 const logo = require('../../assets/icon.png')
@@ -14,7 +14,7 @@ const home_active = require('../../assets/icons/home.png')
 const home_inactive = require('../../assets/icons/home_inactive.png')
 
 export default function TabsLayout() {
-  const { theme, effectiveScheme } = useTheme();
+  const { colors: theme, effectiveScheme } = useThemeColors();
   const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   

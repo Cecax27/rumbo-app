@@ -1,20 +1,17 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import { useMemo} from 'react'
-import { makeStyles } from '../assets/uiStyles'
-import { useTheme } from '../theme/useTheme'
+import { useThemeColors } from '../theme/useThemeColors'
 import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { ACCOUNT_ICONS } from '../constants/icons'
 
 
 export default function IconPicker({value, onPress, activeColor}) {
-    const { theme } = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+    const { colors } = useThemeColors();
     const {t} = useTranslation();
 
     return (
-        <View style={styles.filterSection}>
-            <Text style={styles.filterLabel}>{t('newAccount.icon')}</Text>
+        <View style={{marginBottom:20, width:'100%'}}>
+            <Text style={{fontSize:12, fontFamily:'Montserrat-Regular', marginBottom:8, color:colors.subtext}}>{t('newAccount.icon')}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 25 }}>
                 {ACCOUNT_ICONS.map(icon => (
                     <TouchableOpacity
@@ -26,10 +23,10 @@ export default function IconPicker({value, onPress, activeColor}) {
                             justifyContent: 'center',
                             alignItems: 'center',
                             borderRadius: 30,
-                            backgroundColor: value === icon.name ? (activeColor??theme.text) : theme.surface
+                            backgroundColor: value === icon.name ? (activeColor??colors.text) : colors.surface
                         }}
                     >
-                        <Icon name={icon.name} size={24} color={theme.text} />
+                        <Icon name={icon.name} size={24} color={colors.text} />
                     </TouchableOpacity>
                 ))}
             </View>

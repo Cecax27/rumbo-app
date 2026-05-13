@@ -8,13 +8,13 @@ import {
 } from "react-native";
 import React, { useMemo } from "react";
 import { makeStyles } from "../assets/uiStyles";
-import { useTheme } from "../theme/useTheme";
+import { useThemeColors } from "../theme/useThemeColors";
 import { useRouter } from "expo-router";
 import { setWelcomeSeen } from "../lib/welcomeSeen";
 import { useTranslation } from "react-i18next";
 
 export default function Welcome() {
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const { t } = useTranslation();
   const router = useRouter();

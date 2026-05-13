@@ -22,6 +22,18 @@ module.exports = {
         warning: '#f97316',
         light: '#f7f3e8',
         background: 'rgb(237, 237, 237)',
+        bg: 'rgb(var(--background) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        text: 'rgb(var(--text) / <alpha-value>)',
+        subtext: 'rgb(var(--subtext) / <alpha-value>)',
+        brand: 'rgb(var(--primary) / <alpha-value>)',
+        border: 'rgb(var(--border) / <alpha-value>)',
+        danger: 'rgb(var(--error) / <alpha-value>)',
+        income: 'rgb(var(--income) / <alpha-value>)',
+        spending: 'rgb(var(--spending) / <alpha-value>)',
+        mint: 'rgb(var(--mint) / <alpha-value>)',
+        mustard: 'rgb(var(--mustard) / <alpha-value>)',
+        coral: 'rgb(var(--coral) / <alpha-value>)',
       },
       fontFamily: {
         // Titles

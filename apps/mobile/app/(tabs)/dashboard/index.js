@@ -1,6 +1,6 @@
 import { View, Text, Image } from 'react-native'
 import { makeStyles } from '../../../assets/uiStyles'
-import { useTheme } from '../../../theme/useTheme'
+import { useThemeColors } from '../../../theme/useThemeColors'
 import { useMemo } from 'react'
 import { BudgetPlans } from '../../../components/budgetPlans/budgetPlans'
 import { SavingGoals } from '../../../components/savingGoals/savingGoals'
@@ -9,7 +9,7 @@ import { useRouter, Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 
 export default function Dashboard() {
-    const { theme } = useTheme();
+    const { colors: theme } = useThemeColors();
     const { t } = useTranslation();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const router = useRouter()

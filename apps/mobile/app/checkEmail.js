@@ -1,13 +1,13 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, {useMemo} from 'react'
 import { makeStyles } from '../assets/uiStyles'
-import { useTheme } from '../theme/useTheme'
+import { useThemeColors } from '../theme/useThemeColors'
 import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 
 export default function CheckEmail() {
     const {t} = useTranslation()
-    const {theme} = useTheme();
+    const { colors: theme } = useThemeColors();
     const styles = useMemo(()=>makeStyles(theme), [theme]);
 
     const router = useRouter();

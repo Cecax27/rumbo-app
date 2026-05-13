@@ -6,11 +6,11 @@ import { getAccounts, getCategories, updateTransaction } from '../../../../lib/s
 import { Picker } from '@react-native-picker/picker'
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { useTheme } from '../../../../theme/useTheme';
+import { useThemeColors } from '../../../../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
 
 export default function EditTransaction() {
-    const { theme } = useTheme()
+    const { colors: theme } = useThemeColors()
     const { t } = useTranslation()
     const styles = useMemo(() => makeStyles(theme), [theme])
 

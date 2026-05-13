@@ -5,13 +5,13 @@ import { Picker } from '@react-native-picker/picker'
 import { useRouter,useLocalSearchParams } from 'expo-router'
 import { getAccountsTypes, getAccount, updateAccount } from '../../../../lib/supabase/transactions'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { useTheme } from '../../../../theme/useTheme';
+import { useThemeColors } from '../../../../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
 import ColorPicker from '../../../../components/colorPicker';
 import IconPicker from '../../../../components/iconPicker';
 
 export default function EditAccount () {
-    const { theme } = useTheme()
+    const { colors: theme } = useThemeColors()
     const { t } = useTranslation()
     const styles = useMemo(() => makeStyles(theme), [theme])
 

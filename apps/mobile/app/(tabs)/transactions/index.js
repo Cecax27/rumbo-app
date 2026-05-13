@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useMemo, useEffect, useState, useContext } from 'react';
 import FilterModal from '../../../components/filterModal'
 import { useRouter } from 'expo-router';
-import { useTheme } from '../../../theme/useTheme';
+import { useThemeColors } from '../../../theme/useThemeColors';
 import { TransactionsContext } from '../../../contexts/TransactionsContext';
 import { useTranslation } from 'react-i18next';
 import DateGroup from '../../../components/dateGroup';
@@ -13,7 +13,7 @@ import FloatActionButton from '../../../components/floatActionButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Transactions() {
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const router = useRouter()
   const { t } = useTranslation();

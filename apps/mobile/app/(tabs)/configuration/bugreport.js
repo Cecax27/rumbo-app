@@ -1,7 +1,7 @@
 import { View, Text, KeyboardAvoidingView, Platform, TextInput, Pressable, ActivityIndicator } from 'react-native'
 import { Stack, useRouter } from 'expo-router'
 import { makeStyles } from '../../../assets/uiStyles'
-import { useTheme } from '../../../theme/useTheme'
+import { useThemeColors } from '../../../theme/useThemeColors'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'
@@ -10,7 +10,7 @@ import * as Device from 'expo-device'
 import * as Application from 'expo-application'
 
 export default function BugReport(){
-    const { theme } = useTheme();
+    const { colors: theme } = useThemeColors();
     const styles = useMemo(() => makeStyles(theme), [theme]);
     const router = useRouter();
     const { t } = useTranslation();

@@ -1,28 +1,26 @@
 import { Text, View,TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import React, { useState, useMemo } from 'react';
-import { useTheme } from '../theme/useTheme';
+import React from 'react';
+import { useThemeColors } from '../theme/useThemeColors';
 import { TRANSACTION_CATEGORIES } from '../constants/appConstans';
 import { useTranslation } from 'react-i18next';
 
 export const SectionHeader = ({text, color}) =>{
-    const { theme } = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+    const { colors } = useThemeColors();
   return (
-    <View style={styles.sectionHeader}>
+    <View style={[styles.sectionHeader, { backgroundColor: colors.background }]}> 
       <Text style={[styles.headerText, {color:color}]}>{ text }</Text>
     </View>
   )
 }
 
 export const SectionItem = ({label, onPress, icon, color})=>{
-    const { theme } = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+    const { colors } = useThemeColors();
   return (
     <TouchableOpacity onPress={onPress}>
-      <View style={styles.sectionItem}>
+      <View style={[styles.sectionItem, { backgroundColor: colors.background }]}> 
         <MaterialIcons name={icon} size={32} color={color}/>
-        <Text style={styles.textItem} numberOfLines={2} ellipsizeMode='tail'>
+        <Text style={[styles.textItem, { color: colors.subtext }]} numberOfLines={2} ellipsizeMode='tail'>
             { label }
             {"\n"}
         </Text>
@@ -32,13 +30,12 @@ export const SectionItem = ({label, onPress, icon, color})=>{
 }
 
 export const SectionContainer = ({children, text, color})=>{
-    const { theme } = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+  const { colors } = useThemeColors();
 
   return (
     <>
     <SectionHeader text={text} color={color}/>
-    <View style={[styles.sectionContainer, {borderColor:color}]}> 
+  <View style={[styles.sectionContainer, { borderColor: color, backgroundColor: colors.background }]}> 
         <View style={styles.sectionGrid}>
             {React.Children.map(children, child =>
                 React.cloneElement(child, { color })
@@ -52,18 +49,17 @@ export const SectionContainer = ({children, text, color})=>{
 SectionContainer.item = SectionItem
 
 export const Sections = ({onSelect})=>{
-    const { theme } = useTheme();
-    const styles = useMemo(() => makeStyles(theme), [theme]);
+  const { colors } = useThemeColors();
     const { t } = useTranslation();
 
     const sectionColors = {
-        discretionary: theme.coral,
-        essentials: theme.mustard,
-        savings: theme.mint
+    discretionary: colors.coral,
+    essentials: colors.mustard,
+    savings: colors.mint
     }
 
     return(
-        <ScrollView style={styles.list}>
+    <ScrollView style={[styles.list, { backgroundColor: colors.background }]}>
         {
             TRANSACTION_CATEGORIES.map((budget_group) => (
                 <SectionContainer key={budget_group.id} text={t(`budget.categories.${budget_group.budget_group}`)} color={sectionColors[budget_group.budget_group]}>
@@ -79,14 +75,12 @@ export const Sections = ({onSelect})=>{
   )
 }
 
-const makeStyles = (theme) => {return StyleSheet.create({
+const styles = StyleSheet.create({
   list: {
-    backgroundColor: theme.background,
     flex:1,
     gap:10
   },
   sectionHeader:{
-    backgroundColor: theme.background,
     paddingHorizontal:8,
     position:'abosulte',
     top:7,
@@ -99,7 +93,6 @@ const makeStyles = (theme) => {return StyleSheet.create({
     fontWeight:700
   },
   sectionContainer:{
-    backgroundColor: theme.background,
     padding:10,
     alignItems:'center',
     flex:1,
@@ -117,7 +110,6 @@ const makeStyles = (theme) => {return StyleSheet.create({
   sectionItem:{
     width:95,
     height:80,
-    backgroundColor:theme.background,
     alignItems:'center',
     justifyContent:'center',
     gap:5,
@@ -125,6 +117,5 @@ const makeStyles = (theme) => {return StyleSheet.create({
   textItem:{
     fontSize:11,
     textAlign:'center',
-    color:theme.subtext,
   }
-})};
+});

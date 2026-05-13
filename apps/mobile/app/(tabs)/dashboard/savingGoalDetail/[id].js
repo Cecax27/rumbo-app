@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Image } from 'react-native';
 import { Stack, useRouter, useGlobalSearchParams } from 'expo-router';
-import { useTheme } from '../../../../theme/useTheme';
+import { useThemeColors } from '../../../../theme/useThemeColors';
 import { makeStyles } from '../../../../assets/uiStyles';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getSavingGoal } from '../../../../lib/supabase/savingGoals';
 
 export default function SavingGoalDetail() {
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const { t } = useTranslation();
   const router = useRouter();

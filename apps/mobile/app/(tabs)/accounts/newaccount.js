@@ -16,7 +16,7 @@ import {
   getAccountsTypes,
   addAccount,
 } from "../../../lib/supabase/transactions";
-import { useTheme } from "../../../theme/useTheme";
+import { useThemeColors } from "../../../theme/useThemeColors";
 import { useTranslation } from "react-i18next";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import ColorPicker from "../../../components/colorPicker";
@@ -27,7 +27,7 @@ import { failIf } from "../../../lib/utils";
 import Snackbar from "../../../components/Snackbar";
 
 export default function NewAccount() {
-  const { theme } = useTheme();
+  const { colors: theme } = useThemeColors();
   const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(theme), [theme]);
 

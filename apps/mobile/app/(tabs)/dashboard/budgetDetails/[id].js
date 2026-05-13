@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { ProgressChart } from 'react-native-chart-kit';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTheme } from '../../../../theme/useTheme';
+import { useThemeColors } from '../../../../theme/useThemeColors';
 import { makeStyles } from '../../../../assets/uiStyles';
 import { getBudgetPlanDetails, deleteBudget } from '../../../../lib/supabase/tools';
 import { formatCurrency, hexToRgba, formatDateToISO } from '../../../../lib/utils';
@@ -20,7 +20,7 @@ const years = Array.from({ length: 20 }, (_, i) => 2015 + i);
 
 export default function BudgetDetails() {
     const { t } = useTranslation();
-    const { theme } = useTheme();
+    const { colors: theme } = useThemeColors();
     const styles = useMemo(() => makeStyles(theme), [theme]);
 
     const router = useRouter()

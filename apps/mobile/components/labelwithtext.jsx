@@ -1,16 +1,18 @@
-import { View, Text } from 'react-native'
-import React, {useMemo} from 'react'
-import { makeStyles } from '../assets/uiStyles'
-import { useTheme } from '../theme/useTheme'
+import { View, Text } from 'react-native';
+import React from 'react';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function LabelWithText({ label, text }) {
-  const { theme } = useTheme()
-  const styles = useMemo(() => makeStyles(theme), [theme])
+  const { colors } = useThemeColors();
 
   return (
-    <View style={{marginBottom:12, gap:4}}>
-      <Text style={styles.label}>{label}</Text>
-        <Text style={styles.p}>{text}</Text>
+    <View className="mb-3" style={{ gap: 4 }}>
+      <Text style={{ fontSize: 12, fontFamily: 'Montserrat-Regular', color: colors.subtext }}>
+        {label}
+      </Text>
+      <Text style={{ fontSize: 12, fontFamily: 'Montserrat-Regular', color: colors.text }}>
+        {text}
+      </Text>
     </View>
-  )
+  );
 }

@@ -3,7 +3,7 @@ import { makeStyles } from '../../../assets/uiStyles'
 import { useState, useEffect, useMemo } from 'react'
 import { getAccounts, getCreditCardSpendings, deleteAccount } from '../../../lib/supabase/transactions'
 import { useRouter, Link } from 'expo-router'
-import { useTheme } from '../../../theme/useTheme'
+import { useThemeColors } from '../../../theme/useThemeColors'
 import { useTranslation } from 'react-i18next'
 import { ACCOUNT_TYPES } from '../../../constants/appConstans'
 import {Account} from '../../../components/account'
@@ -17,7 +17,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SIDE_PADDING = (SCREEN_WIDTH - ITEM_SIZE) / 2;
 
 export default function HomeScreen() {
-    const { theme } = useTheme()
+    const { colors: theme } = useThemeColors()
     const styles = useMemo(() => makeStyles(theme), [theme])
     const { t } = useTranslation()
     const router = useRouter()
