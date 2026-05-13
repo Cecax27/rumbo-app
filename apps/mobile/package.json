@@ -1,5 +1,5 @@
 {
-  "name": "fundwise",
+  "name": "rumbo",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
@@ -46,7 +46,7 @@
     "supabase": "2.30.4"
   },
   "devDependencies": {
-    "@babel/core": "7.20.0",
+    "@babel/core": "7.29.0",
     "eslint": "9.0.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-config-prettier": "10.1.5",

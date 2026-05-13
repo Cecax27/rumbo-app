@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "Fundwise",
-    "slug": "Fundwise",
+    "name": "Rumbo",
+    "slug": "rumbo",
     "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
-    "scheme": "fundwise",
+    "scheme": "rumbo",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -19,7 +19,7 @@
     "android": {
       "icon": "./assets/logo.png",
       "edgeToEdgeEnabled": true,
-      "package": "com.cecax27.Fundwise"
+      "package": "com.cecax27.rumbo"
     },
     "web": {
       "favicon": "./assets/favicon.png"

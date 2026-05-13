@@ -1,366 +1,371 @@
 {
-    "common":{
-        "edit": "Editar",
-        "success": "Éxito",
-        "error": "Error",
-        "delete":"Eliminar",
-        "language":{
-            "es":"Español",
-            "en":"Inglés"
-        },
-        "signOut":"Cerrar sesión",
-        "cancel":"Cancelar",
-        "months":{
-            "january":"Enero",
-            "february":"Febrero",
-            "march":"Marzo",
-            "april":"Abril", 
-            "may":"Mayo", 
-            "june":"Junio",
-            "july":"Julio", 
-            "august":"Agosto", 
-            "september":"Septiembre", 
-            "october":"Octubre", 
-            "november":"Noviembre", 
-            "december":"Diciembre"
-        },
-        "terms":{
-            "incomes": "Ingresos",
-            "spendings": "Gastos"
-        },
-        "thanks":"Gracias",
-        "optional":"Opcional"
+  "common": {
+    "edit": "Editar",
+    "success": "Éxito",
+    "error": "Error",
+    "delete": "Eliminar",
+    "language": {
+      "es": "Español",
+      "en": "Inglés"
     },
-    "welcome": {
-        "title": "¡Bienvenido a Fundwise!",
-        "subtitle": "Vamos a comenzar. Aquí tienes una guía rápida para empezar a gestionar tus finanzas.",
-        "steps": {
-            "createAccount": {
-                "title": "1. Crea tu primera cuenta",
-                "description": "Añade tu primera cuenta para comenzar a realizar un seguimiento de tus saldos bancarios o en efectivo."
-            },
-            "addTransactions": {
-                "title": "2. Añade ingresos y gastos",
-                "description": "Comienza a rastrear tu dinero añadiendo tus ingresos y gastos. ¡Descubre a dónde va tu dinero!"
-            },
-            "exploreDashboard": {
-                "title": "3. Explora tu panel de control",
-                "description": "Accede a tu panel para agregar herramientas, ver resúmenes y obtener información sobre tus finanzas."
-            }
-        },
-        "getStarted": "Comenzar"
+    "signOut": "Cerrar sesión",
+    "cancel": "Cancelar",
+    "months": {
+      "january": "Enero",
+      "february": "Febrero",
+      "march": "Marzo",
+      "april": "Abril",
+      "may": "Mayo",
+      "june": "Junio",
+      "july": "Julio",
+      "august": "Agosto",
+      "september": "Septiembre",
+      "october": "Octubre",
+      "november": "Noviembre",
+      "december": "Diciembre"
     },
-    "shared":{
-        "email": "Correo eléctronico",
-        "password": "Contraseña"
+    "terms": {
+      "incomes": "Ingresos",
+      "spendings": "Gastos"
     },
-    "login": {
-        "title": "Hola otra vez",
-        "button": "Entrar",
-        "create-account": "¿No tienes cuenta? Crea una"
+    "thanks": "Gracias",
+    "optional": "Opcional"
+  },
+  "welcome": {
+    "title": "¡Bienvenido a Rumbo!",
+    "subtitle": "Aquí tienes una guía rápida para empezar a gestionar tus finanzas.",
+    "steps": {
+      "createAccount": {
+        "title": "1. Crea tu primera cuenta",
+        "description": "Una cuenta representa el lugar donde haces tus movimientos, por ejemplo, una cuenta de débito."
+      },
+      "addTransactions": {
+        "title": "2. Añade ingresos y gastos",
+        "description": "Comienza a rastrear tu dinero añadiendo tus ingresos y gastos. ¡Descubre a dónde va tu dinero!"
+      },
+      "exploreDashboard": {
+        "title": "3. Explora tu panel de control",
+        "description": "Accede a tu panel para agregar herramientas, ver resúmenes y obtener información sobre tus finanzas."
+      }
     },
-    "dashboard": {
-        "title": "Panel de Control",
-        "newBudget": "Presupuesto",
-        "noBudgetPlans": "Tus planes de presupuesto siguen siendo un lienzo en blanco. ¡Pintemos el primero!",
-        "newSavingGoal": "Meta de ahorro",
-        "noSavingGoals": "Aún no tienes metas de ahorro. ¡Crea la primera!"
+    "getStarted": "Comenzar"
+  },
+  "shared": {
+    "email": "Correo eléctronico",
+    "password": "Contraseña"
+  },
+  "login": {
+    "title": "Hola otra vez",
+    "button": "Entrar",
+    "create-account": "¿No tienes cuenta? Crea una"
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "newBudget": "Presupuesto",
+    "noBudgetPlans": "Tus planes de presupuesto siguen siendo un lienzo en blanco. ¡Pintemos el primero!",
+    "newSavingGoal": "Meta de ahorro",
+    "noSavingGoals": "Aún no tienes metas de ahorro. ¡Crea la primera!"
+  },
+  "budget": {
+    "title": "Presupuesto",
+    "name": "Nombre del Presupuesto",
+    "namePlaceholder": "Operación sobrevivir",
+    "type": "Tipo de Presupuesto",
+    "customDays": "Días Personalizados",
+    "saveButton": "Guardar Presupuesto",
+    "loading": "Cargando presupuesto...",
+    "allocation": "Asignación",
+    "totalAllocated": "Total asignado",
+    "remaining": "Restante",
+    "available": "disponible",
+    "delete": {
+      "title": "Eliminar Presupuesto",
+      "message": "¿Estás seguro de que quieres eliminar el presupuesto '{{budgetName}}'? Esta acción no se puede deshacer.",
+      "delete": "Eliminar"
     },
-    "budget": {
-        "title": "Presupuesto",
-        "name": "Nombre del Presupuesto",
-        "namePlaceholder": "Operación sobrevivir",
-        "type": "Tipo de Presupuesto",
-        "customDays": "Días Personalizados",
-        "saveButton": "Guardar Presupuesto",
-        "loading": "Cargando presupuesto...",
-        "allocation": "Asignación",
-        "totalAllocated":"Total asignado",
-        "remaining": "Restante",
-        "available": "disponible",
-        "delete": {
-            "title": "Eliminar Presupuesto",
-            "message": "¿Estás seguro de que quieres eliminar el presupuesto '{{budgetName}}'? Esta acción no se puede deshacer.",
-            "delete": "Eliminar"
-        },
-        "modify": "Modificar",
-        "alerts": {
-            "overallocation": {
-                "title": "Ups",
-                "message": "No puedes asignar más del 100%"
-            },
-            "invalidPeriod": {
-                "title": "Ups",
-                "message": "Debes ingresar una duración de período válida."
-            },
-            "missingName": {
-                "title": "Ups",
-                "message": "¿Olvidaste ponerle nombre a tu presupuesto?"
-            },
-            "success": {
-                "title": "Éxito",
-                "message": "¡Presupuesto actualizado correctamente!",
-                "createMessage": "¡Presupuesto creado correctamente!"
-            },
-            "error": {
-                "title": "Error",
-                "message": "Error al actualizar el presupuesto",
-                "createMessage": "Error al crear el presupuesto"
-            },
-            "button": "Intentar de nuevo"
-        },
-        "categories": {
-            "essentials": "Esenciales",
-            "discretionary": "Gustos",
-            "savings": "Ahorros",
-            "alertThreshold": "Umbral de Alerta"
-        },
-        "types": {
-            "month": "Mensual",
-            "week": "Semanal",
-            "year": "Anual",
-            "custom": "Personalizado"
-        }
+    "modify": "Modificar",
+    "alerts": {
+      "overallocation": {
+        "title": "Ups",
+        "message": "No puedes asignar más del 100%"
+      },
+      "invalidPeriod": {
+        "title": "Ups",
+        "message": "Debes ingresar una duración de período válida."
+      },
+      "missingName": {
+        "title": "Ups",
+        "message": "¿Olvidaste ponerle nombre a tu presupuesto?"
+      },
+      "success": {
+        "title": "Éxito",
+        "message": "¡Presupuesto actualizado correctamente!",
+        "createMessage": "¡Presupuesto creado correctamente!"
+      },
+      "error": {
+        "title": "Error",
+        "message": "Error al actualizar el presupuesto",
+        "createMessage": "Error al crear el presupuesto"
+      },
+      "button": "Intentar de nuevo"
     },
-    "editAccount": {
-        "title": "Editar Cuenta",
-        "success": {
-            "title": "Éxito",
-            "message": "¡Cuenta actualizada correctamente!"
-        },
-        "error": {
-            "title": "Error",
-            "message": "Ocurrió un error al actualizar la cuenta. Por favor, inténtalo de nuevo."
-        }
+    "categories": {
+      "essentials": "Esenciales",
+      "discretionary": "Gustos",
+      "savings": "Ahorros",
+      "alertThreshold": "Umbral de Alerta"
     },
-    "newAccount": {
-        "title": "Nueva Cuenta",
-        "accountName": "Nombre de la Cuenta",
-        "accountNamePlaceholder": "Mi cuenta genial",
-        "bankName": "Nombre del Banco",
-        "bankNamePlaceholder": "Déjalo en blanco si lo prefieres",
-        "color": "Color",
-        "icon": "Ícono",
-        "primaryAccount": "Cuenta Principal",
-        "primaryAccountWarning": "Si ya tienes una cuenta principal, será reemplazada.",
-        "accountType": "Tipo de Cuenta",
-        "selectAccountType": "Selecciona un tipo de cuenta",
-        "cutoffDay": "Día de Corte",
-        "cutoffDayPlaceholder": "Día de Corte",
-        "creditLimit": "Límite de Crédito",
-        "platform": "Plataforma",
-        "platformPlaceholder": "¿Dónde estás ahorrando tu dinero?",
-        "initialAmount": "Monto Inicial",
-        "initialAmountPlaceholder": "¿Cuánto dinero tienes actualmente?",
-        "estimatedReturnRate": "Tasa de Retorno Estimada",
-        "returnRatePlaceholder": "Porcentaje anual",
-        "loanAmount": "Monto del Préstamo",
-        "loanAmountPlaceholder": "Ingresa el monto del préstamo",
-        "loanInterestRate": "Tasa de Interés del Préstamo",
-        "addAccountButton": "Agregar Cuenta",
-        "success": {
-            "title": "Éxito",
-            "message": "¡Cuenta agregada correctamente!"
-        },
-        "error": {
-            "title": "Error",
-            "message": "Ocurrió un error al agregar la cuenta. Por favor, inténtalo de nuevo.",
-            "name-empty": "Dale un nombre a tu cuenta.",
-            "invalid-cutoff": "Ingresa un día de corte válido (1-31)"
-        }
-    },
-    "tabs": {
-        "dashboard": "Inicio",
-        "transactions": "Transacciones",
-        "accounts": "Cuentas",
-        "settings": "Configuración"
-    },
-    "accounts": {
-        "title": "Cuentas",
-        "addAccount": "Agregar Cuenta",
-        "accountType": "Tipo de cuenta",
-        "cutoffDate": "Fecha de corte",
-        "minimumPayment": "Pago mínimo",
-        "deleteAccount": {
-            "title": "Eliminar cuenta",
-            "message": "¿Estás seguro de que quieres eliminar la cuenta {{accountName}}? Todas las transacciones de la cuenta también serán eliminadas.",
-            "cancel": "Cancelar",
-            "delete": "Eliminar"
-        },
-        "errors": {
-            "deleteFailed": "Error al eliminar la cuenta. Por favor, inténtalo de nuevo.",
-            "databaseError": "No pudimos completar tu solicitud debido a un problema de conexión. Por favor, verifica tu conexión a internet y vuelve a intentarlo."
-        },
-        "types":{
-            "cash": "Efectivo",
-            "investment": "Inversión",
-            "credit_card": "Tarjeta de crédito",
-            "debit_card": "Tarjeta de débito",
-            "loan": "Prestamo"
-        }
-    },
-    "transactions": {
-        "noTransactions": "No se encontraron transacciones. Parece que tu billetera está echándose una siesta.",
-        "addTransaction": "Agregar Transacción",
-        "updateSuccess": "¡Transacción actualizada correctamente!",
-        "updateError": "Error al actualizar la transacción: ",
-        "addError": "Error al agregar la transacción",
-        "selectDate": "Seleccionar fecha",
-        "date": "Fecha",
-        "description": "Descripción",
-        "details": {
-            "title": "Detalles de la Transacción",
-            "createdAt": "Creado el",
-            "amount": "Cantidad",
-            "account": "Cuenta",
-            "fromAccount": "Cuenta origen",
-            "toAccount": "Cuenta destino",
-            "category": "Categoría",
-            "deferred": "Diferido",
-            "delete": {
-                "title": "Eliminar transacción",
-                "message": "¿Estás seguro de que quieres eliminar este {{type}}? Esta acción no se puede deshacer.",
-                "delete": "Eliminar",
-                "cancel": "Cancelar",
-                "deferredTitle": "Eliminar gasto diferido",
-                "deferredMessage": "Eliminar este gasto eliminará todos los pagos diferidos asociados. ¿Estás seguro de que deseas continuar?"
-            },
-            "error": {
-                "notFound": "Transacción no encontrada",
-                "fetchFailed": "Error al cargar los detalles de la transacción"
-            },
-            "loading": "Cargando..."
-        },
-        "descriptionPlaceholder": "Una deliciosa comida",
-        "amount": "Monto",
-        "amountPlaceholder": "Ingresar monto",
-        "account": "Cuenta",
-        "fromAccount": "Cuenta de origen",
-        "toAccount": "Cuenta de destino",
-        "selectAccount": "Seleccionar cuenta",
-        "selectCategory": "Seleccionar categoría",
-        "category": "Categoría",
-        "types": {
-            "spending": "Gasto",
-            "income": "Ingreso",
-            "transfer": "Transferencia",
-            "deferred": "Diferido"
-        },
-        "deferredSpending": "Gasto diferido",
-        "months": "Meses",
-        "add": "Agregar",
-        "success": "Transacción agregada correctamente",
-        "error": {
-            "title": "Error",
-            "message": "Algo salió mal",
-            "addFailed": "Error al agregar la transacción",
-            "noAccounts": "Debes agregar una cuenta bancaria antes de crear una transacción.",
-            "noAccountSelected": "Selecciona una cuenta antes de agregar la transacción."
-        },
-        "categories":{
-            "rent":"Renta",
-            "groceries":"Abarrotes",
-            "gasoline":"Gasolina",
-            "public_transport":"Transporte público",
-            "phone_and_internet":"Internet y celular",
-            "childcare":"Cuidado de niños",
-            "insurance":"Seguros",
-            "emergency_fund":"Fondo de emergencia",
-            "retirement":"Plan de retiro",
-            "investments":"Inversión",
-            "dining_out":"Comidas fuera",
-            "streaming_services":"Servicios de streaming",
-            "online_shopping":"Compras en línea",
-            "travel":"Viajes",
-            "hobbies":"Pasatiempos",
-            "entertainment":"Entretenimiento",
-            "clothing":"Ropa",
-            "subscriptions":"Suscripciones",
-            "courses":"Cursos",
-            "books":"Libros",
-            "gym":"Gimnasio",
-            "therapy":"Terapia",
-            "medical_bills":"Gastos médicos",
-            "supplements":"Suplementos",
-            "donations":"Donación"
-        }   
-    },
-    "configuration": {
-        "signOut": "Cerrar sesión",
-        "signOutSuccess": "¡Gracias por usar Fundwise! Hasta pronto 👋",
-        "signOutError": "Error al cerrar sesión. Por favor, inténtalo de nuevo.",
-        "title": "Configuración",
-        "appSettings": "Aplicación",
-        "account": "Cuenta",
-        "darkMode": "Modo oscuro",
-        "language": "Idioma",
-        "editProfile": "Editar perfil",
-        "notifications": "Notificaciones",
-        "help": "Ayuda",
-        "bugreport": {
-            "title": "Reportar error",
-            "messageLabel" : "¿Cuál es el problema?",
-            "messagePlaceholder" : "Por favor, danos detalles",
-            "confirmation" : "Lamentamos los incovenientes.\n\nNuestra app sigue en desarrollo, así que te agradecemos tus comentarios.\n\nTrabajaremos para resolverlo lo más pronto posible."
-        },
-        "signOutConfirm":{
-            "title":"Cerrar sesión",
-            "message":"¿Seguro que quieres salir?"
-        }
-    },
-    "signup": {
-        "title": "Crea tu cuenta",
-        "password-holder": "Algo mejor que 1234",
-        "confirm-password": "Confirmar contraseña",
-        "confirm-password-holder": "Una vez más",
-        "button": "Crear",
-        "have-account": "¿Ya tienes cuenta? Inicia sesión",
-        "password-no-match": "La contraseña no coincide, intenta de nuevo.",  
-        "errors":{
-            "short-password": "¡Ups! La contraseña debe tener al menos 8 caracteres.",
-            "email-wrong":"Tú correo no es válido, por favor verifícalo.",
-            "accountExists": "¡Ups! Parece que este correo ya está en uso. Inicia sesión o prueba con otro correo.",
-            "password-empty": "¡Ups! ¿Olvidaste escribir una contraseña?",
-            "email-empty": "¡Ups! ¿Olvidaste escribir un correo electrónico?"
-        }
-    },
-    "check-email": {
-        "title": "Revisa tu bandeja",
-        "subtitle": "Te mandamos un correo de confirmación. Ábrelo para confirmar tu cuenta.",
-        "help": "¿No lo encontraste? Revisa tu spam.",
-        "button": "Iniciar sesión"
-    },
-    "savingGoal": {
-        "titleNew": "Nueva meta de ahorro",
-        "titleEdit": "Editar meta de ahorro",
-        "titleDetail": "Meta de ahorro",
-        "name": "Nombre",
-        "namePlaceholder": "Viaje a Japón",
-        "account": "Cuenta vinculada",
-        "goalAmount": "Monto objetivo",
-        "rangeType": "Tipo de periodo",
-        "range": "Duración del periodo",
-        "annualInterestRate": "Tasa de interés anual",
-        "initialAmount": "Monto inicial",
-        "contribution": "Aportación por periodo",
-        "totalContributed": "Total aportado",
-        "totalInterest": "Intereses totales",
-        "parameters": "Parámetros",
-        "loading": "Cargando meta de ahorro...",
-        "types": {
-            "month": "Mensual",
-            "week": "Semanal",
-            "year": "Anual"
-        },
-        "alerts": {
-            "title": "Aviso",
-            "missingName": "Escribe un nombre para tu meta de ahorro.",
-            "missingAccount": "Selecciona una cuenta.",
-            "invalidNumbers": "Ingresa montos y duración válidos.",
-            "createError": "Error al crear la meta de ahorro.",
-            "fetchError": "Error al cargar los detalles de la meta de ahorro.",
-            "updateSuccess": "¡Meta de ahorro actualizada correctamente!",
-            "updateError": "Error al actualizar la meta de ahorro."
-        }
+    "types": {
+      "month": "Mensual",
+      "week": "Semanal",
+      "year": "Anual",
+      "custom": "Personalizado"
     }
+  },
+  "editAccount": {
+    "title": "Editar Cuenta",
+    "success": {
+      "title": "Éxito",
+      "message": "¡Cuenta actualizada correctamente!"
+    },
+    "error": {
+      "title": "Error",
+      "message": "Ocurrió un error al actualizar la cuenta. Por favor, inténtalo de nuevo."
+    }
+  },
+  "newAccount": {
+    "title": "Nueva Cuenta",
+    "accountName": "Nombre de la Cuenta",
+    "accountNamePlaceholder": "Mi cuenta genial",
+    "bankName": "Nombre del Banco",
+    "bankNamePlaceholder": "Déjalo en blanco si lo prefieres",
+    "color": "Color",
+    "icon": "Ícono",
+    "primaryAccount": "Cuenta Principal",
+    "primaryAccountWarning": "Si ya tienes una cuenta principal, será reemplazada.",
+    "accountType": "Tipo de Cuenta",
+    "selectAccountType": "Selecciona un tipo de cuenta",
+    "cutoffDay": "Día de Corte",
+    "cutoffDayPlaceholder": "Día de Corte",
+    "creditLimit": "Límite de Crédito",
+    "platform": "Plataforma",
+    "platformPlaceholder": "¿Dónde estás ahorrando tu dinero?",
+    "initialAmount": "Monto Inicial",
+    "initialAmountPlaceholder": "¿Cuánto dinero tienes actualmente?",
+    "estimatedReturnRate": "Tasa de Retorno Estimada",
+    "returnRatePlaceholder": "Porcentaje anual",
+    "loanAmount": "Monto del Préstamo",
+    "loanAmountPlaceholder": "Ingresa el monto del préstamo",
+    "loanInterestRate": "Tasa de Interés del Préstamo",
+    "addAccountButton": "Agregar Cuenta",
+    "success": {
+      "title": "Éxito",
+      "message": "¡Cuenta agregada correctamente!"
+    },
+    "error": {
+      "title": "Error",
+      "message": "Ocurrió un error al agregar la cuenta. Por favor, inténtalo de nuevo.",
+      "name-empty": "Dale un nombre a tu cuenta.",
+      "invalid-cutoff": "Ingresa un día de corte válido (1-31)"
+    }
+  },
+  "tabs": {
+    "dashboard": "Inicio",
+    "transactions": "Transacciones",
+    "accounts": "Cuentas",
+    "settings": "Configuración"
+  },
+  "accounts": {
+    "title": "Cuentas",
+    "addAccount": "Agregar Cuenta",
+    "accountType": "Tipo de cuenta",
+    "cutoffDate": "Fecha de corte",
+    "minimumPayment": "Pago mínimo",
+    "deleteAccount": {
+      "title": "Eliminar cuenta",
+      "message": "¿Estás seguro de que quieres eliminar la cuenta {{accountName}}? Todas las transacciones de la cuenta también serán eliminadas.",
+      "cancel": "Cancelar",
+      "delete": "Eliminar"
+    },
+    "errors": {
+      "deleteFailed": "Error al eliminar la cuenta. Por favor, inténtalo de nuevo.",
+      "databaseError": "No pudimos completar tu solicitud debido a un problema de conexión. Por favor, verifica tu conexión a internet y vuelve a intentarlo."
+    },
+    "types": {
+      "cash": "Efectivo",
+      "investment": "Inversión",
+      "credit_card": "Tarjeta de crédito",
+      "debit_card": "Tarjeta de débito",
+      "loan": "Prestamo"
+    }
+  },
+  "transactions": {
+    "noTransactions": "No se encontraron transacciones. Parece que tu billetera está echándose una siesta.",
+    "addTransaction": "Agregar Transacción",
+    "updateSuccess": "¡Transacción actualizada correctamente!",
+    "updateError": "Error al actualizar la transacción: ",
+    "addError": "Error al agregar la transacción",
+    "selectDate": "Seleccionar fecha",
+    "date": "Fecha",
+    "description": "Descripción",
+    "details": {
+      "title": "Detalles de la Transacción",
+      "createdAt": "Creado el",
+      "amount": "Cantidad",
+      "account": "Cuenta",
+      "fromAccount": "Cuenta origen",
+      "toAccount": "Cuenta destino",
+      "category": "Categoría",
+      "deferred": "Diferido",
+      "delete": {
+        "title": "Eliminar transacción",
+        "message": "¿Estás seguro de que quieres eliminar este {{type}}? Esta acción no se puede deshacer.",
+        "delete": "Eliminar",
+        "cancel": "Cancelar",
+        "deferredTitle": "Eliminar gasto diferido",
+        "deferredMessage": "Eliminar este gasto eliminará todos los pagos diferidos asociados. ¿Estás seguro de que deseas continuar?"
+      },
+      "error": {
+        "notFound": "Transacción no encontrada",
+        "fetchFailed": "Error al cargar los detalles de la transacción"
+      },
+      "loading": "Cargando..."
+    },
+    "descriptionPlaceholder": "Una deliciosa comida",
+    "amount": "Monto",
+    "amountPlaceholder": "Ingresar monto",
+    "account": "Cuenta",
+    "fromAccount": "Cuenta de origen",
+    "toAccount": "Cuenta de destino",
+    "selectAccount": "Seleccionar cuenta",
+    "selectCategory": "Seleccionar categoría",
+    "category": "Categoría",
+    "types": {
+      "spending": "Gasto",
+      "income": "Ingreso",
+      "transfer": "Transferencia",
+      "deferred": "Diferido"
+    },
+    "deferredSpending": "Gasto diferido",
+    "months": "Meses",
+    "add": "Agregar",
+    "success": "Transacción agregada correctamente",
+    "error": {
+      "title": "Error",
+      "message": "Algo salió mal",
+      "addFailed": "Error al agregar la transacción",
+      "noAccounts": "Debes agregar una cuenta bancaria antes de crear una transacción.",
+      "noAccountSelected": "Selecciona una cuenta antes de agregar la transacción."
+    },
+    "categories": {
+      "rent": "Renta",
+      "groceries": "Abarrotes",
+      "gasoline": "Gasolina",
+      "public_transport": "Transporte público",
+      "phone_and_internet": "Internet y celular",
+      "childcare": "Cuidado de niños",
+      "insurance": "Seguros",
+      "emergency_fund": "Fondo de emergencia",
+      "retirement": "Plan de retiro",
+      "investments": "Inversión",
+      "dining_out": "Comidas fuera",
+      "streaming_services": "Servicios de streaming",
+      "online_shopping": "Compras en línea",
+      "travel": "Viajes",
+      "hobbies": "Pasatiempos",
+      "entertainment": "Entretenimiento",
+      "clothing": "Ropa",
+      "subscriptions": "Suscripciones",
+      "courses": "Cursos",
+      "books": "Libros",
+      "gym": "Gimnasio",
+      "therapy": "Terapia",
+      "medical_bills": "Gastos médicos",
+      "supplements": "Suplementos",
+      "donations": "Donación"
+    }
+  },
+  "configuration": {
+    "signOut": "Cerrar sesión",
+    "signOutSuccess": "¡Gracias por usar Rumbo! Hasta pronto 👋",
+    "signOutError": "Error al cerrar sesión. Por favor, inténtalo de nuevo.",
+    "title": "Configuración",
+    "appSettings": "Aplicación",
+    "account": "Cuenta",
+    "darkMode": "Modo oscuro",
+    "language": "Idioma",
+    "repeatTutorial": "Repetir tutorial",
+    "editProfile": "Editar perfil",
+    "notifications": "Notificaciones",
+    "help": "Ayuda",
+    "bugreport": {
+      "title": "Reportar error",
+      "messageLabel": "¿Cuál es el problema?",
+      "messagePlaceholder": "Por favor, danos detalles",
+      "confirmation": "Lamentamos los incovenientes.\n\nNuestra app sigue en desarrollo, así que te agradecemos tus comentarios.\n\nTrabajaremos para resolverlo lo más pronto posible."
+    },
+    "signOutConfirm": {
+      "title": "Cerrar sesión",
+      "message": "¿Seguro que quieres salir?"
+    },
+    "repeatTutorialConfirm": {
+      "title": "Repetir tutorial",
+      "message": "¿Quieres reiniciar el tutorial de onboarding desde el inicio?"
+    }
+  },
+  "signup": {
+    "title": "Crea tu cuenta",
+    "password-holder": "Algo mejor que 1234",
+    "confirm-password": "Confirmar contraseña",
+    "confirm-password-holder": "Una vez más",
+    "button": "Crear",
+    "have-account": "¿Ya tienes cuenta? Inicia sesión",
+    "password-no-match": "La contraseña no coincide, intenta de nuevo.",
+    "errors": {
+      "short-password": "¡Ups! La contraseña debe tener al menos 8 caracteres.",
+      "email-wrong": "Tú correo no es válido, por favor verifícalo.",
+      "accountExists": "¡Ups! Parece que este correo ya está en uso. Inicia sesión o prueba con otro correo.",
+      "password-empty": "¡Ups! ¿Olvidaste escribir una contraseña?",
+      "email-empty": "¡Ups! ¿Olvidaste escribir un correo electrónico?"
+    }
+  },
+  "check-email": {
+    "title": "Revisa tu bandeja",
+    "subtitle": "Te mandamos un correo de confirmación. Ábrelo para confirmar tu cuenta.",
+    "help": "¿No lo encontraste? Revisa tu spam.",
+    "button": "Iniciar sesión"
+  },
+  "savingGoal": {
+    "titleNew": "Nueva meta de ahorro",
+    "titleEdit": "Editar meta de ahorro",
+    "titleDetail": "Meta de ahorro",
+    "name": "Nombre",
+    "namePlaceholder": "Viaje a Japón",
+    "account": "Cuenta vinculada",
+    "goalAmount": "Monto objetivo",
+    "rangeType": "Tipo de periodo",
+    "range": "Duración del periodo",
+    "annualInterestRate": "Tasa de interés anual",
+    "initialAmount": "Monto inicial",
+    "contribution": "Aportación por periodo",
+    "totalContributed": "Total aportado",
+    "totalInterest": "Intereses totales",
+    "parameters": "Parámetros",
+    "loading": "Cargando meta de ahorro...",
+    "types": {
+      "month": "Mensual",
+      "week": "Semanal",
+      "year": "Anual"
+    },
+    "alerts": {
+      "title": "Aviso",
+      "missingName": "Escribe un nombre para tu meta de ahorro.",
+      "missingAccount": "Selecciona una cuenta.",
+      "invalidNumbers": "Ingresa montos y duración válidos.",
+      "createError": "Error al crear la meta de ahorro.",
+      "fetchError": "Error al cargar los detalles de la meta de ahorro.",
+      "updateSuccess": "¡Meta de ahorro actualizada correctamente!",
+      "updateError": "Error al actualizar la meta de ahorro."
+    }
+  }
 }
