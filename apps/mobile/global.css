@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-text-primary: #3e3e3e;
+    --color-primary: #0d2e4f;
+    --color-secondary: #0fa3b1;
+    --color-success: #22c58e;
+    --color-emphasis: #f6b23a;
+    --color-warning: #f97316;
+    --color-light: #f7f3e8;
+    --color-background: rgb(237, 237, 237);
+
+    /* Dark mode overrides */
+    --color-background-dark: #1a1a2e;
+    --color-text-primary-dark: #e0e0e0;
+  }
+}
+
+@layer utilities {
+  /* --- Font utilities --- */
+
+  /* Titles: Quicksand */
+  .font-title {
+    font-family: 'Quicksand-Regular';
+  }
+  .font-title-light {
+    font-family: 'Quicksand-Light';
+  }
+  .font-title-medium {
+    font-family: 'Quicksand-Medium';
+  }
+  .font-title-semibold {
+    font-family: 'Quicksand-SemiBold';
+  }
+  .font-title-bold {
+    font-family: 'Quicksand-Bold';
+  }
+
+  /* Body / general: Inter */
+  .font-body {
+    font-family: 'Inter_400Regular';
+  }
+  .font-body-medium {
+    font-family: 'Inter_500Medium';
+  }
+  .font-body-semibold {
+    font-family: 'Inter_600SemiBold';
+  }
+  .font-body-bold {
+    font-family: 'Inter_700Bold';
+  }
+}

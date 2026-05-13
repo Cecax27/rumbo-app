@@ -44,6 +44,7 @@ export default function Index() {
 
   return (
     <View style={[styles.container, styles.centeredView]}>
+      <Image source={require('../assets/images/header-login.png')} style={{}}/>
       <Image source={logo} style={styles.logo}/>
       {loading&&<ActivityIndicator size="large" color={theme.primary} style={{marginTop:40}}/>}
       {!loading&&<>
