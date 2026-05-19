@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
+import Animated from "react-native-reanimated";
 import "react-native-url-polyfill/auto";
 import React, { useState, useMemo } from "react";
 import { supabase } from "../lib/supabase/client";
@@ -24,6 +25,7 @@ import { failIf, validateEmail } from "../lib/utils";
 import Input from "../components/input";
 import Snackbar from "../components/Snackbar";
 import Button from "../components/button";
+import { useFadeSlideIn, useScaleFadeIn, useFadeIn } from "../lib/animations";
 
 const logo = require("../assets/icon.png");
 
@@ -38,6 +40,15 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Animation styles
+  const headerAnim = useFadeIn(0);
+  const logoAnim = useScaleFadeIn(200);
+  const field1Anim = useFadeSlideIn(350, 30);
+  const field2Anim = useFadeSlideIn(450, 30);
+  const field3Anim = useFadeSlideIn(550, 30);
+  const buttonAnim = useFadeSlideIn(650, 30);
+  const footerAnim = useFadeIn(700);
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -109,23 +120,25 @@ export default function SignUp() {
     >
       <ScrollView
         className="w-full"
-        contentContainerStyle={{ flexGrow: 1}}
+        contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         <Snackbar />
         <View className="w-full flex-1 flex flex-col items-center justify-between">
           <View className="w-full flex flex-col items-center justify-start gap-10">
-            <Image
-              source={require("../assets/images/header-login.png")}
-              className="w-full h-[250px]"
-            />
-            <View className="flex-row items-center gap-3">
+            <Animated.View style={[{ width: "100%" }, headerAnim]}>
+              <Image
+                source={require("../assets/images/header-login.png")}
+                className="w-full h-[250px]"
+              />
+            </Animated.View>
+            <Animated.View style={[{ flexDirection: "row", alignItems: "center", gap: 12 }, logoAnim]}>
               <Image source={logo} className="w-12 h-12" />
               <Text className="font-quicksand-bold text-4xl text-black dark:text-white">
                 Rumbo
               </Text>
-            </View>
+            </Animated.View>
           </View>
           {loading && (
             <ActivityIndicator
@@ -137,59 +150,67 @@ export default function SignUp() {
           {!loading && (
             <View className="flex-1 w-full justify-center">
               <View className="flex flex-col gap-4 w-full px-8 justify-center items-center">
-                <Input
-                  label={t("shared.email")}
-                  placeholder="email@example.com"
-                  value={email}
-                  onChange={(text) => setEmail(text)}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  email
-                  clear={false}
-                />
-                <Input
-                  label={t("shared.password")}
-                  placeholder={t("signup.password-holder")}
-                  value={password}
-                  onChange={(text) => setPassword(text)}
-                  autoCapitalize="none"
-                  secureTextEntry={true}
-                  textContentType="password"
-                  autoComplete="password-new"
-                  clear={false}
-                />
-                <Input
-                  label={t("signup.confirm-password")}
-                  placeholder={t("signup.confirm-password-holder")}
-                  value={passwordConfirmation}
-                  onChange={(text) => setPasswordConfirmation(text)}
-                  autoCapitalize="none"
-                  secureTextEntry={true}
-                  textContentType="password"
-                  autoComplete="password-new"
-                  clear={false}
-                />
-                <Button
-                  title={t("signup.button")}
-                  disabled={loading}
-                  onPress={() => signUpWithEmail()}
-                />
-                <View style={{ marginTop: 8 }}>
+                <Animated.View style={[{ width: "100%" }, field1Anim]}>
+                  <Input
+                    label={t("shared.email")}
+                    placeholder="email@example.com"
+                    value={email}
+                    onChange={(text) => setEmail(text)}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    email
+                    clear={false}
+                  />
+                </Animated.View>
+                <Animated.View style={[{ width: "100%" }, field2Anim]}>
+                  <Input
+                    label={t("shared.password")}
+                    placeholder={t("signup.password-holder")}
+                    value={password}
+                    onChange={(text) => setPassword(text)}
+                    autoCapitalize="none"
+                    secureTextEntry={true}
+                    textContentType="password"
+                    autoComplete="password-new"
+                    clear={false}
+                  />
+                </Animated.View>
+                <Animated.View style={[{ width: "100%" }, field3Anim]}>
+                  <Input
+                    label={t("signup.confirm-password")}
+                    placeholder={t("signup.confirm-password-holder")}
+                    value={passwordConfirmation}
+                    onChange={(text) => setPasswordConfirmation(text)}
+                    autoCapitalize="none"
+                    secureTextEntry={true}
+                    textContentType="password"
+                    autoComplete="password-new"
+                    clear={false}
+                  />
+                </Animated.View>
+                <Animated.View className="items-center justify-center flex flex-col" style={[buttonAnim]}>
+                  <Button
+                    title={t("signup.button")}
+                    disabled={loading}
+                    onPress={() => signUpWithEmail()}
+                  />
+                </Animated.View>
+                <Animated.View style={[{ marginTop: 8 }, buttonAnim]}>
                   <Link href="/">
                     <Text className="text-primary font-semibold">
                       {t("signup.have-account")}
                     </Text>
                   </Link>
-                </View>
+                </Animated.View>
               </View>
             </View>
           )}
-          <View className="mb-2 items-center gap-4">
+          <Animated.View style={[{ marginBottom: 8, alignItems: "center", gap: 16 }, footerAnim]}>
             <LanguageSelector />
             <Link href="https://rumbo-ten.vercel.app/privacy" className="mb-4">
               <Text className="text-primary-text text-sm">{t("privacy-policy")}</Text>
             </Link>
-          </View>
+          </Animated.View>
         </View>
       </ScrollView>
       <StatusBar style="auto" />

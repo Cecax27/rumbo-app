@@ -7,8 +7,9 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
+  ScrollView,
 } from "react-native";
+import Animated from "react-native-reanimated";
 import "react-native-url-polyfill/auto";
 import Auth from "../components/auth";
 import { useEffect, useState } from "react";
@@ -17,6 +18,8 @@ import { Link, useRouter } from "expo-router";
 import { useThemeColors } from "../theme/useThemeColors";
 import { checkWelcomeSeen } from "../lib/welcomeSeen";
 import LanguageSelector from "../components/languageSelector";
+import { useFadeSlideIn, useScaleFadeIn, useFadeIn } from "../lib/animations";
+
 const logo = require("../assets/icon.png");
 
 export default function Index() {
@@ -26,6 +29,12 @@ export default function Index() {
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Animation styles
+  const headerAnim = useFadeIn(0);
+  const logoAnim = useScaleFadeIn(200);
+  const authAnim = useFadeSlideIn(400, 40);
+  const footerAnim = useFadeIn(600);
 
   useEffect(() => {
     setLoading(true);
@@ -55,43 +64,45 @@ export default function Index() {
       behavior="padding"
     >
       <ScrollView
-              className="w-full"
-              contentContainerStyle={{ flexGrow: 1}}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-      <View className="w-full flex flex-col items-center justify-start gap-10">
-        <Image
-          source={require("../assets/images/header-login.png")}
-          className="w-full h-[250px]"
-        />
-        <View className="flex-row items-center gap-3">
-          <Image source={logo} className="w-12 h-12" />
-          <Text className="font-quicksand-bold text-4xl text-black dark:text-white">
-            Rumbo
-          </Text>
+        className="w-full"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="w-full flex flex-col items-center justify-start gap-10">
+          <Animated.View style={[{ width: "100%" }, headerAnim]}>
+            <Image
+              source={require("../assets/images/header-login.png")}
+              className="w-full h-[250px]"
+            />
+          </Animated.View>
+          <Animated.View style={[{ flexDirection: "row", alignItems: "center", gap: 12 }, logoAnim]}>
+            <Image source={logo} className="w-12 h-12" />
+            <Text className="font-quicksand-bold text-4xl text-black dark:text-white">
+              Rumbo
+            </Text>
+          </Animated.View>
         </View>
-      </View>
-      {loading && (
-        <ActivityIndicator
-          size="large"
-          color={theme.primary}
-          style={{ marginTop: 40 }}
-        />
-      )}
-      {!loading && (
-        <View className="flex-1 w-full justify-center">
-          <Auth />
-        </View>
-      )}
-      <View className="mb-2 items-center gap-4">
-        <LanguageSelector />
-        <Link href="https://rumbo-ten.vercel.app/privacy" className="mb-4">
-          <Text className="text-primary-text text-sm">
-            {t("privacy-policy")}
-          </Text>
-        </Link>
-      </View>
+        {loading && (
+          <ActivityIndicator
+            size="large"
+            color={theme.primary}
+            style={{ marginTop: 40 }}
+          />
+        )}
+        {!loading && (
+          <Animated.View style={[{ flex: 1, width: "100%", justifyContent: "center" }, authAnim]}>
+            <Auth />
+          </Animated.View>
+        )}
+        <Animated.View style={[{ marginBottom: 8, alignItems: "center", gap: 16 }, footerAnim]}>
+          <LanguageSelector />
+          <Link href="https://rumbo-ten.vercel.app/privacy" className="mb-4">
+            <Text className="text-primary-text text-sm">
+              {t("privacy-policy")}
+            </Text>
+          </Link>
+        </Animated.View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
