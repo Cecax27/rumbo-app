@@ -366,5 +366,6 @@
       "updateSuccess": "Saving goal updated successfully!",
       "updateError": "Failed to update saving goal."
     }
-  }
+  },
+  "privacy-policy": "Privacy policy"
 }

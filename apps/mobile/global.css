@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    --background: 237 237 237;
+    --background: #ededed;
     --surface: 246 246 246;
-    --text: 36 36 36;
+    --primary-text: #3e3e3e;
     --subtext: 67 67 67;
     --primary: 255 186 25;
     --border: 153 153 153;
@@ -17,6 +17,7 @@
     --mint: 100 211 171;
     --mustard: 255 186 25;
     --coral: 255 111 97;
+    --input: #e8e8e8;
   }
 
   .dark {
@@ -33,6 +34,7 @@
     --mint: 168 230 207;
     --mustard: 255 209 102;
     --coral: 255 111 97;
+    --input: #e8e8e8;
   }
 }
 
@@ -69,12 +71,37 @@
   .font-body-bold {
     font-family: 'Inter_700Bold';
   }
-  .input {
-    font-family: 'Inter_400Regular';
-    color: '#e8e8e8';
+  .label {
+    color: var(--primary-text);
     text-align: left;
     width: 100%;
-    background-color: #e8e8e8;
-    border-radius: 12px;
+    font-family: 'Inter_600SemiBold';
+    font-size: 12px;
   }
+
+  .input {
+    font-family: 'Inter_400Regular';
+    color: #989898;
+    text-align: left;
+    flex: 1;
+    background-color: var(--input);
+    border-radius: 12px;
+    padding: 12px 12px;
+    font-size: 12px;
+  }
+
+  .input::placeholder {
+    color: #989898;
+  }
+
+  .button {
+    color: #fff;
+    font-family: 'Inter_600SemiBold';
+    padding: 11px 40px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 14px;
+    width: fit-content;
+  }
+
 }

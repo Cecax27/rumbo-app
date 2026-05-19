@@ -22,108 +22,52 @@ export default function Input({
   labelInline = true,
   optional = false,
   editable = true,
-  clear = true
+  clear = true,
 }) {
   const { colors } = useThemeColors();
   const borderColor = focusColor || colors.border;
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const [focus, setFocus] = useState(false);
 
   return (
-    <View style={{ paddingVertical: 10, flexDirection: "column", gap:8 }}>
-      {!labelInline && (
-        <Text
-          style={{
-            backgroundColor: colors.background,
-            color: colors.subtext,
-            paddingHorizontal: 6,
-            fontSize: 12,
-            fontFamily: focus ? "Montserrat-SemiBold" : "Montserrat-Regular",
-          }}
-        >
-         {label} {optional?`(${t('common.optional')})`:''} 
-        </Text>
-      )}
-      <View
-        style={{
-          borderWidth: focus ? 2 : 1,
-          borderRadius: 25,
-          borderColor: focus ? borderColor : colors.border,
-          height: 60,
-          justifyContent: "center",
-          paddingHorizontal: 8,
-        }}
-      >
-        {labelInline && (
-          <Text
-            style={{
-              position: "absolute",
-              top: -10,
-              left: 25,
-              backgroundColor: colors.background,
-              color: colors.subtext,
-              paddingHorizontal: 6,
-              fontSize: 12,
-              fontFamily: focus ? "Montserrat-SemiBold" : "Montserrat-Regular",
-            }}
-          >
-            {label} {optional?`(${t('common.optional')})`:''} 
-          </Text>
+    <View className="w-full">
+      <Text className="label">
+        {label} {optional ? `(${t("common.optional")})` : ""}
+      </Text>
+      <View className="flex-row items-center ">
+        {icon && (
+          <MaterialIcons
+            name={icon}
+            color={colors.border}
+            size={18}
+            style={{ marginRight: 4 }}
+          />
         )}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flex: 1,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              marginLeft: 8,
-            }}
-          >
-            {icon && (
-              <MaterialIcons
-                name={icon}
-                color={colors.border}
-                size={18}
-                style={{ marginRight: 4 }}
-              />
-            )}
-            <TextInput
-              style={{
-                outlineWidth: 0,
-                color: colors.text,
-                fontFamily: "Montserrat-Medium",
-                fontSize: 14,
-              }}
-              placeholder={placeholder}
-              placeholderTextColor={colors.border}
-              inputMode={numeric ? "numeric" : email ? "email" : "text"}
-              onFocus={() => setFocus(true)}
-              onBlur={() => setFocus(false)}
-              selectionColor={colors.primary}
-              value={value}
-              onChangeText={(text) => onChange(text)}
-              autoCapitalize={autoCapitalize}
-              keyboardType={numeric ? "numeric" : email ? "email" : text?"text":keyboardType}
-              secureTextEntry={secureTextEntry}
-              scrollEnabled
-              editable={editable}
-            />
-          </View>
-          {clear && <TouchableOpacity
+        <TextInput
+          className="input"
+          placeholder={placeholder}
+          inputMode={numeric ? "numeric" : email ? "email" : "text"}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+          value={value}
+          onChangeText={(text) => onChange(text)}
+          autoCapitalize={autoCapitalize}
+          keyboardType={
+            numeric ? "numeric" : email ? "email" : text ? "text" : keyboardType
+          }
+          secureTextEntry={secureTextEntry}
+          scrollEnabled
+          editable={editable}
+        />
+        {clear && (
+          <TouchableOpacity
             onPress={() => onChange("")}
             style={{ marginRight: 6 }}
           >
             <MaterialIcons name="clear" color={colors.border} size={18} />
-          </TouchableOpacity>}
-        </View>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

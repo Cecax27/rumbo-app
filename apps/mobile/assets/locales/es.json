@@ -366,5 +366,6 @@
       "updateSuccess": "¡Meta de ahorro actualizada correctamente!",
       "updateError": "Error al actualizar la meta de ahorro."
     }
-  }
+  },
+  "privacy-policy": "Política de privacidad"
 }
