@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "scheme": "rumbo",
     "newArchEnabled": true,
     "splash": {
@@ -14,11 +14,13 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic"
     },
     "android": {
       "icon": "./assets/logo.png",
       "edgeToEdgeEnabled": true,
+      "userInterfaceStyle": "automatic",
       "package": "com.cecax27.rumbo"
     },
     "web": {

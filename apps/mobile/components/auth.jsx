@@ -41,7 +41,7 @@ const { t } = useTranslation();
           keyboardVerticalOffset={100}
           >
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <Text className='text-left w-full text-sm mb-1 font-body-semibold'>
+        <Text className='text-left w-full text-sm mb-1 font-body-semibold dark:text-white'>
           {t('shared.email')}
         </Text>
         <TextInput
@@ -80,8 +80,8 @@ const { t } = useTranslation();
         <Pressable 
         disabled={loading} 
         onPress={() => signInWithEmail()} 
-        className='bg-primary px-4 py-2 rounded-full mt-2 mb-4 flex items-center justify-center'>
-          <Text className='text-black font-semibold text-sm'>{t('login.button')}</Text>
+        className='bg-primary px-10 py-2 rounded-xl mt-2 mb-4 flex items-center justify-center'>
+          <Text className='text-white font-semibold text-sm font-body'>{t('login.button')}</Text>
         </Pressable>
       </View>
       <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 15}}>

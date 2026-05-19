@@ -9,7 +9,8 @@ module.exports = {
     './lib/**/*.{js,jsx,ts,tsx}',
     './theme/**/*.{js,jsx,ts,tsx}',
   ],
-  // Use 'class' so the custom ThemeProvider can toggle dark mode
+  // 'class' lets the ThemeProvider drive dark mode via a View with class="dark".
+  // The View reads useColorScheme() so it still follows the device setting.
   darkMode: 'class',
   theme: {
     extend: {

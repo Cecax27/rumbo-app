@@ -35,12 +35,11 @@ const SettingItem = ({ icon, title, onPress, rightComponent, titleStyle = {} , h
 };
 
 export default function Configuration() {
-  const { colors: theme, toggle } = useThemeColors();
+  const { colors: theme } = useThemeColors();
   const styles = useMemo(() =>  makeStyles(theme), [theme]);
   const { t, i18n} = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(theme.dark);
 
   useEffect(() => {
     const getUser = async () => {
@@ -50,11 +49,6 @@ export default function Configuration() {
     
     getUser();
   }, []);
-
-  const handleThemeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    toggle();
-  };
 
   async function signOut() {
     Alert.alert(
@@ -117,20 +111,6 @@ export default function Configuration() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('configuration.appSettings')}</Text>
         <View style={styles.sectionContent}>
-          <SettingItem
-            icon={<Ionicons name="moon" size={24} color={theme.subtext} />}
-            title={t('configuration.darkMode')}
-            onPress={handleThemeToggle}
-            rightComponent={
-              <Ionicons 
-              name={isDarkMode ? 'bulb' : 'bulb-outline'} 
-              size={24} 
-              color={theme.subtext} 
-              />
-            }
-            hideArrow
-            />
-          <View style={styles.divider} />
           <SettingItem
             icon={<Ionicons name="language" size={24} color={theme.subtext} />}
             title={t('configuration.language')}

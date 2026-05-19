@@ -56,7 +56,7 @@
   },
   "login": {
     "title": "Hola otra vez",
-    "button": "Entrar",
+    "button": "Iniciar sesión",
     "create-account": "¿No tienes cuenta? Crea una"
   },
   "dashboard": {
@@ -292,7 +292,6 @@
     "title": "Configuración",
     "appSettings": "Aplicación",
     "account": "Cuenta",
-    "darkMode": "Modo oscuro",
     "language": "Idioma",
     "repeatTutorial": "Repetir tutorial",
     "editProfile": "Editar perfil",
