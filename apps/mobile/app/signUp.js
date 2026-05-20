@@ -42,13 +42,10 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
 
   // Animation styles
-  const headerAnim = useFadeIn(0);
-  const logoAnim = useScaleFadeIn(200);
-  const field1Anim = useFadeSlideIn(350, 30);
-  const field2Anim = useFadeSlideIn(450, 30);
-  const field3Anim = useFadeSlideIn(550, 30);
-  const buttonAnim = useFadeSlideIn(650, 30);
-  const footerAnim = useFadeIn(700);
+  const field1Anim = useFadeSlideIn(100, 10);
+  const field2Anim = useFadeSlideIn(120, 10);
+  const field3Anim = useFadeSlideIn(140, 10);
+  const buttonAnim = useFadeSlideIn(160, 10);
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -127,13 +124,13 @@ export default function SignUp() {
         <Snackbar />
         <View className="w-full flex-1 flex flex-col items-center justify-between">
           <View className="w-full flex flex-col items-center justify-start gap-10">
-            <Animated.View style={[{ width: "100%" }, headerAnim]}>
+            <Animated.View style={[{ width: "100%" }]}>
               <Image
                 source={require("../assets/images/header-login.png")}
                 className="w-full h-[250px]"
               />
             </Animated.View>
-            <Animated.View style={[{ flexDirection: "row", alignItems: "center", gap: 12 }, logoAnim]}>
+            <Animated.View style={[{ flexDirection: "row", alignItems: "center", gap: 12 }]}>
               <Image source={logo} className="w-12 h-12" />
               <Text className="font-quicksand-bold text-4xl text-black dark:text-white">
                 Rumbo
@@ -205,7 +202,7 @@ export default function SignUp() {
               </View>
             </View>
           )}
-          <Animated.View style={[{ marginBottom: 8, alignItems: "center", gap: 16 }, footerAnim]}>
+          <Animated.View style={[{ marginBottom: 8, alignItems: "center", gap: 16 }]}>
             <LanguageSelector />
             <Link href="https://rumbo-ten.vercel.app/privacy" className="mb-4">
               <Text className="text-primary-text text-sm">{t("privacy-policy")}</Text>
