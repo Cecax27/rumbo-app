@@ -1,45 +1,72 @@
-import { View, Pressable, Image } from 'react-native'
+import { View, Pressable, Image, Text, TouchableWithoutFeedback } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
+  runOnJS,
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useThemeColors } from '../../theme/useThemeColors'
 import { Ionicons } from '@expo/vector-icons'
-import { usePathname } from 'expo-router'
+import { usePathname, useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useState, useCallback } from 'react'
 import SidebarItem from './SidebarItem'
 
-const COLAPSED_WIDTH = 56
-const EXPANDED_WIDTH = 220
-
 const logo = require('../../assets/icon.png')
 
-export default function Sidebar({ onWidthChange }) {
-  const { colors: theme, isDark } = useThemeColors()
+export default function Sidebar() {
+  const { colors: theme } = useThemeColors()
   const { t } = useTranslation()
   const pathname = usePathname()
+  const router = useRouter()
   const insets = useSafeAreaInsets()
-  const [expanded, setExpanded] = useState(false)
+  const [visible, setVisible] = useState(false)
 
-  const width = useSharedValue(COLAPSED_WIDTH)
+  const backdropOpacity = useSharedValue(0)
+  const panelTranslateX = useSharedValue(-400)
 
-  const toggle = useCallback(() => {
-    setExpanded((prev) => {
-      const next = !prev
-      width.value = withTiming(next ? EXPANDED_WIDTH : COLAPSED_WIDTH, {
-        duration: 250,
-        easing: Easing.inOut(Easing.ease),
-      })
-      return next
+  const close = useCallback((done) => {
+    backdropOpacity.value = withTiming(0, { duration: 200 })
+    panelTranslateX.value = withTiming(
+      -400,
+      { duration: 200, easing: Easing.in(Easing.ease) },
+      (finished) => {
+        if (finished) {
+          runOnJS(setVisible)(false)
+          if (done) runOnJS(done)()
+        }
+      }
+    )
+  }, [])
+
+  const open = useCallback(() => {
+    setVisible(true)
+    backdropOpacity.value = 0
+    panelTranslateX.value = -400
+    backdropOpacity.value = withTiming(1, { duration: 250 })
+    panelTranslateX.value = withTiming(0, {
+      duration: 300,
+      easing: Easing.out(Easing.cubic),
     })
   }, [])
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    width: width.value,
+  const handleNavigate = useCallback(
+    (route) => {
+      close(() => {
+        router.push(route)
+      })
+    },
+    [close, router]
+  )
+
+  const backdropAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: backdropOpacity.value,
+  }))
+
+  const panelAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: panelTranslateX.value }],
   }))
 
   const isActive = (route) =>
@@ -73,74 +100,116 @@ export default function Sidebar({ onWidthChange }) {
   ]
 
   return (
-    <Animated.View
-      style={[
-        {
-          backgroundColor: isDark ? '#1A1A1A' : '#F8F8F8',
-          borderRightWidth: 1,
-          borderRightColor: theme.border,
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
-          flexDirection: 'column',
-          alignItems: expanded ? 'flex-start' : 'center',
-          overflow: 'hidden',
-        },
-        animatedStyle,
-      ]}
-    >
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: expanded ? 'space-between' : 'center',
-          width: '100%',
-          paddingHorizontal: expanded ? 16 : 0,
-          marginBottom: 24,
-        }}
+    <>
+      <Pressable
+        onPress={open}
+        style={({ pressed }) => ({
+          position: 'absolute',
+          top: insets.top + 8,
+          left: 12,
+          zIndex: 100,
+          padding: 8,
+          borderRadius: 8,
+          backgroundColor: theme.surface,
+          opacity: pressed ? 0.7 : 1,
+          elevation: 5,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.15,
+          shadowRadius: 4,
+        })}
       >
-        {expanded && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Image source={logo} style={{ width: 28, height: 28 }} />
-            <Animated.Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'Quicksand-Bold',
-                color: theme.text,
-              }}
-              numberOfLines={1}
-            >
-              Rumbo
-            </Animated.Text>
-          </View>
-        )}
-        <Pressable
-          onPress={toggle}
-          style={({ pressed }) => ({
-            padding: 4,
-            opacity: pressed ? 0.5 : 1,
-          })}
-          hitSlop={8}
-        >
-          <Ionicons
-            name={expanded ? 'close' : 'menu'}
-            size={24}
-            color={theme.subtext}
-          />
-        </Pressable>
-      </View>
+        <Ionicons name="menu" size={24} color={theme.text} />
+      </Pressable>
 
-      {items.map((item) => (
-        <SidebarItem
-          key={item.route}
-          route={item.route}
-          icon={item.icon}
-          iconActive={item.iconActive}
-          label={item.label}
-          expanded={expanded}
-          active={isActive(item.route)}
-          theme={theme}
-        />
-      ))}
-    </Animated.View>
+      {visible && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 99,
+          }}
+          pointerEvents="box-none"
+        >
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.45)',
+              },
+              backdropAnimatedStyle,
+            ]}
+          >
+            <TouchableWithoutFeedback onPress={() => close()}>
+              <View style={{ flex: 1 }} />
+            </TouchableWithoutFeedback>
+          </Animated.View>
+
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                width: '100%',
+                backgroundColor: theme.background,
+                paddingTop: insets.top,
+                paddingBottom: insets.bottom,
+                paddingHorizontal: 24,
+              },
+              panelAnimatedStyle,
+            ]}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 36,
+              }}
+            >
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
+              >
+                <Image source={logo} style={{ width: 32, height: 32 }} />
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontFamily: 'Quicksand-Bold',
+                    color: theme.text,
+                  }}
+                >
+                  Rumbo
+                </Text>
+              </View>
+              <Pressable onPress={() => close()} hitSlop={8}>
+                <Ionicons name="close" size={26} color={theme.subtext} />
+              </Pressable>
+            </View>
+
+            {items.map((item) => (
+              <SidebarItem
+                key={item.route}
+                route={item.route}
+                icon={item.icon}
+                iconActive={item.iconActive}
+                label={item.label}
+                active={isActive(item.route)}
+                theme={theme}
+                onPress={() => handleNavigate(item.route)}
+              />
+            ))}
+          </Animated.View>
+        </View>
+      )}
+    </>
   )
 }

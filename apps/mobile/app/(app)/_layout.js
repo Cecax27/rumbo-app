@@ -11,14 +11,11 @@ export default function AppLayout() {
     <View
       style={{
         flex: 1,
-        flexDirection: 'row',
         backgroundColor: theme.background,
       }}
     >
+      <Slot />
       <Sidebar />
-      <View style={{ flex: 1 }}>
-        <Slot />
-      </View>
       <StatusBar style={effectiveScheme} />
     </View>
   )

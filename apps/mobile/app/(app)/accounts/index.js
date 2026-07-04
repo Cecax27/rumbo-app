@@ -14,9 +14,8 @@ import OptionsMenu from '../../../components/optionsmenu'
 import { DatabaseError } from '../../../lib/errors'
 
 const ITEM_SIZE = 193;
-const SIDEBAR_WIDTH = 56;
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const SIDE_PADDING = ((SCREEN_WIDTH - SIDEBAR_WIDTH) - ITEM_SIZE) / 2;
+const SIDE_PADDING = (SCREEN_WIDTH - ITEM_SIZE) / 2;
 
 export default function HomeScreen() {
     const { colors: theme } = useThemeColors()
