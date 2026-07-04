@@ -25,9 +25,9 @@ export default function SidebarPanel({ visible, onClose }) {
 
   const handleNavigate = useCallback(
     (route) => {
-      onClose()
       setTimeout(() => {
         router.push(route)
+        onClose()
       }, 200)
     },
     [onClose, router]
@@ -67,7 +67,7 @@ export default function SidebarPanel({ visible, onClose }) {
     <Modal
       visible={visible}
       transparent
-      animationType="slide"
+      animationType="fade"
       onRequestClose={onClose}
       statusBarTranslucent
     >

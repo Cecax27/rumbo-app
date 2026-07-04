@@ -23,6 +23,7 @@
   .dark {
     --background: 36 36 36;
     --surface: 49 49 49;
+    --primary-text:#b7b7b7;
     --text: 246 246 246;
     --subtext: 184 184 184;
     --primary: 255 209 102;

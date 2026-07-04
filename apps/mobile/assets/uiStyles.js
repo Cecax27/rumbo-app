@@ -466,6 +466,9 @@ profileSection: {
   alignItems: 'center',
   padding: 24,
   backgroundColor: theme.surface,
+  margin: 4,
+  borderRadius: 12,
+  
 },
 avatarContainer: {
   marginBottom: 16,

@@ -112,7 +112,7 @@ export default function SignUp() {
 
   return (
     <KeyboardAvoidingView
-      className="bg-background flex-1 flex flex-col items-center justify-between dark:bg-black"
+      className="bg-background flex-1 flex flex-col items-center justify-between dark:bg-neutral-900"
       behavior={Platform.OS === "ios" ? "padding" : "padding"}
     >
       <ScrollView
@@ -194,7 +194,7 @@ export default function SignUp() {
                 </Animated.View>
                 <Animated.View style={[{ marginTop: 8 }, buttonAnim]}>
                   <Link href="/">
-                    <Text className="text-primary font-semibold">
+                    <Text className="text-text font-semibold">
                       {t("signup.have-account")}
                     </Text>
                   </Link>
@@ -205,7 +205,7 @@ export default function SignUp() {
           <Animated.View style={[{ marginBottom: 8, alignItems: "center", gap: 16 }]}>
             <LanguageSelector />
             <Link href="https://rumbo-ten.vercel.app/privacy" className="mb-4">
-              <Text className="text-primary-text text-sm">{t("privacy-policy")}</Text>
+              <Text className="text-text text-sm">{t("privacy-policy")}</Text>
             </Link>
           </Animated.View>
         </View>

@@ -57,11 +57,11 @@ export default function Index() {
 
   return (
     <KeyboardAvoidingView
-      className="bg-background flex-1 flex flex-col items-center justify-between dark:bg-black"
+      className="bg-background flex-1 flex flex-col items-center justify-between dark:bg-neutral-900"
       behavior="padding"
     >
       <ScrollView
-        className="w-full"
+        className="w-full "
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -95,7 +95,7 @@ export default function Index() {
         <Animated.View style={[{ marginBottom: 8, alignItems: "center", gap: 16 }]}>
           <LanguageSelector />
           <Link href="https://rumbo-ten.vercel.app/privacy" className="mb-4">
-            <Text className="text-primary-text text-sm">
+            <Text className="text-text text-sm">
               {t("privacy-policy")}
             </Text>
           </Link>

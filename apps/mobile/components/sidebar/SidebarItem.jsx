@@ -1,4 +1,4 @@
-import { View, Pressable, Text } from 'react-native'
+import { Pressable, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
 export default function SidebarItem({
@@ -13,31 +13,28 @@ export default function SidebarItem({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => ({
-        flexDirection: 'row',
+      style={{ flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 14,
-        paddingHorizontal: 12,
-        marginBottom: 4,
+        paddingLeft: active ? 9 : 12,
+        paddingRight: 12,
+        marginBottom: 10,
         borderRadius: 12,
-        backgroundColor: active ? theme.surface : 'transparent',
-        borderLeftWidth: active ? 3 : 0,
-        borderLeftColor: theme.primary,
-        opacity: pressed ? 0.6 : 1,
-      })}
+        backgroundColor: 'transparent'
+      }}
     >
       <Ionicons
         name={active ? iconActive : icon}
-        size={22}
+        size={20}
         color={active ? theme.primary : theme.subtext}
         style={{ flexShrink: 0 }}
       />
       <Text
         style={{
           marginLeft: 12,
-          fontSize: 16,
+          fontSize: 14,
           fontFamily: 'Quicksand-SemiBold',
-          color: active ? theme.primary : theme.text,
+          color: active ? theme.primary : theme.subtext,
           flexShrink: 1,
         }}
         numberOfLines={1}

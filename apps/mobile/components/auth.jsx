@@ -92,7 +92,7 @@ export default function Auth() {
             }}
           >
             <Link href="/signUp">
-              <Text className="text-primary font-semibold">
+              <Text className="text-text font-semibold">
                 {t("login.create-account")}
               </Text>
             </Link>

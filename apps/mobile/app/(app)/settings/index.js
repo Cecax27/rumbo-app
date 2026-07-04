@@ -15,13 +15,13 @@ const SettingItem = ({ icon, title, onPress, rightComponent, titleStyle = {} , h
   
   return (
     <Pressable 
-      style={({ pressed }) => ({
+      style={{
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
         backgroundColor: 'transparent',
-        opacity: pressed ? 0.6 : 1,
-      })}
+        opacity: 1,
+      }}
       onPress={onPress}
     >
       <View style={styles.settingIcon}>

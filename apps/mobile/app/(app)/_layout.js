@@ -13,6 +13,7 @@ export default function AppLayout() {
         style={{
           flex: 1,
           backgroundColor: theme.background,
+          padding: 10
         }}
       >
         <Slot />
