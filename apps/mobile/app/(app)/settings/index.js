@@ -1,7 +1,8 @@
 import { View, Text, Pressable, Alert, ScrollView, Image } from 'react-native'
 import { makeStyles } from '../../../assets/uiStyles'
+import PageContainer from '../../../components/layout/PageContainer'
 import { supabase } from '../../../lib/supabase/client'
-import { useRouter, Stack } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { useThemeColors } from '../../../theme/useThemeColors'
 import { useMemo, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -78,13 +79,8 @@ export default function Configuration() {
 
 
   return (
-    <>
-    <Stack.Screen 
-    options={{
-        title: t('configuration.title'),
-    }}
-    />
-    <ScrollView style={styles.fullContainer}>
+    <PageContainer>
+    <ScrollView style={{flex:1, backgroundColor:theme.background}}>
       {/* Profile Section */}
       <View style={styles.profileSection}>
         <View style={styles.avatarContainer}>
@@ -165,6 +161,6 @@ export default function Configuration() {
         </View>
       </View>
     </ScrollView>
-    </>
+    </PageContainer>
   );
 }

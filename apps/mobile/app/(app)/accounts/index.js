@@ -1,5 +1,6 @@
 import { View, Text, Alert, FlatList, StyleSheet, Dimensions, RefreshControl, ActivityIndicator } from 'react-native'
 import { makeStyles } from '../../../assets/uiStyles'
+import PageContainer from '../../../components/layout/PageContainer'
 import { useState, useEffect, useMemo } from 'react'
 import { getAccounts, getCreditCardSpendings, deleteAccount } from '../../../lib/supabase/transactions'
 import { useRouter, Link } from 'expo-router'
@@ -13,8 +14,9 @@ import OptionsMenu from '../../../components/optionsmenu'
 import { DatabaseError } from '../../../lib/errors'
 
 const ITEM_SIZE = 193;
+const SIDEBAR_WIDTH = 56;
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const SIDE_PADDING = (SCREEN_WIDTH - ITEM_SIZE) / 2;
+const SIDE_PADDING = ((SCREEN_WIDTH - SIDEBAR_WIDTH) - ITEM_SIZE) / 2;
 
 export default function HomeScreen() {
     const { colors: theme } = useThemeColors()
@@ -102,7 +104,8 @@ export default function HomeScreen() {
     }
 
     return (
-        <View style={[styles.container, accountsStyle.cardContainer]}>
+        <PageContainer>
+            <View style={accountsStyle.cardContainer}>
             {loading  && <ActivityIndicator size="large" color={theme.primary} style={{marginTop: 20}} />}
             <View>
             <FlatList
@@ -156,7 +159,8 @@ export default function HomeScreen() {
                 }
             </View>
             }
-        </View>
+            </View>
+        </PageContainer>
     )
 }
 

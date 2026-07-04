@@ -1,5 +1,6 @@
 import { View, Pressable, FlatList, RefreshControl, Text, Image } from 'react-native'
 import {makeStyles} from '../../../assets/uiStyles'
+import PageContainer from '../../../components/layout/PageContainer'
 import { MaterialIcons } from '@expo/vector-icons';
 import { useMemo, useEffect, useState, useContext } from 'react';
 import FilterModal from '../../../components/filterModal'
@@ -35,7 +36,7 @@ export default function Transactions() {
   }, [])
 
     return (
-      <View style={styles.container}>
+      <PageContainer>
         <View style={styles.headerActions}>
           <Pressable onPress={() => setFilterModalVisible(true)}>
             <MaterialIcons name="filter-alt" size={24} color={theme.text} />
@@ -49,7 +50,7 @@ export default function Transactions() {
           setFilter={setFilter}
         />
 
-        {data.length === 0 && <View style={[styles.container, {alignItems:'center', gap:20}]}>
+        {data.length === 0 && <View style={{flex:1, alignItems:'center', gap:20, backgroundColor: theme.background}}>
             <MaterialIcons name="search-off" size={64} color={theme.subtext}/>
             <Text style={[styles.p, {textAlign:'center', color:theme.subtext}]}>
               {t('transactions.noTransactions')}
@@ -109,6 +110,6 @@ export default function Transactions() {
                 onPress={()=>{router.push('/(app)/transactions/addTransaction?type=spending')}}
               />
           </FloatActionButton>
-      </View>
+      </PageContainer>
     )
 }

@@ -15,5 +15,7 @@ export default function DashboardLayout() {
             },
             headerTintColor: theme.text
         }}
-  />;
+    >
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
 }
