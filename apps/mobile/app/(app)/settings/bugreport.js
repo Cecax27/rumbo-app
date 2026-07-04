@@ -32,7 +32,7 @@ export default function BugReport(){
             console.log(error);
         } finally {
             router.back();
-            router.push('/configuration/bugreportconfirmation');
+            router.push('/settings/bugreportconfirmation');
             setLoading(false);
         }
     }

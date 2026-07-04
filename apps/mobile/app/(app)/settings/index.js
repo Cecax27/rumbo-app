@@ -148,7 +148,7 @@ export default function Configuration() {
           <SettingItem
             icon={<Ionicons name="bug" size={24} color={theme.subtext} />}
             title={t('configuration.bugreport.title')}
-            onPress={() => {router.push('/configuration/bugreport')}}
+            onPress={() => {router.push('/settings/bugreport')}}
             />
         </View>
       </View>
