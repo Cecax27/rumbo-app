@@ -1,6 +1,7 @@
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useThemeColors } from '../../theme/useThemeColors'
+import SidebarTrigger from '../sidebar/SidebarTrigger'
 
 export default function PageContainer({ children, style }) {
   const { colors: theme } = useThemeColors()
@@ -17,6 +18,7 @@ export default function PageContainer({ children, style }) {
         style,
       ]}
     >
+      <SidebarTrigger />
       {children}
     </View>
   )
