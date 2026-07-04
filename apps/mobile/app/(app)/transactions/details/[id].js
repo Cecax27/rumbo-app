@@ -88,7 +88,7 @@ export default function TransactionDetails() {
 
   const handleReturn = (result) => {
     if (result === true) {
-      router.replace('/(tabs)/transactions');
+      router.replace('/(app)/transactions');
     } else if (result && result.message) {
       Alert.alert(
         t('common.error'),

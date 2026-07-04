@@ -109,7 +109,7 @@ export default function HomeScreen() {
                 data={accountsWithAddCard}
                 renderItem={({ item }) => {
                     if (item.isAddButton) {
-                        return <AddAccountCard onClick={() => router.push('/(tabs)/accounts/newaccount')} />;
+                        return <AddAccountCard onClick={() => router.push('/(app)/accounts/newaccount')} />;
                     }
                     return <Account account={item} isSelected={item.id === accountsWithAddCard[selectedIndex].id} />;
                 }}

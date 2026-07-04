@@ -46,7 +46,7 @@ export default function Index() {
       checkWelcomeSeen()
         .then((welcomeSeen) => {
           if (welcomeSeen) {
-            router.replace("/(tabs)/");
+            router.replace("/(app)/");
           } else {
             router.replace("/welcome");
           }

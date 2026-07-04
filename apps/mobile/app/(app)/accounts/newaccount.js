@@ -60,7 +60,7 @@ export default function NewAccount() {
   }, []);
 
   const onClose = useCallback(() => {
-    router.replace("/(tabs)/accounts");
+    router.replace("/(app)/accounts");
   }, [router]);
 
   useEffect(() => {

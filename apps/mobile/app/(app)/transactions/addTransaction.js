@@ -44,7 +44,7 @@ export default function AddTransaction() {
        getAccounts().then((accounts) => {
             if (accounts.length === 0) {
                 Alert.alert(t('common.error'), t('transactions.error.noAccounts'))
-                router.replace('/(tabs)/accounts/newaccount')
+                router.replace('/(app)/accounts/newaccount')
             }
             setAccounts(accounts)
         })
@@ -87,7 +87,7 @@ export default function AddTransaction() {
     }
 
     const onClose = () => {
-        router.replace('/(tabs)/transactions')
+        router.replace('/(app)/transactions')
     }
 
     return (

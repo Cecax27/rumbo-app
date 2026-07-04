@@ -58,7 +58,7 @@ export default function EditAccount () {
     }, [params.id])
 
     const onClose = useCallback(() => {
-        router.replace('/(tabs)/accounts')
+        router.replace('/(app)/accounts')
     }, [router])
 
     useEffect(() => {

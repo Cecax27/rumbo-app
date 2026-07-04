@@ -90,7 +90,7 @@ export default function Transactions() {
                         <MaterialCommunityIcons name="ray-start-arrow" size={20} color={theme.background}/>
                         <Text style={{fontSize:12, fontFamily:'Montserrat-SemiBold', color:theme.background}}>{t('transactions.types.transfer')}</Text>
                     </View>}
-                onPress={()=>{router.push('/(tabs)/transactions/addTransaction?type=transfer')}}
+                onPress={()=>{router.push('/(app)/transactions/addTransaction?type=transfer')}}
               />
               <FloatActionButton.Item 
                 content={
@@ -98,7 +98,7 @@ export default function Transactions() {
                         <MaterialCommunityIcons name="wallet-plus" size={20} color={theme.background}/>
                         <Text style={{fontSize:12, fontFamily:'Montserrat-SemiBold', color:theme.background}}>{t('transactions.types.income')}</Text>
                     </View>}
-                onPress={()=>{router.push('/(tabs)/transactions/addTransaction?type=income')}}
+                onPress={()=>{router.push('/(app)/transactions/addTransaction?type=income')}}
               />
               <FloatActionButton.Item 
                 content={
@@ -106,7 +106,7 @@ export default function Transactions() {
                         <MaterialCommunityIcons name="shopping" size={20} color={theme.background}/>
                         <Text style={{fontSize:12, fontFamily:'Montserrat-SemiBold', color:theme.background}}>{t('transactions.types.spending')}</Text>
                     </View>}
-                onPress={()=>{router.push('/(tabs)/transactions/addTransaction?type=spending')}}
+                onPress={()=>{router.push('/(app)/transactions/addTransaction?type=spending')}}
               />
           </FloatActionButton>
       </View>

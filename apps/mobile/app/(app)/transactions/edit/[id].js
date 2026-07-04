@@ -93,7 +93,7 @@ export default function EditTransaction() {
     }
 
     const onClose = () => {
-        router.replace('/(tabs)/transactions')
+        router.replace('/(app)/transactions')
     }
 
     return (

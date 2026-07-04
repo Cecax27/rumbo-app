@@ -21,7 +21,7 @@ export default function Welcome() {
 
   const handleGetStarted = async () => {
     await setWelcomeSeen();
-    router.replace("/(tabs)/accounts/");
+    router.replace("/(app)/accounts/");
   };
 
   return (
