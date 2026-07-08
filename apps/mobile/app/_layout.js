@@ -5,6 +5,7 @@ import 'react-native-url-polyfill/auto'
 import { Slot, useRouter } from 'expo-router';
 import ThemeProvider from '../theme/ThemeProvider';
 import * as Linking from 'expo-linking';
+import { supabase } from '../lib/supabase/client';
 
 export default function RootLayout() {
   const router = useRouter()
@@ -40,6 +41,12 @@ export default function RootLayout() {
     }
     loadFonts();
 
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        router.replace('/updatePassword');
+      }
+    });
+
     const subscription = Linking.addEventListener('url', ({ url }) => {
       if (url.includes('/auth/callback')) {
         // Aquí manejas la sesión con Supabase
@@ -50,6 +57,10 @@ export default function RootLayout() {
         subscription.remove();
       };
     });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
 
   }, []);
 

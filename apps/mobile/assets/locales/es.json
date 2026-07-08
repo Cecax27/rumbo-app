@@ -57,7 +57,20 @@
   "login": {
     "title": "Hola otra vez",
     "button": "Iniciar sesión",
-    "create-account": "¿No tienes cuenta? Crea una"
+    "create-account": "¿No tienes cuenta? Crea una",
+    "forgot-password": "¿Olvidaste tu contraseña?"
+  },
+  "forgot-password": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.",
+    "button": "Enviar enlace",
+    "success": "Si existe una cuenta con ese correo, se ha enviado un enlace de restablecimiento."
+  },
+  "update-password": {
+    "title": "Nueva contraseña",
+    "subtitle": "Ingresa tu nueva contraseña abajo.",
+    "button": "Actualizar contraseña",
+    "success": "Tu contraseña ha sido actualizada. Ahora puedes iniciar sesión con tu nueva contraseña."
   },
   "dashboard": {
     "title": "Panel de Control",

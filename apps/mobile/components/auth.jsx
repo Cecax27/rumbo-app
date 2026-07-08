@@ -79,6 +79,11 @@ export default function Auth() {
               accessibilityLabel="Password input"
               clear={false}
             />
+            <Link href="/forgotPassword">
+              <Text className="text-text font-semibold text-sm">
+                {t("login.forgot-password")}
+              </Text>
+            </Link>
             <Button
               title={t("login.button")}
               disabled={loading}
