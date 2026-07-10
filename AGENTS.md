@@ -51,6 +51,22 @@
 
 When implementing a feature, check `spec/features/` for an existing spec; if absent, create one following the `NNN-name/` convention before writing code.
 
+## Workflow for a New Feature
+
+1. Create `features/NNN-feature-name/` with the next available number (`001`, `002`, …).
+
+2. Write `spec.md`: what it does, why, and measurable acceptance criteria.
+
+3. Write `plan.md`: technical approach and decisions, respecting `constitution/tech-stack.md`.
+
+4. Break down tasks into `tasks.md` and mark progress.
+
+5. Implement and validate (build/tests/lint or as defined in the constitution).
+
+6. Update `constitution/roadmap.md` (move the feature to "Done").
+
+> The constitution takes precedence: if a feature conflicts with `mission.md` or `tech-stack.md`, the feature is redesigned, not the constitution.
+
 ## Architecture notes
 
 ### Mobile (`apps/mobile`)

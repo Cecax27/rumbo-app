@@ -22,6 +22,7 @@ import { useThemeColors } from "../theme/useThemeColors";
 import LanguageSelector from "../components/languageSelector";
 import { useTranslation } from "react-i18next";
 import { failIf, validateEmail } from "../lib/utils";
+import { checkWelcomeSeen } from "../lib/welcomeSeen";
 import Input from "../components/input";
 import Snackbar from "../components/Snackbar";
 import Button from "../components/button";
@@ -93,6 +94,7 @@ export default function SignUp() {
     } = await supabase.auth.signUp({
       email,
       password,
+      options: { emailRedirectTo: "rumbo://auth/callback" },
     });
 
     if (error) {
@@ -105,7 +107,12 @@ export default function SignUp() {
       setLoading(false);
       return;
     }
-    if (!session) router.replace("checkEmail");
+    if (!session) {
+      router.replace("checkEmail");
+    } else {
+      const welcomeSeen = await checkWelcomeSeen();
+      router.replace(welcomeSeen ? "/(app)/" : "/welcome");
+    }
     Vibration.vibrate([0, 400, 300, 800]);
     setLoading(false);
   }
