@@ -35,24 +35,31 @@ export default function Index() {
 
   useEffect(() => {
     setLoading(true);
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      setLoading(false);
+
+      if (currentSession) {
+        checkWelcomeSeen()
+          .then((welcomeSeen) => {
+            if (welcomeSeen) {
+              router.replace("/(app)/");
+            } else {
+              router.replace("/welcome");
+            }
+          })
+          .catch((error) => console.log(error));
+      }
     });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
     });
-    setLoading(false);
-    if (session) {
-      checkWelcomeSeen()
-        .then((welcomeSeen) => {
-          if (welcomeSeen) {
-            router.replace("/(app)/");
-          } else {
-            router.replace("/welcome");
-          }
-        })
-        .catch((error) => console.log(error));
-    }
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   return (

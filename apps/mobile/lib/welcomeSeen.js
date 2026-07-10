@@ -1,8 +1,9 @@
 import { supabase } from './supabase/client';
 
 export const checkWelcomeSeen = async () => {
-  const { data } = await supabase.from('profiles').select('welcome').single();
-  return data.welcome;
+  const { data, error } = await supabase.from('profiles').select('welcome').single();
+  if (error || !data) return false;
+  return data.welcome === true || data.welcome === 'true';
 };
 
 export const setWelcomeSeen = async () => { 
