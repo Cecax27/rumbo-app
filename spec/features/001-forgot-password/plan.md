@@ -69,9 +69,10 @@ Two new public routes under `apps/web/src/app/`, plus wiring the existing login 
   - (keep the existing `rumbo://update-password` for mobile)
 - **Auth → Email Templates → Reset Password**: replace the default template with the HTML in `spec/features/001-forgot-password/email-template.html`. The template must use `{{ .RedirectTo }}` for the button/link so Supabase substitutes the platform-appropriate redirect URL (web origin for web requests, `rumbo://update-password` for mobile requests).
 
-### Email template
+### Email templates
 
-- `spec/features/001-forgot-password/email-template.html` — brand-aligned Rumbo HTML email. Spanish copy matching mobile strings (`forgot-password.*` keys in `apps/mobile/assets/locales/{en,es}.json`). Single CTA button linking to `{{ .RedirectTo }}`, with a plain-text fallback link below it, and a "didn't request this change" footer line.
+- `spec/features/001-forgot-password/email-template.html` — brand-aligned Rumbo HTML email. Spanish copy matching mobile strings (`forgot-password.*` keys in `apps/mobile/assets/locales/{en,es}.json`). Single CTA button linking to `{{ .RedirectTo }}`, with a plain-text fallback link below it, and a "didn't request this change" footer line. Paste into Supabase dashboard → Auth → Email Templates → Reset Password.
+- `spec/features/001-forgot-password/email-template-password-changed.html` — notification sent after the password is successfully updated. No CTA; informational only. Includes security advisory ("if you didn't make this change, contact us"). Supabase Auth does not send this automatically — it requires a manual trigger (edge function, database webhook, or calling `supabase.auth.admin` / an email service after `updateUser`).
 
 ## Decisions
 

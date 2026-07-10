@@ -11,6 +11,8 @@
 - [x] Write the email with html to put on the supabase template. (`email-template.html`)
 - [x] Use Spanish copy matching the mobile `forgot-password.*` keys (`apps/mobile/assets/locales/{en,es}.json`).
 - [x] Confirm the CTA button uses `{{ .RedirectTo }}` and a plain-text fallback link is included.
+- [x] Write password-changed notification email (`email-template-password-changed.html`). Spanish copy, Rumbo branding, security advisory footer.
+- [ ] Supabase dashboard: configure a hook/trigger/edge function to send `email-template-password-changed.html` after `updateUser({ password })` (Supabase Auth does not automatically send this email; it must be triggered manually or via database webhook).
 
 ## Supabase dashboard config (manual — not in repo)
 

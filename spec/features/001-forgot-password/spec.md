@@ -18,6 +18,7 @@ Because its ussual users forgot their passwords.
 - [ ] The user receives an email with a link to reset theirs passwords.
 - [ ] The link redirect users to the web or mobile app and let users write new password.
 - [ ] Once the password is reset, the users have feedback, and can login.
+- [ ] The user receives a notification email when their password is successfully changed.
 
 ## Out of reach
 
