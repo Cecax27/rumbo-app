@@ -30,6 +30,7 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (values: ForgotPasswordValues) => {
     try {
       const redirectTo = `${window.location.origin}/reset-password`;
+      console.log(`[forgot-password] Sending reset email with redirectTo: ${redirectTo}`);
       const { error } = await resetPasswordForEmail(values.email, { redirectTo });
       if (error) {
         console.error("Error sending reset email:", error.message);

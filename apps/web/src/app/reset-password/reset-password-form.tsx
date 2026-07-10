@@ -40,25 +40,80 @@ export default function ResetPasswordForm() {
   });
 
   useEffect(() => {
-    const exchangeCode = async () => {
+    let cancelled = false;
+
+    const establishSession = async () => {
       const code = searchParams.get("code");
-      if (!code) {
+
+      // 1. Try PKCE code exchange (primary path for web)
+      if (code) {
+        try {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (!exchangeError && !cancelled) {
+            setReady(true);
+            setExchanging(false);
+            return;
+          }
+        } catch {
+          // code exchange failed, fall through to next method
+        }
+      }
+
+      // 2. Try parsing hash fragment (classic implicit flow: #access_token=...&refresh_token=...&type=recovery)
+      if (typeof window !== "undefined" && window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        const type = params.get("type");
+
+        if (accessToken && refreshToken && type === "recovery") {
+          try {
+            const { error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (!sessionError && !cancelled) {
+              setReady(true);
+              setExchanging(false);
+              return;
+            }
+          } catch {
+            // setSession failed, fall through
+          }
+        }
+      }
+
+      // 3. Check if PASSWORD_RECOVERY already established a session
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData.session && !cancelled) {
+        setReady(true);
         setExchanging(false);
-        setError("Enlace inválido o expirado. Solicita un nuevo restablecimiento.");
         return;
       }
 
-      try {
-        await supabase.auth.exchangeCodeForSession(code);
-        setReady(true);
-      } catch {
+      // 4. Nothing worked — show error
+      if (!cancelled) {
+        setExchanging(false);
         setError("Enlace inválido o expirado. Solicita un nuevo restablecimiento.");
       }
-
-      setExchanging(false);
     };
 
-    exchangeCode();
+    establishSession();
+
+    // 5. Listen for real-time PASSWORD_RECOVERY event (Supabase client may emit it asynchronously)
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" && !cancelled) {
+        setReady(true);
+        setExchanging(false);
+        setError(null);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      authListener.subscription.unsubscribe();
+    };
   }, [searchParams]);
 
   const handleSubmit = async (values: ResetPasswordValues) => {
