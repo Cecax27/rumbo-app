@@ -10,24 +10,29 @@ const resources = {
   'en': { translation: en},
 }
 
-const initI18n = async () => {
+let _ready = false;
+const _readyPromise = (async () => {
   try {
-    const lang = Localization.getLocales()[0].languageTag.split('-')[0];
+    const locales = Localization.getLocales();
+    const lang = (locales && locales[0] ? locales[0].languageTag : 'en').split('-')[0];
     await i18n
-      .use(initReactI18next)  
+      .use(initReactI18next)
       .init({
         lng: lang,
         fallbackLng: 'en',
-        interpolation:{
+        interpolation: {
           escapeValue: false,
         },
         resources,
-      })
+      });
+    _ready = true;
   } catch (error) {
-    
+    _ready = true;
+    console.warn('i18n init failed, falling back to en:', error);
   }
-}
+})();
 
-initI18n()
+i18n.isReady = () => _ready;
+i18n.ready = _readyPromise;
 
 export default i18n;

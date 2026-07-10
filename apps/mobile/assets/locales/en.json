@@ -57,7 +57,20 @@
   "login": {
     "title": "Welcome again",
     "button": "Sign in",
-    "create-account": "Don't have an account? Sign up"
+    "create-account": "Don't have an account? Sign up",
+    "forgot-password": "Forgot password?"
+  },
+  "forgot-password": {
+    "title": "Reset password",
+    "subtitle": "Enter your email and we'll send you a link to reset your password.",
+    "button": "Send reset link",
+    "success": "If an account with that email exists, a password reset link has been sent."
+  },
+  "update-password": {
+    "title": "New password",
+    "subtitle": "Enter your new password below.",
+    "button": "Update password",
+    "success": "Your password has been updated. You can now sign in with your new password."
   },
   "dashboard": {
     "title": "Dashboard",

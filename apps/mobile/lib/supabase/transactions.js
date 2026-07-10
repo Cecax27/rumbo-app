@@ -185,6 +185,7 @@ export const getSpendingsTable = async (
 
 if (error) {
   console.error('Error al obtenfer gastos:', error);
+  return [];
 } else {
   return data
 }

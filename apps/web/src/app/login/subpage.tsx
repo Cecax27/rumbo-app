@@ -75,7 +75,7 @@ export default function LoginPage() {
               className="border-neutral-400 border rounded-lg px-2 py-1"
             />
             {mode === "login" && (
-              <Button href="" secondary className="text-sm">
+              <Button href="/forgot-password" secondary className="text-sm">
                 Olvidé mi contraseña
               </Button>
             )}

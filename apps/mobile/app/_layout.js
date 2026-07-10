@@ -5,6 +5,8 @@ import 'react-native-url-polyfill/auto'
 import { Slot, useRouter } from 'expo-router';
 import ThemeProvider from '../theme/ThemeProvider';
 import * as Linking from 'expo-linking';
+import { supabase } from '../lib/supabase/client';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 export default function RootLayout() {
   const router = useRouter()
@@ -15,18 +17,15 @@ export default function RootLayout() {
     async function loadFonts() {
       try {
         await Font.loadAsync({
-          // Quicksand – titles
           'Quicksand-Regular': require('../assets/fonts/Quicksand-Regular.ttf'),
           'Quicksand-Bold': require('../assets/fonts/Quicksand-Bold.ttf'),
           'Quicksand-SemiBold': require('../assets/fonts/Quicksand-SemiBold.ttf'),
           'Quicksand-Medium': require('../assets/fonts/Quicksand-Medium.ttf'),
           'Quicksand-Light': require('../assets/fonts/Quicksand-Light.ttf'),
-          // Montserrat – kept for backwards compatibility
           'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
           'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
           'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
           'Montserrat-Medium': require('../assets/fonts/Montserrat-Medium.ttf'),
-          // Inter – body text (loaded via direct TTF paths to avoid broken package index)
           'Inter_400Regular': require('@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf'),
           'Inter_500Medium': require('@expo-google-fonts/inter/500Medium/Inter_500Medium.ttf'),
           'Inter_600SemiBold': require('@expo-google-fonts/inter/600SemiBold/Inter_600SemiBold.ttf'),
@@ -40,16 +39,22 @@ export default function RootLayout() {
     }
     loadFonts();
 
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        router.replace('/updatePassword');
+      }
+    });
+
     const subscription = Linking.addEventListener('url', ({ url }) => {
       if (url.includes('/auth/callback')) {
-        // Aquí manejas la sesión con Supabase
-        router.replace('/'); 
+        router.replace('/');
       }
-
-      return () => {
-        subscription.remove();
-      };
     });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+      subscription.remove();
+    };
 
   }, []);
 
@@ -59,8 +64,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <Slot />
-      
+      <ErrorBoundary>
+        <Slot />
+      </ErrorBoundary>
     </ThemeProvider>
   );
 }

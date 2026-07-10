@@ -35,6 +35,22 @@
 - **Packages**: extend `@repo/eslint-config/react-internal` or `@repo/eslint-config/base`.
 - The shared base config uses `eslint-plugin-only-warn` — ESLint errors are downgraded to warnings (repo convention to not block dev).
 
+## Spec folder (`spec/`)
+
+> For opencode agents reference only — not application code. Read these before starting work on a feature.
+
+- `spec/constitution/` — project foundation docs:
+  - `mission.md` — product purpose, target users, principles, non-goals.
+  - `roadmap.md` — versioned roadmap (V0.1 → V1.0) + backlog. Convention: each new feature is scaffolded as `spec/features/NNN-name/` with `spec.md`, `plan.md`, `tasks.md` **before any code is touched**.
+  - `tech-stack.md` — canonical tech stack, file map, commands, data models, conventions, visual style, and hard limits. May overlap with this file but is more detailed.
+- `spec/features/NNN-name/` — per-feature specs:
+  - `spec.md` — feature requirements.
+  - `plan.md` — approach, implementation notes, decisions, risks.
+  - `tasks.md` — checklist of work items.
+  - Current feature in progress: `001-forgot-password` (reset password via Supabase Auth, cross web/mobile redirect).
+
+When implementing a feature, check `spec/features/` for an existing spec; if absent, create one following the `NNN-name/` convention before writing code.
+
 ## Architecture notes
 
 ### Mobile (`apps/mobile`)
