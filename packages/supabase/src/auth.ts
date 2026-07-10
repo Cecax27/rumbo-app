@@ -15,3 +15,11 @@ export const getSession = async () => {
 export const signOut = async () => {
   return await supabase.auth.signOut()
 }
+
+export const resetPasswordForEmail = async (email: string, options?: { redirectTo?: string }) => {
+  return await supabase.auth.resetPasswordForEmail(email, options ?? {})
+}
+
+export const updateUserPassword = async (password: string) => {
+  return await supabase.auth.updateUser({ password })
+}
