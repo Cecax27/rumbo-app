@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import type { MockPath, MockProgress } from "@/app/app/learning/mock-data"
+import ProgressBadge from "./ProgressBadge"
 
 interface TopicCardProps {
   topic: MockPath["topics"][number]
@@ -12,6 +13,11 @@ interface TopicCardProps {
 
 function TopicCard({ topic, progress, isLocked, blockingTopics }: TopicCardProps) {
   const tp = progress.topicStatus[topic.id]
+
+  const taskBlocks = topic.blocks.filter((b) => b.type === "task")
+  const completedTasks = taskBlocks.filter(
+    (b) => progress.taskStatus[b.id]?.status === "completed"
+  ).length
 
   const badge = isLocked
     ? { label: `Requiere: ${blockingTopics.join(", ")}`, color: "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400" }
@@ -36,6 +42,11 @@ function TopicCard({ topic, progress, isLocked, blockingTopics }: TopicCardProps
         </span>
       </div>
       <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">{topic.description}</p>
+      {taskBlocks.length > 0 && (
+        <div className="mt-2">
+          <ProgressBadge completed={completedTasks} total={taskBlocks.length} />
+        </div>
+      )}
     </div>
   )
 
