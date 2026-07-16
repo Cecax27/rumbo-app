@@ -4,6 +4,8 @@ import Link from "next/link"
 import type { MockTopic, MockBlock, MockProgress } from "@/app/app/learning/mock-data"
 import ConceptBlock from "./blocks/ConceptBlock"
 import ExplanationBlock from "./blocks/ExplanationBlock"
+import TipBlock from "./blocks/TipBlock"
+import WarningBlock from "./blocks/WarningBlock"
 
 function BlockRenderer({ block }: { block: MockBlock }) {
   const payload = block.payload
@@ -17,26 +19,10 @@ function BlockRenderer({ block }: { block: MockBlock }) {
       return <ExplanationBlock block={block} />
 
     case "tip":
-      return (
-        <div
-          className="border-l-4 rounded-r-lg p-4"
-          style={{ borderLeftColor: "#f6b23a", backgroundColor: "rgba(246,178,58,0.1)" }}
-        >
-          <h3 className="font-semibold">{payload.title}</h3>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-1">{payload.body}</p>
-        </div>
-      )
+      return <TipBlock block={block} />
 
     case "warning":
-      return (
-        <div
-          className="border-l-4 rounded-r-lg p-4"
-          style={{ borderLeftColor: "#f97316", backgroundColor: "rgba(249,115,22,0.1)" }}
-        >
-          <h3 className="font-semibold">{payload.title}</h3>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-1">{payload.body}</p>
-        </div>
-      )
+      return <WarningBlock block={block} />
 
     case "example":
       return (
