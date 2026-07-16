@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import type { MockTopic, MockBlock, MockProgress } from "@/app/app/learning/mock-data"
+import { MOCK_PROGRESS } from "@/app/app/learning/mock-data"
 import ConceptBlock from "./blocks/ConceptBlock"
 import ExplanationBlock from "./blocks/ExplanationBlock"
 import TipBlock from "./blocks/TipBlock"
@@ -9,9 +10,9 @@ import WarningBlock from "./blocks/WarningBlock"
 import ExampleBlock from "./blocks/ExampleBlock"
 import ReflectionBlock from "./blocks/ReflectionBlock"
 import ExerciseBlock from "./blocks/ExerciseBlock"
+import TaskBlock from "./blocks/TaskBlock"
 
 function BlockRenderer({ block }: { block: MockBlock }) {
-  const payload = block.payload
   const taskProgress = MOCK_PROGRESS.taskStatus[block.id]
 
   switch (block.type) {
@@ -37,64 +38,12 @@ function BlockRenderer({ block }: { block: MockBlock }) {
       return <ExerciseBlock block={block} />
 
     case "task":
-      return (
-        <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-lg">{payload.title}</h3>
-            {taskProgress && (
-              <span
-                className={`text-xs px-2 py-1 rounded-full font-medium ${
-                  taskProgress.status === "completed"
-                    ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                    : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300"
-                }`}
-              >
-                {taskProgress.status === "completed" ? "Completada" : "Pendiente"}
-              </span>
-            )}
-          </div>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-2">{payload.description}</p>
-          {block.taskDefinition && (
-            <div className="mt-2 text-xs text-neutral-400">
-              {block.taskDefinition.taskKind === "achievement" ? "Tarea de logro" : "Tarea de seguimiento"}
-              {" · "}
-              {block.taskDefinition.validationMode === "automatic" ? "Validación automática" : "Validación manual"}
-            </div>
-          )}
-          {block.taskDefinition && taskProgress?.status !== "completed" && (
-            <div className="mt-3 flex gap-2">
-              {block.taskDefinition.validationMode === "manual" && (
-                <button
-                  type="button"
-                  className="text-sm px-3 py-1 bg-navy-blue-50 dark:bg-navy-blue-900 rounded-md hover:bg-navy-blue-100 dark:hover:bg-navy-blue-800"
-                  onClick={() => console.log(`Tarea ${block.id} completada (placeholder)`)}
-                >
-                  Marcar como hecho
-                </button>
-              )}
-              {block.taskDefinition.validationMode === "automatic" && (
-                <button
-                  type="button"
-                  className="text-sm px-3 py-1 bg-navy-blue-50 dark:bg-navy-blue-900 rounded-md hover:bg-navy-blue-100 dark:hover:bg-navy-blue-800"
-                  onClick={() => console.log(`Verificando tarea ${block.id} (placeholder)`)}
-                >
-                  Verificar
-                </button>
-              )}
-            </div>
-          )}
-          {block.taskDefinition?.taskKind === "follow_up" && taskProgress?.evaluatedAt && (
-            <p className="text-xs text-neutral-400 mt-2">
-              Última revisión: {new Date(taskProgress.evaluatedAt).toLocaleDateString("es-MX")}
-            </p>
-          )}
-        </div>
-      )
+      return <TaskBlock block={block} taskProgress={taskProgress} />
 
     default:
       return (
         <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900 opacity-70">
-          <h3 className="font-semibold">{payload.title || "Bloque"}</h3>
+          <h3 className="font-semibold">{block.payload.title || "Bloque"}</h3>
           <p className="text-sm text-neutral-400 mt-1">Tipo de bloque no soportado: {block.type}</p>
         </div>
       )
