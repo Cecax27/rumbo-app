@@ -59,4 +59,6 @@ There is a lot of work done, but it was done in a disorganized way. So its impor
 
 - Import Expenses with AI
 
+- Automatic rules for categories. Ex. description with "amazon" is online purchase.
+
 > Each new feature is created as `spec/features/NNN-name/` with `spec.md`, `plan.md`, and `tasks.md` before any code is touched.
