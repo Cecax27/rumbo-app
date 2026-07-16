@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import Link from "next/link"
 import { MOCK_PATH, MOCK_PROGRESS } from "../mock-data"
 import TopicFlow from "@/components/learning/TopicFlow"
 
@@ -34,12 +35,12 @@ export default async function TopicPage({ params }: PageProps) {
             .join(", ")}{" "}
           antes de acceder a este tema.
         </p>
-        <a
+        <Link
           href="/app/learning"
           className="text-sm text-navy-blue-600 dark:text-navy-blue-400 hover:underline"
         >
           Volver al camino de aprendizaje
-        </a>
+        </Link>
       </div>
     )
   }
