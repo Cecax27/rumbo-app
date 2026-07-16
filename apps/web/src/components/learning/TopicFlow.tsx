@@ -6,6 +6,8 @@ import ConceptBlock from "./blocks/ConceptBlock"
 import ExplanationBlock from "./blocks/ExplanationBlock"
 import TipBlock from "./blocks/TipBlock"
 import WarningBlock from "./blocks/WarningBlock"
+import ExampleBlock from "./blocks/ExampleBlock"
+import ReflectionBlock from "./blocks/ReflectionBlock"
 
 function BlockRenderer({ block }: { block: MockBlock }) {
   const payload = block.payload
@@ -25,35 +27,10 @@ function BlockRenderer({ block }: { block: MockBlock }) {
       return <WarningBlock block={block} />
 
     case "example":
-      return (
-        <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900">
-          <span className="text-xs uppercase tracking-wide font-semibold text-teal-600 dark:text-teal-400">
-            Ejemplo
-          </span>
-          <h3 className="font-semibold text-lg mt-1">{payload.title}</h3>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-2">{payload.body}</p>
-        </div>
-      )
+      return <ExampleBlock block={block} />
 
     case "reflection":
-      return (
-        <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900">
-          <h3 className="font-semibold text-lg">{payload.title}</h3>
-          <p className="text-neutral-500 dark:text-neutral-400 mt-2 italic">{payload.prompt}</p>
-          <textarea
-            className="w-full mt-3 p-3 border rounded-md resize-none text-sm dark:bg-neutral-950 dark:border-neutral-700"
-            rows={3}
-            placeholder="Escribe tus reflexiones aquí..."
-          />
-          <button
-            type="button"
-            className="mt-2 text-sm px-3 py-1 bg-navy-blue-50 dark:bg-navy-blue-900 rounded-md hover:bg-navy-blue-100 dark:hover:bg-navy-blue-800"
-            onClick={() => console.log("Nota guardada (placeholder)")}
-          >
-            Guardar nota
-          </button>
-        </div>
-      )
+      return <ReflectionBlock block={block} />
 
     case "exercise":
       return (
