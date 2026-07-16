@@ -1,6 +1,8 @@
 "use client"
 
 import type { MockBlock } from "@/app/app/learning/mock-data"
+import AchievementTaskCard from "../cards/AchievementTaskCard"
+import FollowupTaskCard from "../cards/FollowupTaskCard"
 
 interface Props {
   block: MockBlock
@@ -12,64 +14,38 @@ interface Props {
 }
 
 export default function TaskBlock({ block, taskProgress }: Props) {
-  const payload = block.payload
-  const isCompleted = taskProgress?.status === "completed"
+  const def = block.taskDefinition
+  const status = taskProgress?.status ?? "pending"
+
+  const handleComplete = () => {
+    console.log(`Tarea ${block.id} completada (placeholder)`)
+  }
+
+  const handleEvaluate = () => {
+    console.log(`Verificando tarea ${block.id} (placeholder)`)
+  }
 
   return (
     <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-lg">{payload.title}</h3>
-        {taskProgress && (
-          <span
-            className={`text-xs px-2 py-1 rounded-full font-medium ${
-              isCompleted
-                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300"
-            }`}
-          >
-            {isCompleted ? "Completada" : "Pendiente"}
-          </span>
-        )}
-      </div>
-      <p className="text-neutral-600 dark:text-neutral-400 mt-2">{payload.description}</p>
-      {block.taskDefinition && (
-        <div className="mt-2 text-xs text-neutral-400">
-          {block.taskDefinition.taskKind === "achievement"
-            ? "Tarea de logro"
-            : "Tarea de seguimiento"}
-          {" · "}
-          {block.taskDefinition.validationMode === "automatic"
-            ? "Validación automática"
-            : "Validación manual"}
-        </div>
-      )}
-      {block.taskDefinition && !isCompleted && (
-        <div className="mt-3 flex gap-2">
-          {block.taskDefinition.validationMode === "manual" && (
-            <button
-              type="button"
-              className="text-sm px-3 py-1 bg-navy-blue-50 dark:bg-navy-blue-900 rounded-md hover:bg-navy-blue-100 dark:hover:bg-navy-blue-800"
-              onClick={() => console.log(`Tarea ${block.id} completada (placeholder)`)}
-            >
-              Marcar como hecho
-            </button>
-          )}
-          {block.taskDefinition.validationMode === "automatic" && (
-            <button
-              type="button"
-              className="text-sm px-3 py-1 bg-navy-blue-50 dark:bg-navy-blue-900 rounded-md hover:bg-navy-blue-100 dark:hover:bg-navy-blue-800"
-              onClick={() => console.log(`Verificando tarea ${block.id} (placeholder)`)}
-            >
-              Verificar
-            </button>
-          )}
-        </div>
-      )}
-      {block.taskDefinition?.taskKind === "follow_up" && taskProgress?.evaluatedAt && (
-        <p className="text-xs text-neutral-400 mt-2">
-          Última revisión:{" "}
-          {new Date(taskProgress.evaluatedAt).toLocaleDateString("es-MX")}
-        </p>
+      {def?.taskKind === "follow_up" ? (
+        <FollowupTaskCard
+          title={block.payload.title}
+          description={block.payload.description}
+          status={status}
+          validationMode={def.validationMode}
+          evaluatedAt={taskProgress?.evaluatedAt}
+          onComplete={def.validationMode === "manual" ? handleComplete : undefined}
+          onEvaluate={def.validationMode === "automatic" ? handleEvaluate : undefined}
+        />
+      ) : (
+        <AchievementTaskCard
+          title={block.payload.title}
+          description={block.payload.description}
+          status={status}
+          validationMode={def?.validationMode ?? "manual"}
+          onComplete={def?.validationMode === "manual" ? handleComplete : undefined}
+          onEvaluate={def?.validationMode === "automatic" ? handleEvaluate : undefined}
+        />
       )}
     </div>
   )
