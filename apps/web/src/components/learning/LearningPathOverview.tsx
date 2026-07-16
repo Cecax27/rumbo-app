@@ -3,6 +3,7 @@
 import Link from "next/link"
 import type { MockPath, MockProgress } from "@/app/app/learning/mock-data"
 import ProgressBadge from "./ProgressBadge"
+import EmptyState from "./EmptyState"
 
 interface TopicCardProps {
   topic: MockPath["topics"][number]
@@ -93,7 +94,14 @@ export default function LearningPathOverview({ path, progress }: Props) {
       </div>
 
       <div className="flex flex-col gap-4">
-        {path.topics.map((topic) => {
+        {path.topics.length === 0 ? (
+          <EmptyState
+            message="Aún no hay temas disponibles en este camino de aprendizaje."
+            actionLabel="Volver al inicio"
+            actionHref="/app/home"
+          />
+        ) : (
+          path.topics.map((topic) => {
           const isLocked =
             topic.dependsOn.length > 0 &&
             topic.dependsOn.some((depSlug) => {
@@ -116,7 +124,7 @@ export default function LearningPathOverview({ path, progress }: Props) {
               blockingTopics={blockingTopics}
             />
           )
-        })}
+        }))}
       </div>
     </div>
   )

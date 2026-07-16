@@ -11,6 +11,7 @@ import ExampleBlock from "./blocks/ExampleBlock"
 import ReflectionBlock from "./blocks/ReflectionBlock"
 import ExerciseBlock from "./blocks/ExerciseBlock"
 import TaskBlock from "./blocks/TaskBlock"
+import EmptyState from "./EmptyState"
 
 function BlockRenderer({ block }: { block: MockBlock }) {
   const taskProgress = MOCK_PROGRESS.taskStatus[block.id]
@@ -91,9 +92,13 @@ export default function TopicFlow({ topic, progress }: Props) {
       </div>
 
       <div className="flex flex-col gap-4">
-        {topic.blocks.map((block) => (
-          <BlockRenderer key={block.id} block={block} />
-        ))}
+        {topic.blocks.length === 0 ? (
+          <EmptyState message="Este tema aún no tiene contenido." />
+        ) : (
+          topic.blocks.map((block) => (
+            <BlockRenderer key={block.id} block={block} />
+          ))
+        )}
       </div>
     </div>
   )
