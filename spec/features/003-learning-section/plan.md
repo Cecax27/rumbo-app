@@ -4,14 +4,14 @@
 
 Build the Learning Engine as a **cross-functional capability** (not a single app section), per the spec's design considerations. The engine interprets content stored in the database, evaluates user progress, and coordinates with existing app actions (transactions, accounts, budgets). The UI is a thin visual layer over this engine.
 
-To allow step-by-step inspection, the feature is divided into **5 sequential phases**. Each phase produces a reviewable artifact and is inspected before the next begins. Phases 1 and 2 are design-only (no production code); Phase 3 is schema; Phase 4 is engine + data wiring; Phase 5 is end-to-end integration.
+To allow step-by-step inspection, the feature is divided into **5 sequential phases**. Each phase produces a reviewable artifact and is inspected before the next begins. **Phases 1 and 2 build the UI shell (routes, components, styling) with mock/dummy data** — the dev server must be runnable at the end of each to visually inspect the design. No backend wiring or real data fetching happens until Phase 5. Phase 3 is schema; Phase 4 is engine + types + data access; Phase 5 connects the engine to the UI built in 1 and 2.
 
 ```
-Phase 1 — Web UI design      (wireframes + component tree)
-Phase 2 — Mobile UI design   (screens + navigation map)
+Phase 1 — Web UI             (routes, components, styles, mock data — runnable dev server)
+Phase 2 — Mobile UI          (screens, navigation, styles, mock data — runnable Expo dev)
 Phase 3 — Database design    (Supabase schema + RLS + seed)
-Phase 4 — Engine             (types, queries, validators, progress, tests)
-Phase 5 — Integration        (web + mobile consume the engine)
+Phase 4 — Engine             (@repo/learning: types, queries, validators, progress, tests)
+Phase 5 — Integration        (wire engine into existing web + mobile UI, remove mocks)
 ```
 
 The engine lives in a **new package `@repo/learning`** so both apps consume the same typed surface and validation logic. This mirrors how `@repo/retirement-plan-calculation` isolates a calculation domain, and keeps `@repo/supabase` as a thin data-access layer (queries only, no domain rules).
@@ -35,60 +35,56 @@ Defined once; the DB schema, web UI, mobile UI, and engine all bind to it. The *
 
 ## Implementation
 
-### Phase 1 — Web UI design
+### Phase 1 — Web UI
 
-**Goal:** agree on the web learning layout, components, and routes before any styling code. Output: `phase-1-web-ui.md` (wireframes + component tree), no production code.
+**Goal:** build the learning UI shell on web with routes, components, and styling — backed by **hardcoded mock data**, no real Supabase calls. At the end of this phase, the dev server shows the learning screens fully styled and navigable via mock data.
 
 **Sub-steps (each inspectable):**
 
-1. **Route map** — recommendation: new authenticated branch `/app/learning/*` (sibling of `/app/transactions`, `/app/accounts`). Routes:
-   - `/app/learning` — path overview (topic list with status + dependency lock state).
-   - `/app/learning/[topicId]` — topic flow (free sequence of blocks).
-   - `/app/learning/[topicId]/[blockId]` — optional per-block deep-link anchor.
-   - No public routes (matches existing `/app/*` convention; no middleware added).
-2. **Sidebar entry** — new nav item in the authenticated sidebar. Icon: `GraduationCap` or `BookOpen` (Lucide). Position to confirm during review.
-3. **Path overview screen** — wireframe: header (path title, overall progress %), ordered list of topic cards. Each card: title, short description, status badge (not started / in progress / completed / locked-by-dependency), CTA. Locked topics visible but disabled, with a hint of what unblocks them.
-4. **Topic flow screen** — wireframe: vertical stack of content blocks rendered by `type`:
-   - concept/explanation -> prose card.
-   - tip -> highlighted callout (amber/emphasis).
-   - warning -> red/orange callout.
-   - example -> framed card with label.
-   - reflection -> prompt card with a notes field (storage open question, see Decisions).
-   - exercise -> placeholder interactive card (text for now; future home for quizzes/simulators).
-   - task -> task card (achievement or follow-up) with status + CTA "Marcar como hecho" (manual) or "Verificar" (automatic).
-5. **Task card component** — wireframe two variants:
-   - **Achievement**: title, description, status chip (pending/done), single CTA. Once done, stays done.
-   - **Follow-up**: title, description, status chip that may flip pending<->done over time, last-evaluated hint, CTA "Revisar ahora" (re-runs rule) or manual "Marcar".
-6. **Progress indicators** — overall path progress bar + per-topic progress. Whether block-level completion is tracked is an open question (see Decisions).
-7. **Empty / loading / error states** — wireframes for: no learning path assigned, network error, empty topic.
-8. **Component tree** (shadcn-based, implemented in Phase 5):
-   - `LearningPathOverview` -> `TopicCard[]`
-   - `TopicFlow` -> `ContentBlockRenderer[]` (dispatches on `block.type`)
-   - `ContentBlockRenderer` -> one of `ConceptBlock`, `TipBlock`, `WarningBlock`, `ExampleBlock`, `ReflectionBlock`, `ExerciseBlock`, `TaskBlock`
-   - `TaskBlock` -> `AchievementTaskCard` | `FollowupTaskCard`
-   - Shared primitives: `ProgressBadge`, `StatusChip`, `LockedOverlay`.
+1. **Sidebar entry** — add an "Aprende" nav item to the authenticated sidebar (`apps/web/src/app/ui/components/navigation.tsx`). The existing nav uses **MUI icons** (`@mui/icons-material`); pick one not already used (e.g. `School` or `AutoStories` — `MenuBook` is taken by Documentación). Position after Cuentas, before Ajustes. Links to `/app/learning`.
+2. **Mock data file** — create `apps/web/src/app/app/learning/mock-data.ts` with a hardcoded demo path + 2 topics (one unlocked, one locked behind a dependency) + ~5-6 blocks per topic covering all block types (concept, tip, warning, example, reflection, exercise, task) + 1 achievement task + 1 follow-up task. No Supabase imports. Pure JS/TS objects matching the entity shapes from the shared contract.
+3. **Filesystem routes** — create the route files under `apps/web/src/app/app/learning/`:
+   - `page.tsx` — `/app/learning` (path overview).
+   - `[topicId]/page.tsx` — `/app/learning/[topicId]` (topic flow).
+   - `[topicId]/[blockId]/page.tsx` — optional per-block anchor (deferred; create placeholder or skip — see tasks).
+4. **Path overview screen** (`page.tsx`) — server component wrapping `LearningPathOverview` client component. Renders a header (path title, progress), then an ordered list of `TopicCard`s from the mock data. Each card shows: title, description, status badge (not started / in progress / completed / locked), CTA linking to `[topicId]`. Locked topics show a hint of what unblocks them.
+5. **Topic flow screen** (`[topicId]/page.tsx`) — server component wrapping `TopicFlow` client component. Renders a vertical stack of `ContentBlock` components dispatched by `block.type`. The dispatch is a `switch` on `block.type` mapped to `ConceptBlock`, `TipBlock`, `WarningBlock`, `ExampleBlock`, `ReflectionBlock`, `ExerciseBlock`, `TaskBlock`. Props are the block's `payload` fields.
+6. **Block components** — build one shadcn-based component per block type under `apps/web/src/components/learning/`:
+   - `ConceptBlock` / `ExplanationBlock` — prose card with title + body.
+   - `TipBlock` — callout card with amber/emphasis background (`#f6b23a`).
+   - `WarningBlock` — callout card with orange/red background (`#f97316`).
+   - `ExampleBlock` — framed card with "Ejemplo" label.
+   - `ReflectionBlock` — prompt card with a `<textarea>` for notes (local state only, not persisted in this phase).
+   - `ExerciseBlock` — placeholder card (text content, frame for future interactivity).
+   - `TaskBlock` — dispatches to `AchievementTaskCard` or `FollowupTaskCard` based on `taskKind`.
+7. **Task card components** — two variants under `apps/web/src/components/learning/`:
+   - `AchievementTaskCard` — title, description, status chip (pending/done), a button for manual completion. Clicking the button flips local state only (no persistence). Once done, stays done.
+   - `FollowupTaskCard` — title, description, status chip (may flip), last-evaluated hint, a button "Verificar ahora" that simulates evaluation using mock data. Status can flip pending↔done for visual preview.
+8. **Progress indicators** — `ProgressBadge` component (topic-level progress: X/Y blocks done). Overall path progress bar (completed topics / total). Both computed from mock data.
+9. **Empty / loading / error states** — styled states for: no path assigned, network error placeholder, empty topic. Renderable via mock data flags.
+10. **Quality gates** — `pnpm run lint --filter=web` passes, `pnpm run check-types --filter=web` passes, `pnpm run build --filter=web` passes, dev server at `pnpm run dev --filter=web` is runnable and the learning screens are visually inspectable.
 
-**Deliverable:** `phase-1-web-ui.md`.
+**Deliverable:** working `/app/learning/*` routes on the web dev server, fully styled with mock data. CTA buttons may fire `console.log` or flip local state; no Supabase calls, no real task validation, no database reads/writes.
 
-### Phase 2 — Mobile UI design
+### Phase 2 — Mobile UI
 
-**Goal:** design the mobile learning experience respecting Expo Router v5 file-based routing and NativeWind v4. Output: `phase-2-mobile-ui.md`.
+**Goal:** build the learning UI shell on mobile with screens, navigation, and styling — backed by **the same mock data shapes** as Phase 1. At the end of this phase, the Expo dev server shows the learning screens fully styled and navigable via mock data.
 
 **Sub-steps:**
 
-1. **Navigation placement** — keep the 4 existing tabs (core financial tools); add learning as a Stack entry reachable from Dashboard via a card / "Aprende" button, OR as a modal/stack from Configuration. Preferred: Dashboard entry card + a Stack route `/(tabs)/learning/*`. To confirm during review.
-2. **Route map (Expo Router)** — proposed files under `apps/mobile/app/`:
-   - `app/(tabs)/learning/index.js` — path overview (scrollable list of topic cards).
-   - `app/(tabs)/learning/[topicId].js` — topic flow (vertical scroll of blocks).
-   - Optional `app/(tabs)/learning/[topicId]/[blockId].js` for deep-linking (deferred).
-3. **Path overview screen** — wireframe: `ScrollView`/`FlatList` of `TopicCard` components, header with overall progress. NativeWind styling consistent with Dashboard cards.
-4. **Topic flow screen** — wireframe: `ScrollView` of block components dispatched by type, same block-type semantics as web (both apps share the same data structure per acceptance criteria).
-5. **Task card variants** — same two variants (achievement / follow-up). Mobile uses `react-native-vector-icons` for status chips and `Alert` or in-card feedback instead of `sonner`.
-6. **Deep-link / back behavior** — confirm Stack header back button, and whether a learning session preserves scroll position on block navigation.
-7. **i18n strings** — list the new keys to add to `apps/mobile/assets/locales/{en,es}.json` under a `learning.*` namespace. Spanish-first copy, mirroring web copy (web is Spanish-hardcoded; mobile uses i18n).
-8. **Component tree** — NativeWind component breakdown mirroring web structure for parity: `LearningPathOverview`, `TopicFlow`, `BlockRenderer` + per-type block components, `TaskCard` with two variants.
+1. **Navigation placement** — keep the 4 existing tabs (core financial tools); add learning as a Stack route `/(tabs)/learning/*`. Entry point: a Dashboard card or "Aprende" button. To confirm during review. Route files:
+   - `app/(tabs)/learning/index.js` — path overview.
+   - `app/(tabs)/learning/[topicId].js` — topic flow.
+   - `app/(tabs)/learning/[topicId]/[blockId].js` — optional deep-link (deferred).
+2. **Mock data** — create `apps/mobile/lib/learning/mockData.js` using the same demo data shapes and values as the web mock.
+3. **Path overview screen** — `ScrollView`/`FlatList` of `TopicCard` components with progress. NativeWind styling consistent with Dashboard.
+4. **Topic flow screen** — `ScrollView` of block components dispatched by type, same block-types and semantics as web.
+5. **Block components** — build NativeWind components mirroring web: `ConceptBlock`, `TipBlock`, `WarningBlock`, `ExampleBlock`, `ReflectionBlock`, `ExerciseBlock`, `TaskBlock`. Uses `react-native-vector-icons` for status/aesthetic icons.
+6. **Task card variants** — `AchievementTaskCard` + `FollowupTaskCard`. Local state for status changes (same as web). Feedback via `Alert` or inline text instead of `sonner`.
+7. **i18n keys** — add `learning.*` namespace to `apps/mobile/assets/locales/{en,es}.json`.
+8. **Quality gates** — `expo lint` passes, `pnpm run start --filter=mobile` is runnable and the learning screens are visually inspectable.
 
-**Deliverable:** `phase-2-mobile-ui.md`.
+**Deliverable:** working `/(tabs)/learning/*` screens on the Expo dev server, fully styled with mock data. Same mock-data-fed behavior as web Phase 1.
 
 ### Phase 3 — Database design (Supabase)
 
@@ -139,22 +135,18 @@ Defined once; the DB schema, web UI, mobile UI, and engine all bind to it. The *
 
 ### Phase 5 — Integration (web + mobile)
 
-**Goal:** wire the engine into both apps using the Phase 1/2 UI designs. Each app is a separate, inspectable sub-step.
+**Goal:** replace mock data with real engine calls, wire `@repo/learning` data access into both apps, add real task validation, and remove all hardcoded mock data. The UI built in Phases 1 and 2 is wired to the engine built in Phase 4.
 
 **Sub-steps:**
 
-1. **Web — `LearningContext`** (`apps/web/src/contexts/LearningContext.tsx`) — new provider added to the `/app/*` layout's provider stack (`ToolsProvider > TransactionsProvider > AccountsProvider` -> add `LearningProvider`). Holds the current path, topics, progress; exposes `refresh`, `completeTaskManually`, `evaluateFollowups`. Mirrors existing context pattern.
-2. **Web — routes & components** (`apps/web/src/app/app/learning/`) — implement the Phase 1 component tree with shadcn primitives. Block-type dispatch via an exhaustive `switch` on `block.type` (enabled by Phase 4 discriminated unions). Spanish copy hardcoded inline per web convention.
-3. **Web — sidebar entry** — add the nav item (icon + label) to the authenticated sidebar.
-4. **Web — task interactions** — manual tasks call `completeTaskManually`; automatic tasks call `evaluateFollowups` and display the resulting status. Achievement tasks stay completed once done; follow-ups render the last-evaluated hint.
-5. **Mobile — learning hook** (`apps/mobile/lib/learning/`) — lighter than web: a `useLearning()` hook wrapping the same `@repo/learning` queries (mobile reuses the engine's data-access functions directly, mirroring `lib/supabase/*`).
-6. **Mobile — screens** (`apps/mobile/app/(tabs)/learning/`) — implement the Phase 2 screens. `ScrollView`-based block rendering, exhaustive `switch` on `block.type`. NativeWind styling consistent with Dashboard.
-7. **Mobile — i18n keys** — add `learning.*` namespace entries to `assets/locales/{en,es}.json`.
-8. **Mobile — tab nav or Dashboard entry** — per Phase 2 decision, add the navigation entry point.
-9. **Mobile — task interactions** — same semantics as web: manual complete, automatic evaluate, follow-up status display. Use `Alert` or inline feedback instead of `sonner`.
-10. **Cross-platform parity check** — verify both apps render the same demo topic identically and that a task completed on one platform reflects on the other (progress is server-side). Satisfies acceptance "both applications represent the content using the same data structure."
-
-**Deliverable:** web `/app/learning/*` fully wired; mobile `(tabs)/learning/*` fully wired; demo topic navigable end-to-end on both platforms.
+1. **Web — `LearningContext`** (`apps/web/src/contexts/LearningContext.tsx`) — new provider added to the `/app/*` layout's provider stack (`ToolsProvider > TransactionsProvider > AccountsProvider` -> add `LearningProvider`). Replaces the mock data imports with calls to `@repo/learning` queries. Exposes `refresh`, `completeTaskManually`, `evaluateFollowups`.
+2. **Web — replace mock data** — remove `apps/web/src/app/app/learning/mock-data.ts`. Update all components to read from `LearningContext` instead of the mock import.
+3. **Web — sidebar entry** — confirm the Phase 1 sidebar entry is correct (already built).
+4. **Web — task interactions** — wire task CTA buttons to `@repo/learning` functions: manual tasks call `upsertTaskProgress`; automatic tasks call the follow-up runner and upsert the result. Replace local `useState` with context state.
+5. **Mobile — learning hook** (`apps/mobile/lib/learning/`) — a `useLearning()` hook wrapping `@repo/learning` data-access functions. Replaces mock data imports.
+6. **Mobile — replace mock data** — remove mock data file. Update all screens to use `useLearning()`.
+7. **Mobile — task interactions** — same semantics as web: manual complete, automatic evaluate, follow-up status display. Wire to engine functions.
+8. **Cross-platform parity check** — verify both apps render the same demo topic and that a task completed on one platform is reflected on the other (progress is server-side).
 
 ---
 
@@ -168,7 +160,7 @@ Defined once; the DB schema, web UI, mobile UI, and engine all bind to it. The *
 - **Learning is an authenticated feature on both platforms** — no public routes, no middleware added (web has no `middleware.ts` and this feature doesn't introduce one).
 - **Learning is a sub-route, not a new 5th tab** (mobile) and a sibling `/app/learning/*` branch (web) — to be confirmed at the start of Phase 1 and Phase 2 respectively. Keeping the 4 core tabs preserves the existing information architecture.
 - **Initial follow-up evaluation is on-demand** ("Revisar ahora" button), not scheduled. Scheduled evaluation (Supabase Cron / Edge Function) is deferred, out of scope for this phase.
-- **Reflection notes storage** (open question): whether reflections get persisted as user notes is not required by any acceptance criterion. Decision for Phase 1: design the reflection card with a local-only notes field; persisting notes is deferred unless a later spec requires it.
+- **Reflection notes storage** (open question): whether reflections get persisted as user notes is not required by any acceptance criterion. Decision for Phase 1: build the reflection card with a local-only notes field (`<textarea>` on web, `TextInput` on mobile); persisting notes is deferred unless a later spec requires it.
 - **Spanish-first copy**: web is hardcoded Spanish inline (web convention); mobile uses the i18n `learning.*` namespace. Both apps display the same Spanish copy in this phase.
 - **No new dependencies expected**: web already has shadcn, react-hook-form, zod, sonner, lucide-react. Mobile already has react-native-vector-icons, i18next, NativeWind. `@repo/learning` adds no runtime deps beyond `@repo/supabase` (already present) and Vitest dev-dep (already in repo).
 

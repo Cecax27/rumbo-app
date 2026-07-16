@@ -1,90 +1,126 @@
-# 003 - Phase 1: Web UI design
+# 003 - Phase 1: Web UI
 
-> **Scope of this file:** tasks for **Phase 1 only** (web UI design). Phase 1 is **design-only** — no production code is written. The deliverable is the document `spec/features/003-learning-section/phase-1-web-ui.md` containing wireframes, a route map, and a component tree. Implementation of these designs happens in Phase 5.
+> **Scope:** build the learning UI shell on web — routes, components, styling — backed by hardcoded mock data. No Supabase calls, no real task validation, no database reads/writes. At the end, `pnpm run dev --filter=web` shows the learning screens fully styled and navigable.
 >
-> Each section ends with a **Review checkpoint** so the work can be inspected one piece at a time before continuing, per the user's step-by-step preference.
+> Each task is a separate commit on `feat/learning-section-phase-1`. The user reviews each commit before continuing.
 
 ## Spec & docs
 
-- [ ] Create `spec/features/003-learning-section/phase-1-web-ui.md` with the section scaffolding (headings matching the 8 sub-steps of Phase 1 in `plan.md`).
-- [ ] Review: confirm the scaffold covers all Phase 1 sub-steps (route map, sidebar entry, path overview, topic flow, task card, progress, states, component tree).
+- [ ] Fill `spec/features/003-learning-section/plan.md` (Phase 1 updated to production code, not design-only).
+- [ ] Fill `spec/features/003-learning-section/phase_01_tasks.md` (this file).
 
-## 1. Route map
+## 1. Sidebar entry
 
-- [ ] Define the authenticated route branch `/app/learning/*` as a sibling of `/app/transactions`, `/app/accounts` (under `apps/web/src/app/app/learning/`).
-- [ ] List the routes:
-  - `/app/learning` — path overview (topic list with status + dependency lock state).
-  - `/app/learning/[topicId]` — topic flow (free sequence of blocks).
-  - `/app/learning/[topicId]/[blockId]` — optional per-block deep-link anchor.
-- [ ] Confirm no public routes (matches existing `/app/*` convention; no `middleware.ts` added).
-- [ ] Review checkpoint.
+- [ ] Add an "Aprende" nav item to `apps/web/src/app/ui/components/navigation.tsx`.
+- [ ] Pick an MUI icon not already used: candidates `School` or `AutoStories` (`MenuBook` is taken by Documentación).
+- [ ] Position: after "Cuentas", before "Ajustes".
+- [ ] Link to `/app/learning`.
+- [ ] Use the existing `Item` component pattern (same styles, `figtree` font, active highlighting).
 
-## 2. Sidebar entry
+## 2. Mock data
 
-- [ ] Wireframe the new nav item in `apps/web/src/app/ui/components/navigation.tsx`.
-- [ ] Note icon source: the existing nav uses **MUI icons** via `@mui/icons-material` (`Dashboard`, `SwapHoriz`, `AccountBalanceWallet`, `Settings`, `MenuBook`), **not** Lucide. Pick an MUI icon that isn't already used — e.g. `School` or `AutoStories` (`MenuBook` is taken by Documentación).
-- [ ] Decide the item's position in the list (after Cuentas / before Ajustes is the leading candidate; confirm at review).
-- [ ] Decide the Spanish label (candidates: "Aprende", "Aprendizaje", "Lecciones").
-- [ ] Review checkpoint.
+- [ ] Create `apps/web/src/app/app/learning/mock-data.ts`.
+- [ ] Define TS interfaces inline: `Topic`, `ContentBlock`, `TaskDefinition`, `UserProgress` (subset of the future `@repo/learning` types — just enough for the UI).
+- [ ] Export a `MOCK_PATH` object with:
+  - `title`: "Tu camino financiero"
+  - 2 topics: "Presupuesto" (unlocked) and "Fondo de emergencia" (locked, depends on "Presupuesto").
+  - Each topic has 5–8 blocks covering all types: concept, tip, warning, example, reflection, exercise, task.
+  - "Presupuesto" includes 1 achievement task ("Crear tu primer presupuesto") and 1 follow-up task ("Registrar ingresos este mes").
+- [ ] Export `MOCK_PROGRESS` object with hardcoded statuses (Presupuesto = in_progress, some tasks pending, some completed).
+- [ ] No Supabase imports. Pure TS objects.
 
-## 3. Path overview screen
+## 3. Filesystem routes
 
-- [ ] Wireframe the header: path title + overall progress %.
-- [ ] Wireframe the `TopicCard` component:
-  - [ ] Topic title + short description.
-  - [ ] Status badge: `not_started` / `in_progress` / `completed` / `locked-by-dependency`.
-  - [ ] CTA button (label depends on status).
-  - [ ] Locked state: card visible but disabled, with a hint of which prerequisite unblocks it.
-- [ ] Wireframe the ordered list of `TopicCard`s (the recommended path order).
-- [ ] Review checkpoint.
+- [ ] Create `apps/web/src/app/app/learning/page.tsx` — server component skeleton. Import and render `<LearningPathOverview mockData={MOCK_PATH} progress={MOCK_PROGRESS} />`.
+- [ ] Create `apps/web/src/app/app/learning/[topicId]/page.tsx` — server component. Read `topicId` from params, find the topic in `MOCK_PATH`, render `<TopicFlow topic={topic} progress={MOCK_PROGRESS} />`. If topic not found, render the "topic not found" error state component.
+- [ ] `[blockId]` deep-link route is deferred (skip for now; file not created).
+- [ ] Verify the routes are reachable from the sidebar (Task 1) and build correctly.
 
-## 4. Topic flow screen
+## 4. Path overview screen
 
-- [ ] Wireframe the vertical stack of content blocks (free sequence, no rigid sections).
-- [ ] Wireframe each block type:
-  - [ ] `concept` / `explanation` → prose card.
-  - [ ] `tip` → highlighted callout (amber/emphasis color `#f6b23a`).
-  - [ ] `warning` → red/orange callout (`#f97316`).
-  - [ ] `example` → framed card with a label.
-  - [ ] `reflection` → prompt card with a notes field. **Open question to record:** whether reflection notes are persisted (decision deferred to Phase 3/4; for now design as local-only).
-  - [ ] `exercise` → placeholder interactive card (text-only for now; future home for quizzes/simulators).
-  - [ ] `task` → task card container (delegates to Phase 5 task component; see section 5).
-- [ ] Review checkpoint.
+- [ ] Create client component `apps/web/src/components/learning/LearningPathOverview.tsx`.
+- [ ] Props: `{ path: {...}, progress: {...} }`.
+- [ ] Renders: header with path title + overall progress bar (completed topics / total).
+- [ ] Renders an ordered list of `TopicCard` components (inline or imported).
+- [ ] Each `TopicCard` shows: title, description, status badge, CTA link to `/app/learning/[topicId]`.
+- [ ] Locked topics: visible but disabled/opacity-reduced, with a hint like "Requiere: Presupuesto".
+- [ ] Use shadcn primitives: `Card`, `Badge` (for status), `Progress` (for bar), `Button` (for CTA).
+- [ ] Spanish copy hardcoded inline.
 
-## 5. Task card component
+## 5. Topic flow screen
 
-- [ ] Wireframe the **achievement** task variant: title, description, status chip (`pending`/`done`), single CTA "Marcar como hecho" (manual) or "Verificar" (automatic). Once done, stays done.
-- [ ] Wireframe the **follow-up** task variant: title, description, status chip that may flip `pending`↔`done` over time, last-evaluated hint, CTA "Revisar ahora" (re-runs rule) or manual "Marcar".
-- [ ] Review checkpoint.
+- [ ] Create client component `apps/web/src/components/learning/TopicFlow.tsx`.
+- [ ] Props: `{ topic: Topic, progress: UserProgress }`.
+- [ ] Renders: topic title header, then a vertical stack of `ContentBlock` components.
+- [ ] Uses a `switch` on `block.type` to dispatch to the correct block component (see tasks 6–12).
+- [ ] If a block of unknown type, render a fallback card with the block title and a "Tipo de bloque no soportado" message.
+- [ ] Spanish copy hardcoded inline.
 
-## 6. Progress indicators
+## 6. Block components — conceptual blocks
 
-- [ ] Wireframe the overall path progress bar (completed topics / total).
-- [ ] Wireframe the per-topic progress indicator on each `TopicCard`.
-- [ ] Record the open question: **block-level vs topic-level completion tracking.** Per `plan.md` Decisions, the recommendation is topic-level + task-level only (no per-block completion table). Confirm or adjust here so Phase 3 can finalize.
-- [ ] Review checkpoint.
+- [ ] Create `apps/web/src/components/learning/blocks/ConceptBlock.tsx` — prose card. Title (bold, `Quicksand` font), body (paragraphs, `Figtree`/`Inter`).
+- [ ] Create `apps/web/src/components/learning/blocks/ExplanationBlock.tsx` — same as ConceptBlock (can share a base). Subtle left border accent (teal `#0fa3b1`).
+- [ ] Both use shadcn `Card` with appropriate padding and typography.
+- [ ] Spanish copy comes from `block.payload`.
 
-## 7. Empty / loading / error states
+## 7. Block components — callout blocks
 
-- [ ] Wireframe: no learning path assigned to the user.
-- [ ] Wireframe: network error fetching the path/topics.
-- [ ] Wireframe: empty topic (a topic with zero blocks — edge case).
-- [ ] Review checkpoint.
+- [ ] Create `apps/web/src/components/learning/blocks/TipBlock.tsx` — callout card with amber background (`#f6b23a` at low opacity), a lamp/lightbulb icon, and the tip text.
+- [ ] Create `apps/web/src/components/learning/blocks/WarningBlock.tsx` — callout card with orange/red background (`#f97316` at low opacity), a warning icon, and the warning text.
+- [ ] Both use shadcn `Card` with a left colored border and an icon from MUI (matching the nav pattern) or Lucide if simpler.
+- [ ] Spanish copy comes from `block.payload`.
 
-## 8. Component tree
+## 8. Block components — example & reflection
 
-- [ ] Document the shadcn-based component breakdown (to be implemented in Phase 5):
-  - [ ] `LearningPathOverview` → `TopicCard[]`
-  - [ ] `TopicFlow` → `ContentBlockRenderer[]` (dispatches on `block.type`)
-  - [ ] `ContentBlockRenderer` → one of `ConceptBlock`, `TipBlock`, `WarningBlock`, `ExampleBlock`, `ReflectionBlock`, `ExerciseBlock`, `TaskBlock`
-  - [ ] `TaskBlock` → `AchievementTaskCard` | `FollowupTaskCard`
-  - [ ] Shared primitives: `ProgressBadge`, `StatusChip`, `LockedOverlay`
-- [ ] Map each block type to its component and note the shadcn primitives it builds on (Card, Badge, Button, Progress, etc.).
-- [ ] Review checkpoint.
+- [ ] Create `apps/web/src/components/learning/blocks/ExampleBlock.tsx` — framed card with an "Ejemplo" label at the top, body text below.
+- [ ] Create `apps/web/src/components/learning/blocks/ReflectionBlock.tsx` — prompt card with a question, a `<textarea>` below for the user to write. Local state only (`useState`); no persistence. A "Guardar nota" button that just `console.log`-s the note (placeholder).
+- [ ] Both use shadcn `Card`.
 
-## Phase 1 closeout
+## 9. Block component — exercise
 
-- [ ] Full review of `phase-1-web-ui.md` against `plan.md` Phase 1 sub-steps — every sub-step covered.
-- [ ] Confirm all open questions are recorded for Phase 3 (DB) / Phase 4 (engine) to resolve.
-- [ ] Confirm **no production code was written** (design-only phase — no `pnpm run lint`/`check-types`/`build` gates apply yet).
-- [ ] Once approved, proceed to Phase 2 (`phase_02_tasks.md`).
+- [ ] Create `apps/web/src/components/learning/blocks/ExerciseBlock.tsx` — placeholder card. Title "Ejercicio", body text, a disabled area labeled "Interactividad próximamente" with a muted style. This is a future slot for quizzes/simulators.
+
+## 10. Task block wrapper
+
+- [ ] Create `apps/web/src/components/learning/blocks/TaskBlock.tsx`.
+- [ ] Props: block + task definition + current progress for this task.
+- [ ] If `taskKind === "achievement"` → render `AchievementTaskCard`.
+- [ ] If `taskKind === "follow_up"` → render `FollowupTaskCard`.
+- [ ] Otherwise → fallback card with "Tipo de tarea no soportado".
+
+## 11. Achievement task card
+
+- [ ] Create `apps/web/src/components/learning/cards/AchievementTaskCard.tsx`.
+- [ ] Props: title, description, status (`pending` | `completed`), `onComplete` callback.
+- [ ] Renders: title, description, status chip (green when done, amber when pending).
+- [ ] If pending: a button "Marcar como hecho". Click calls `onComplete` (which, for now, flips local state in the mock — Phase 1 only).
+- [ ] If completed: no button, a checkmark + "Completado" text.
+- [ ] Once done, stays done (button disappears permanently while the component is mounted).
+
+## 12. Follow-up task card
+
+- [ ] Create `apps/web/src/components/learning/cards/FollowupTaskCard.tsx`.
+- [ ] Props: title, description, status (`pending` | `completed`), `evaluatedAt` (nullable), `onEvaluate` callback.
+- [ ] Renders: title, description, status chip (may flip), "Última revisión: <evaluatedAt>" hint.
+- [ ] Button "Revisar ahora" — calls `onEvaluate` which simulates evaluation by toggling status locally (mock behavior).
+- [ ] Status can flip pending ↔ done for visual preview (simulates follow-up re-evaluation).
+
+## 13. Progress indicators
+
+- [ ] Create `apps/web/src/components/learning/ProgressBadge.tsx` — small component showing "X/Y bloques completados" for a topic.
+- [ ] On `LearningPathOverview`, add the overall path progress bar at the top (completed topics / total as a `Progress` bar + percentage).
+- [ ] Both compute from `MOCK_PROGRESS`.
+
+## 14. Empty / loading / error states
+
+- [ ] Create `EmptyState` — reusable card with icon + message + optional CTA. Used when no path is assigned or mock data is empty.
+- [ ] Create `ErrorState` — reusable card with error icon + message + retry button (just console.log for now). Used as a placeholder for network errors.
+- [ ] Wire these states into `LearningPathOverview` and `TopicFlow` via conditions on the mock data (mock can include flags or the consumer can pass them).
+- [ ] Include an edge case: topic with zero blocks renders "Este tema aún no tiene contenido."
+
+## 15. Quality gates
+
+- [ ] `pnpm run lint --filter=web` passes (no new warnings/errors introduced by the learning code).
+- [ ] `pnpm run check-types --filter=web` passes.
+- [ ] `pnpm run build --filter=web` passes (all `/app/learning/*` routes build without error).
+- [ ] `pnpm run dev --filter=web` starts and the learning screens are navigable: click "Aprende" in sidebar → see path overview → click "Presupuesto" → see topic flow with all block types rendered.
