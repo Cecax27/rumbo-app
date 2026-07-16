@@ -2,6 +2,8 @@
 
 import Link from "next/link"
 import type { MockTopic, MockBlock, MockProgress } from "@/app/app/learning/mock-data"
+import ConceptBlock from "./blocks/ConceptBlock"
+import ExplanationBlock from "./blocks/ExplanationBlock"
 
 function BlockRenderer({ block }: { block: MockBlock }) {
   const payload = block.payload
@@ -9,13 +11,10 @@ function BlockRenderer({ block }: { block: MockBlock }) {
 
   switch (block.type) {
     case "concept":
+      return <ConceptBlock block={block} />
+
     case "explanation":
-      return (
-        <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900">
-          <h3 className="font-semibold text-lg">{payload.title}</h3>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-2">{payload.body}</p>
-        </div>
-      )
+      return <ExplanationBlock block={block} />
 
     case "tip":
       return (
