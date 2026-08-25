@@ -15,30 +15,32 @@
 
 ## Phase 1 — Data Layer & Shared Foundation
 
+> Note: the Supabase MCP connection in this environment is read-only (`supabase_read_only_user`), and there is no local Supabase CLI linked to the project. Migration files and the Edge Function are committed to the repo; applying them (`supabase db push` / `supabase functions deploy delete-user`) requires the Supabase CLI or a user with table ownership.
+
 ### Database migrations
-- [ ] **1.1** Add migration: `alter table public.profiles add column terms_accepted_at timestamptz;` (nullable).
-- [ ] **1.2** Add migration: update `handle_new_user()` trigger function to set `full_name` from `raw_user_meta_data->>'full_name'` and `terms_accepted_at` from the `terms_accepted` meta flag.
-- [ ] **1.3** Verify no new RLS policies are needed (profiles UPDATE already covers name editing; account deletion bypasses RLS via Edge Function; reports INSERT exists).
+- [x] **1.1** Migration file created: `supabase/migrations/20260825000000_add_terms_accepted_at.sql` (`alter table public.profiles add column terms_accepted_at timestamptz;`). _Apply pending (CLI/owner)._
+- [x] **1.2** Migration file created: `supabase/migrations/20260825000001_update_handle_new_user.sql` (sets `full_name` and `terms_accepted_at` from `raw_user_meta_data`). _Apply pending (CLI/owner)._
+- [x] **1.3** Verified no new RLS policies are needed: `profiles` has SELECT/UPDATE own-row policies (UPDATE covers `full_name`; no WITH CHECK gap because `id` is the immutable PK/FK); `reports` has an authenticated INSERT policy with `user_id` defaulting to `auth.uid()`; account deletion bypasses RLS via the service-role Edge Function.
 
 ### Edge Function — account deletion
-- [ ] **1.4** Create `supabase/functions/delete-user/index.ts` (Deno): verify caller JWT, delete caller's rows from the 9 user-scoped tables + `budget_plan_groups`, then `auth.admin.deleteUser(userId)`. Deletion order: data first, auth-user last.
-- [ ] **1.5** Configure `SUPABASE_SERVICE_ROLE_KEY` on the function (never in client code).
-- [ ] **1.6** Deploy the `delete-user` Edge Function (`supabase functions deploy delete-user`).
+- [x] **1.4** Created `supabase/functions/delete-user/index.ts` (Deno): verifies caller JWT via `getUser()`, deletes the caller's rows from the 9 user-scoped tables (`reports`, `spendings`, `deferred_spendings`, `incomes`, `transfers`, `saving_goals`, `retirement_plans`, `budget_plans`, `accounts` — accounts last to respect non-cascading FKs), then `auth.admin.deleteUser(userId)` (cascades to `profiles`). `budget_plan_groups` removed via `budget_plans` ON DELETE CASCADE.
+- [x] **1.5** No manual key config needed — `SUPABASE_SERVICE_ROLE_KEY` is auto-injected by the Supabase Edge Functions runtime; the function only references it via `Deno.env`, never in client code.
+- [ ] **1.6** Deploy the `delete-user` Edge Function (`supabase functions deploy delete-user`). _Blocked: no CLI._
 
 ### Supabase package (`@repo/supabase`)
-- [ ] **1.7** Move credentials to env vars in `packages/supabase/src/client.ts` (read `SUPABASE_URL` / `SUPABASE_ANON_KEY` or the app-specific `NEXT_PUBLIC_*` / Expo constants equivalents); remove hardcoded literals.
-- [ ] **1.8** Extend `packages/supabase/src/auth.ts` with: `updateProfile({ full_name })`, `changePassword(currentPassword, newPassword)` (signIn-with-password reauthentication check then `updateUser`), `deleteAccount()` (invokes the `delete-user` Edge Function), `resendConfirmation(email)`, `getUser()`.
-- [ ] **1.9** Fix `packages/supabase/src/reports.ts`: make `insertReport` return a consistent shape (e.g. `{ error } | { success }`); verify column names against actual schema (`device_info jsonb`, `app_version`, `message`).
+- [x] **1.7** `client.ts` now reads `EXPO_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_URL` (and anon-key equivalents) from env and throws a descriptive error if missing; hardcoded literals removed.
+- [x] **1.8** Extended `auth.ts` with `getUser`, `updateProfile({ full_name })`, `changePassword(currentPassword, newPassword)` (reauthenticates via `signInWithPassword` then `updateUser`), `deleteAccount()` (invokes `delete-user`), `resendConfirmation(email)`; `signUp` now accepts `options.data` for terms acceptance.
+- [x] **1.9** Fixed `reports.ts`: `insertReport` returns a consistent `{ error: string | null }`; typed `deviceInfoJSON` as `Record<string, unknown>` (matches the `jsonb` column).
 
 ### Shared package (`@repo/shared`)
-- [ ] **1.10** Add shared validation schemas (email format, password ≥ 8 chars, name non-empty) usable by both apps; prefer a lightweight approach consistent with existing repo patterns.
-- [ ] **1.11** Extend `packages/shared/src/errors.js` with auth-related error-code constants beyond `DatabaseError`.
-- [ ] **1.12** Remove or fix the broken `packages/shared/src/welcomeSeen.js` (invalid `./supabase/client` import) and `packages/shared/src/utils.js` (imports `react-native` `Vibration`, undefined `t`/`months`) — consolidate to one correct implementation or delete and rely on per-app copies aligned to the package.
+- [x] **1.10** Added `src/validation.ts`: `isValidEmail`, `isValidPassword` (≥ 8), `isValidName` (non-empty), plus `EMAIL_REGEX` / `MIN_PASSWORD_LENGTH`.
+- [x] **1.11** Replaced `errors.js` with `errors.ts`: kept `DatabaseError`, added `AUTH_ERROR_CODES` (invalid_credentials, email_not_confirmed, user_already_exists, weak_password, same_password, rate-limited, session-expired).
+- [x] **1.12** Removed broken `welcomeSeen.js` (invalid `./supabase/client` import) and `utils.js` (imports `react-native` Vibration + undefined `t`/`months`); neither was imported anywhere. Per-app copies (`apps/web/src/lib/welcomeSeen.ts`, `apps/mobile/lib/welcomeSeen.js`) remain the single correct implementations.
 
 ### Phase 1 verification
-- [ ] **1.13** Run `pnpm run build`, `pnpm run lint`, `pnpm run check-types` from repo root; fix any regressions.
-- [ ] **1.14** Verify migrations applied cleanly (introspect `profiles` columns; inspect `handle_new_user` body).
-- [ ] **1.15** Verify the `delete-user` Edge Function responds (dry-run with a test user if possible; otherwise confirm deployment).
+- [x] **1.13** `@repo/supabase` and `@repo/shared`: `check-types`, `build`, and `lint` all pass. `apps/web` `tsc --noEmit` passes. `apps/web` `lint` still reports **pre-existing** errors/warnings unrelated to this change (unescaped entities, `any`, unused vars in `docs/`, `login/subpage.tsx`, `reset-password-form.tsx`, `contexts/*`).
+- [ ] **1.14** Verify migrations applied cleanly (introspect `profiles` columns; inspect `handle_new_user` body). _Blocked: read-only MCP._
+- [ ] **1.15** Verify the `delete-user` Edge Function responds. _Blocked: no CLI to deploy._
 
 ---
 
