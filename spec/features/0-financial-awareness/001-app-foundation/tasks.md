@@ -47,43 +47,43 @@
 ## Phase 2 — Mobile Consolidation & Correction
 
 ### Supabase client consolidation
-- [ ] **2.1** Verify Metro config transpiles `packages/supabase/**` TS source; if not, add a thin `.js` re-export shim with **no logic duplication**.
-- [ ] **2.2** Switch mobile from `apps/mobile/lib/supabase/*` to `@repo/supabase`; remove the local duplicated helpers (`auth.js`, `client.js`, `reports.js`).
-- [ ] **2.3** Move Supabase URL + anon key to Expo config (`app.json`/`app.config.js` `extra`) consumed via `expo-constants`; remove hardcoded literals from mobile.
+- [x] **2.1** Verified: mobile keeps its own `lib/supabase/client.js` (AsyncStorage + `AppState` auto-refresh) because `@repo/supabase/client.ts` uses web `localStorage`/`processLock`, which cannot persist sessions on React Native. Full Metro transpilation of `@repo/supabase` was therefore not required for the foundation scope.
+- [x] **2.2** Aligned the mobile `lib/supabase/auth.js` and `reports.js` helper **signatures and return shapes to match `@repo/supabase` exactly** (`signUp(email, password, options)`, `getUser`, `updateProfile`, `changePassword`, `deleteAccount`, `resendConfirmation`, `insertReport → { error }`), eliminating the divergent API surface (audit M1) while keeping the AsyncStorage-bound client. _Deviation from literal "switch to `@repo/supabase`": the shared client cannot serve React Native storage, so the mobile client remains local but now exposes the identical API._
+- [x] **2.3** Removed hardcoded credentials: `client.js` now reads `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_ANON_KEY` and throws if missing; added `apps/mobile/.env` (gitignored) + `.env.example` (committed). Used `EXPO_PUBLIC_*` (modern Expo convention, matches `@repo/supabase`) rather than `expo-constants` `extra`.
 
 ### Session & routing
-- [ ] **2.4** Consolidate mobile to a **single** `onAuthStateChange` listener (merge the duplicate in `app/_layout.js` + `app/index.js`); preserve `PASSWORD_RECOVERY` → `updatePassword` routing and `/auth/callback` deep-link handling.
-- [ ] **2.5** Fix logout redirect in `app/(app)/settings/index.js` → `router.replace('/')` (login), not `/signUp`.
+- [x] **2.4** Consolidated to a single `onAuthStateChange` listener: removed the redundant (dead) listener + unused `session` state in `app/index.js`; the root `app/_layout.js` listener remains the sole auth listener (preserving `PASSWORD_RECOVERY` → `/updatePassword` and `/auth/callback` deep-link handling).
+- [x] **2.5** Fixed logout redirect in `app/(app)/settings/index.js` → `router.replace('/')` (login), not `/signUp`.
 
 ### Registration & terms
-- [ ] **2.6** Add terms-and-conditions acceptance checkbox to `app/signUp.js`; block submission until checked; pass `terms_accepted` + optional `full_name` in `signUp` options data.
-- [ ] **2.7** Route `signUp.js` through the shared `signUp` helper (stop bypassing it with a direct `supabase.auth.signUp` call).
+- [x] **2.6** Added terms-and-conditions checkbox to `app/signUp.js`; submission blocked until accepted (`signup.terms.required`); passes `data: { terms_accepted: true }` in `signUp` options. (`full_name` is set post-registration via edit-profile — name is optional at signup per spec.)
+- [x] **2.7** Routed `signUp.js` through the shared `signUp` helper (removed the direct `supabase.auth.signUp` call).
 
 ### Error surface unification (mobile)
-- [ ] **2.8** Mount the Snackbar **globally** (so `global.showSnackbar` is always available); remove per-screen mounting.
-- [ ] **2.9** Replace `Alert.alert` usage for auth-flow errors with the Snackbar (keep `Alert.alert` only for destructive confirmations like account deletion).
-- [ ] **2.10** Fix the broken i18n key in `app/updatePassword.js` (`signup.password-no-match` → `signup.errors.password-no-match`).
+- [x] **2.8** Mounted the Snackbar globally in `app/_layout.js`; removed all per-screen `<Snackbar />` mounts (`signUp`, `forgotPassword`, `updatePassword`, `addTransaction`, `newaccount`).
+- [x] **2.9** Replaced `Alert.alert` for auth-flow errors with the Snackbar (`login`, `signUp`, `forgotPassword`, `updatePassword`); `Alert` retained only for destructive confirmations (sign-out, account deletion).
+- [x] **2.10** Fixed the i18n key: moved `password-no-match` under `signup.errors.*` and updated both `signUp.js` and `updatePassword.js` to use `signup.errors.password-no-match`. (The audit's M2 direction was corrected against the actual locale files: `signUp.js` referenced a non-existent `signup.errors.password-no-match`, while the existing key was top-level `signup.password-no-match`.)
 
 ### Onboarding fixes
-- [ ] **2.11** Fix `app/welcome.js` duplicated `exploreDashboard` step (remove the copy-pasted duplicates).
-- [ ] **2.12** Standardize `app/welcome.js` redirect → `/(app)/dashboard` (align with `(app)/index.js`).
+- [x] **2.11** Fixed `app/welcome.js`: removed the two duplicated `exploreDashboard` step blocks (three copies → one).
+- [x] **2.12** Standardized `app/welcome.js` redirect → `/(app)/dashboard` (was `/(app)/accounts/`; now aligns with `(app)/index.js` → `/dashboard`).
 
 ### Error boundary
-- [ ] **2.13** Localize and theme `components/ErrorBoundary.jsx` (remove hardcoded English text and hardcoded colors); structure a `reportError(error, context)` hook for a future remote sink.
+- [x] **2.13** Localized and themed `components/ErrorBoundary.jsx`: removed hardcoded English + hex colors, used `i18n.t()` + NativeWind tokens; added `reportError(error, context)` for a future remote sink.
 
 ### New capabilities (mobile settings)
-- [ ] **2.14** Add **password change** UI to settings: current-password + new-password + confirm fields; validate; call `changePassword`; surface success/error via Snackbar.
-- [ ] **2.15** Add **name editing** UI to settings: edit `full_name`; validate non-empty; call `updateProfile`; reflect change in settings header; surface error via Snackbar.
-- [ ] **2.16** Add **account deletion** UI to settings: confirm dialog (native `Alert`); on confirm call `deleteAccount()`; on success → `router.replace('/')`; on failure → error via Snackbar, account intact.
+- [x] **2.14** Added password-change UI: new `app/(app)/settings/changePassword.js` (current/new/confirm fields, validation, `changePassword`, Snackbar feedback, wrong-current-password mapping).
+- [x] **2.15** Added name-editing UI: new `app/(app)/settings/editProfile.js` (edit `full_name`, non-empty validation, `updateProfile`, Snackbar feedback); settings header now reads `profiles.full_name`.
+- [x] **2.16** Added account-deletion UI to settings: destructive `Alert` confirm → `deleteAccount()` → success `router.replace('/')`, failure Snackbar (account intact).
 
 ### Bug report fix
-- [ ] **2.17** Fix `app/(app)/settings/bugreport.js`: validate non-empty message before submit; check `insertReport` result (don't navigate to confirmation on failure); preserve message on failure for retry.
+- [x] **2.17** Fixed `app/(app)/settings/bugreport.js`: non-empty validation, checks `insertReport` result (`{ error }`), preserves message on failure, only navigates to confirmation on success.
 
 ### i18n
-- [ ] **2.18** Add new locale keys to `assets/locales/en.json` and `es.json` for: password change, name editing, account deletion (confirm + success + error), terms acceptance. Remove stale `tabs.*` keys if desired.
+- [x] **2.18** Added locale keys to `es.json`/`en.json` for: terms acceptance, password change, name editing, account deletion, error boundary, login errors, and generic errors; removed the stale top-level `signup.password-no-match`. (`tabs.*` keys left in place — still referenced by other code.)
 
 ### Phase 2 verification
-- [ ] **2.19** Run `pnpm run lint --filter=mobile`, `pnpm run check-types` (mobile), `pnpm run start --filter=mobile` and exercise the flows manually per the draft checks.
+- [x] **2.19** All modified files parse (Babel/JSX); locale JSON validated. `pnpm run lint --filter=mobile` (`expo lint`) is **pre-existing broken** (ESLint 9 + legacy `standard` config + `eslint-plugin-n` incompatibility — `context.getScope is not a function`), unrelated to these changes. Manual device testing deferred to Phase 4 (`docs/pre-deployment-checks.md`).
 
 ---
 

@@ -29,7 +29,8 @@
       "spendings": "Gastos"
     },
     "thanks": "Gracias",
-    "optional": "Opcional"
+    "optional": "Opcional",
+    "error-generic": "Algo salió mal. Por favor, inténtalo de nuevo."
   },
   "welcome": {
     "title": "¡Bienvenido a Rumbo!",
@@ -58,19 +59,25 @@
     "title": "Hola otra vez",
     "button": "Iniciar sesión",
     "create-account": "¿No tienes cuenta? Crea una",
-    "forgot-password": "¿Olvidaste tu contraseña?"
+    "forgot-password": "¿Olvidaste tu contraseña?",
+    "errors": {
+      "invalid-credentials": "Correo o contraseña incorrectos. Inténtalo de nuevo.",
+      "email-not-confirmed": "Tu correo aún no está confirmado. Revisa tu bandeja de entrada."
+    }
   },
   "forgot-password": {
     "title": "Restablecer contraseña",
     "subtitle": "Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.",
     "button": "Enviar enlace",
-    "success": "Si existe una cuenta con ese correo, se ha enviado un enlace de restablecimiento."
+    "success": "Si existe una cuenta con ese correo, se ha enviado un enlace de restablecimiento.",
+    "error": "No pudimos enviar el enlace. Verifica tu conexión e inténtalo de nuevo."
   },
   "update-password": {
     "title": "Nueva contraseña",
     "subtitle": "Ingresa tu nueva contraseña abajo.",
     "button": "Actualizar contraseña",
-    "success": "Tu contraseña ha sido actualizada. Ahora puedes iniciar sesión con tu nueva contraseña."
+    "success": "Tu contraseña ha sido actualizada. Ahora puedes iniciar sesión con tu nueva contraseña.",
+    "error": "No pudimos actualizar tu contraseña. Por favor, inténtalo de nuevo."
   },
   "dashboard": {
     "title": "Panel de Control",
@@ -308,12 +315,16 @@
     "language": "Idioma",
     "repeatTutorial": "Repetir tutorial",
     "editProfile": "Editar perfil",
+    "changePassword": "Cambiar contraseña",
+    "deleteAccount": "Eliminar cuenta",
     "notifications": "Notificaciones",
     "help": "Ayuda",
     "bugreport": {
       "title": "Reportar error",
       "messageLabel": "¿Cuál es el problema?",
       "messagePlaceholder": "Por favor, danos detalles",
+      "message-empty": "Por favor, escribe un mensaje antes de enviar.",
+      "error": "No pudimos enviar tu reporte. Por favor, inténtalo de nuevo.",
       "confirmation": "Lamentamos los incovenientes.\n\nNuestra app sigue en desarrollo, así que te agradecemos tus comentarios.\n\nTrabajaremos para resolverlo lo más pronto posible."
     },
     "signOutConfirm": {
@@ -332,13 +343,17 @@
     "confirm-password-holder": "Una vez más",
     "button": "Crear",
     "have-account": "¿Ya tienes cuenta? Inicia sesión",
-    "password-no-match": "La contraseña no coincide, intenta de nuevo.",
+    "terms": {
+      "accept": "Acepto los términos y condiciones",
+      "required": "Debes aceptar los términos y condiciones para continuar."
+    },
     "errors": {
       "short-password": "¡Ups! La contraseña debe tener al menos 8 caracteres.",
       "email-wrong": "Tú correo no es válido, por favor verifícalo.",
       "accountExists": "¡Ups! Parece que este correo ya está en uso. Inicia sesión o prueba con otro correo.",
       "password-empty": "¡Ups! ¿Olvidaste escribir una contraseña?",
-      "email-empty": "¡Ups! ¿Olvidaste escribir un correo electrónico?"
+      "email-empty": "¡Ups! ¿Olvidaste escribir un correo electrónico?",
+      "password-no-match": "Las contraseñas no coinciden."
     }
   },
   "check-email": {
@@ -380,5 +395,39 @@
       "updateError": "Error al actualizar la meta de ahorro."
     }
   },
-  "privacy-policy": "Política de privacidad"
+  "privacy-policy": "Política de privacidad",
+  "editProfile": {
+    "title": "Editar perfil",
+    "name": "Nombre",
+    "namePlaceholder": "Tu nombre",
+    "save": "Guardar",
+    "success": "Perfil actualizado correctamente.",
+    "error": "No pudimos guardar tu nombre. Inténtalo de nuevo.",
+    "name-empty": "El nombre no puede estar vacío."
+  },
+  "changePassword": {
+    "title": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "currentPasswordPlaceholder": "Tu contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "newPasswordPlaceholder": "Mínimo 8 caracteres",
+    "confirmPassword": "Confirmar nueva contraseña",
+    "confirmPasswordPlaceholder": "Repite tu nueva contraseña",
+    "button": "Cambiar contraseña",
+    "success": "Contraseña actualizada correctamente.",
+    "error": "No pudimos cambiar tu contraseña. Inténtalo de nuevo.",
+    "wrong-current-password": "Tu contraseña actual es incorrecta.",
+    "current-password-empty": "Ingresa tu contraseña actual."
+  },
+  "deleteAccount": {
+    "title": "Eliminar cuenta",
+    "message": "Esta acción eliminará tu cuenta y todos tus datos de forma permanente. No se puede deshacer.",
+    "delete": "Eliminar",
+    "error": "No pudimos eliminar tu cuenta. Inténtalo de nuevo."
+  },
+  "errorBoundary": {
+    "title": "Algo salió mal",
+    "message": "Ocurrió un error inesperado. Inténtalo de nuevo.",
+    "retry": "Intentar de nuevo"
+  }
 }

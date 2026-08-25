@@ -24,7 +24,6 @@ import IconPicker from "../../../components/iconPicker";
 import Input from "../../../components/input";
 import InputPicker from "../../../components/inputPicker";
 import { failIf } from "../../../lib/utils";
-import Snackbar from "../../../components/Snackbar";
 
 export default function NewAccount() {
   const { colors: theme } = useThemeColors();
@@ -311,7 +310,6 @@ export default function NewAccount() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <Snackbar />
     </KeyboardAvoidingView>
   );
 }

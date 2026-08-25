@@ -1,5 +1,12 @@
 import { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import i18n from '../i18n';
+
+// Central error reporting hook. Currently logs locally; a remote sink (e.g.
+// Sentry) can be added here without touching the boundary or its callers.
+export const reportError = (error, context = {}) => {
+  console.error('[ErrorBoundary]', context, error);
+};
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -12,7 +19,7 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('ErrorBoundary caught:', error, errorInfo);
+    reportError(error, { componentStack: errorInfo?.componentStack });
   }
 
   resetError = () => {
@@ -22,20 +29,20 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20, backgroundColor: '#fff' }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
-            Something went wrong
+        <View className="flex-1 justify-center items-center px-5 bg-background dark:bg-neutral-900">
+          <Text className="text-text dark:text-white text-lg font-bold mb-2">
+            {i18n.t('errorBoundary.title')}
           </Text>
-          <ScrollView style={{ maxHeight: 200, marginBottom: 20 }}>
-            <Text style={{ fontSize: 12, color: '#666', fontFamily: 'monospace' }}>
-              {this.state.error?.message || 'Unknown error'}
-            </Text>
-          </ScrollView>
+          <Text className="text-subtext text-sm text-center mb-5">
+            {i18n.t('errorBoundary.message')}
+          </Text>
           <TouchableOpacity
             onPress={this.resetError}
-            style={{ padding: 12, backgroundColor: '#007AFF', borderRadius: 8 }}
+            className="px-4 py-3 rounded-lg bg-primary"
           >
-            <Text style={{ color: '#fff', fontWeight: '600' }}>Try Again</Text>
+            <Text className="text-white font-semibold">
+              {i18n.t('errorBoundary.retry')}
+            </Text>
           </TouchableOpacity>
         </View>
       );

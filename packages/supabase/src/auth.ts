@@ -89,10 +89,21 @@ export const changePassword = async (
 }
 
 // Invokes the delete-user Edge Function (service-role) which deletes the
-// caller's user-scoped data and then the Auth user itself.
+// caller's user-scoped data and then the Auth user itself. Normalizes the
+// FunctionsHttpError thrown on non-2xx responses into a returned error.
 export const deleteAccount = async (): Promise<{
   data: unknown
   error: Error | null
 }> => {
-  return await supabase.functions.invoke('delete-user', { method: 'POST' })
+  try {
+    const { data, error } = await supabase.functions.invoke('delete-user', {
+      method: 'POST',
+    })
+    return { data, error }
+  } catch (err) {
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error('Delete account failed'),
+    }
+  }
 }

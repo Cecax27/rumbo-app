@@ -1,12 +1,14 @@
 import '../global.css';
 import * as Font from 'expo-font';
 import { useEffect, useState } from 'react';
+import { View } from 'react-native';
 import 'react-native-url-polyfill/auto'
 import { Slot, useRouter } from 'expo-router';
 import ThemeProvider from '../theme/ThemeProvider';
 import * as Linking from 'expo-linking';
 import { supabase } from '../lib/supabase/client';
 import ErrorBoundary from '../components/ErrorBoundary';
+import Snackbar from '../components/Snackbar';
 
 export default function RootLayout() {
   const router = useRouter()
@@ -65,7 +67,10 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <ErrorBoundary>
-        <Slot />
+        <View style={{ flex: 1 }}>
+          <Slot />
+          <Snackbar />
+        </View>
       </ErrorBoundary>
     </ThemeProvider>
   );

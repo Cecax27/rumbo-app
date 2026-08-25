@@ -19,22 +19,25 @@ export default function BugReport(){
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async () =>{
-        setLoading(true);
-        try {
-            const deviceInfoJSON = {
-                os:  Device.osName,
-                os_version: Device.osVersion,
-                brand: Device.brand,
-                model: Device.modelName,
-            }
-            await insertReport({deviceInfoJSON, app_version:Application.nativeApplicationVersion, message:formData.message})
-        } catch (error) {
-            console.log(error);
-        } finally {
-            router.back();
-            router.push('/settings/bugreportconfirmation');
-            setLoading(false);
+        if (!formData.message || !formData.message.trim()) {
+            global.showSnackbar(t('configuration.bugreport.message-empty'), 3000, theme.coral);
+            return;
         }
+        setLoading(true);
+        const deviceInfoJSON = {
+            os:  Device.osName,
+            os_version: Device.osVersion,
+            brand: Device.brand,
+            model: Device.modelName,
+        }
+        const { error } = await insertReport({deviceInfoJSON, app_version:Application.nativeApplicationVersion, message:formData.message});
+        if (error) {
+            global.showSnackbar(t('configuration.bugreport.error'), 3000, theme.coral);
+            setLoading(false);
+            return;
+        }
+        setLoading(false);
+        router.replace('/settings/bugreportconfirmation');
     }
 
     return(

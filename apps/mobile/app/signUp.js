@@ -3,7 +3,6 @@ import {
   Text,
   View,
   Image,
-  Alert,
   Pressable,
   Keyboard,
   Vibration,
@@ -15,16 +14,16 @@ import {
 import Animated from "react-native-reanimated";
 import "react-native-url-polyfill/auto";
 import React, { useState, useMemo } from "react";
-import { supabase } from "../lib/supabase/client";
 import { Link, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { makeStyles } from "../assets/uiStyles";
 import { useThemeColors } from "../theme/useThemeColors";
 import LanguageSelector from "../components/languageSelector";
 import { useTranslation } from "react-i18next";
 import { failIf, validateEmail } from "../lib/utils";
 import { checkWelcomeSeen } from "../lib/welcomeSeen";
+import { signUp } from "../lib/supabase/auth";
 import Input from "../components/input";
-import Snackbar from "../components/Snackbar";
 import Button from "../components/button";
 import { useFadeSlideIn, useScaleFadeIn, useFadeIn } from "../lib/animations";
 
@@ -40,6 +39,7 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Animation styles
@@ -87,21 +87,28 @@ export default function SignUp() {
       )
     )
       return;
+    if (
+      failIf(!termsAccepted, t("signup.terms.required"), theme, () =>
+        setLoading(false),
+      )
+    )
+      return;
 
     const {
       data: { session },
       error,
-    } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: "rumbo://auth/callback" },
+    } = await signUp(email, password, {
+      emailRedirectTo: "rumbo://auth/callback",
+      data: { terms_accepted: true },
     });
 
     if (error) {
-      if (error.code === "email_address_invalid") {
-        Alert.alert(t("signup.errors.email-wrong"));
+      if (error.code === "user_already_exists") {
+        global.showSnackbar(t("signup.errors.accountExists"), 3000, theme.coral);
+      } else if (error.code === "email_address_invalid") {
+        global.showSnackbar(t("signup.errors.email-wrong"), 3000, theme.coral);
       } else {
-        Alert.alert(error.message);
+        global.showSnackbar(t("common.error-generic"), 3000, theme.coral);
       }
 
       setLoading(false);
@@ -128,7 +135,6 @@ export default function SignUp() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Snackbar />
         <View className="w-full flex-1 flex flex-col items-center justify-between">
           <View className="w-full flex flex-col items-center justify-start gap-10">
             <Animated.View style={[{ width: "100%" }]}>
@@ -191,6 +197,21 @@ export default function SignUp() {
                     autoComplete="password-new"
                     clear={false}
                   />
+                </Animated.View>
+                <Animated.View style={[{ width: "100%" }, buttonAnim]}>
+                  <Pressable
+                    onPress={() => setTermsAccepted(!termsAccepted)}
+                    className="flex-row items-center gap-2 px-1"
+                  >
+                    <Ionicons
+                      name={termsAccepted ? "checkbox" : "square-outline"}
+                      size={22}
+                      color={termsAccepted ? theme.primary : theme.subtext}
+                    />
+                    <Text className="text-text text-sm">
+                      {t("signup.terms.accept")}
+                    </Text>
+                  </Pressable>
                 </Animated.View>
                 <Animated.View className="items-center justify-center flex flex-col" style={[buttonAnim]}>
                   <Button

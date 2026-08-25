@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   View,
   Text,
   ActivityIndicator,
@@ -12,6 +11,7 @@ import { Link, useRouter } from "expo-router";
 import { useThemeColors } from "../theme/useThemeColors";
 import { checkWelcomeSeen } from "../lib/welcomeSeen";
 import { useTranslation } from "react-i18next";
+import { failIf, validateEmail } from "../lib/utils";
 
 export default function Auth() {
   const { colors } = useThemeColors();
@@ -24,20 +24,56 @@ export default function Auth() {
 
   async function signInWithEmail() {
     setLoading(true);
+    if (
+      failIf(email === "", t("signup.errors.email-empty"), colors, () =>
+        setLoading(false),
+      )
+    )
+      return;
+    if (
+      failIf(!validateEmail(email), t("signup.errors.email-wrong"), colors, () =>
+        setLoading(false),
+      )
+    )
+      return;
+    if (
+      failIf(password === "", t("signup.errors.password-empty"), colors, () =>
+        setLoading(false),
+      )
+    )
+      return;
+
     const { error } = await signIn(email, password);
 
-    if (error) Alert.alert(error.message);
-    else {
-      checkWelcomeSeen()
-        .then((welcomeSeen) => {
-          if (welcomeSeen) {
-            router.replace("/(app)/");
-          } else {
-            router.replace("/welcome");
-          }
-        })
-        .catch((error) => console.log(error));
+    if (error) {
+      if (error.code === "invalid_credentials") {
+        global.showSnackbar(
+          t("login.errors.invalid-credentials"),
+          3000,
+          colors.coral,
+        );
+      } else if (error.code === "email_not_confirmed") {
+        global.showSnackbar(
+          t("login.errors.email-not-confirmed"),
+          3000,
+          colors.coral,
+        );
+      } else {
+        global.showSnackbar(t("common.error-generic"), 3000, colors.coral);
+      }
+      setLoading(false);
+      return;
     }
+
+    checkWelcomeSeen()
+      .then((welcomeSeen) => {
+        if (welcomeSeen) {
+          router.replace("/(app)/");
+        } else {
+          router.replace("/welcome");
+        }
+      })
+      .catch((error) => console.log(error));
     setLoading(false);
   }
 

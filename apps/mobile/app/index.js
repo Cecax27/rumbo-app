@@ -27,7 +27,6 @@ export default function Index() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Animation styles
@@ -37,7 +36,6 @@ export default function Index() {
     setLoading(true);
 
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
       setLoading(false);
 
       if (currentSession) {
@@ -52,14 +50,6 @@ export default function Index() {
           .catch((error) => console.log(error));
       }
     });
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
   }, []);
 
   return (

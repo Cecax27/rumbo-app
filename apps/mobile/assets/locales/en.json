@@ -29,7 +29,8 @@
       "spendings": "Spendings"
     },
     "thanks": "Thank you",
-    "optional": "Optional"
+    "optional": "Optional",
+    "error-generic": "Something went wrong. Please try again."
   },
   "welcome": {
     "title": "Welcome to Rumbo!",
@@ -58,19 +59,25 @@
     "title": "Welcome again",
     "button": "Sign in",
     "create-account": "Don't have an account? Sign up",
-    "forgot-password": "Forgot password?"
+    "forgot-password": "Forgot password?",
+    "errors": {
+      "invalid-credentials": "Incorrect email or password. Please try again.",
+      "email-not-confirmed": "Your email is not confirmed yet. Check your inbox."
+    }
   },
   "forgot-password": {
     "title": "Reset password",
     "subtitle": "Enter your email and we'll send you a link to reset your password.",
     "button": "Send reset link",
-    "success": "If an account with that email exists, a password reset link has been sent."
+    "success": "If an account with that email exists, a password reset link has been sent.",
+    "error": "We couldn't send the link. Check your connection and try again."
   },
   "update-password": {
     "title": "New password",
     "subtitle": "Enter your new password below.",
     "button": "Update password",
-    "success": "Your password has been updated. You can now sign in with your new password."
+    "success": "Your password has been updated. You can now sign in with your new password.",
+    "error": "We couldn't update your password. Please try again."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -308,12 +315,16 @@
     "language": "Language",
     "repeatTutorial": "Repeat tutorial",
     "editProfile": "Edit profile",
+    "changePassword": "Change password",
+    "deleteAccount": "Delete account",
     "notifications": "Notifications",
     "help": "Help",
     "bugreport": {
       "title": "Report a bug",
       "messageLabel": "What is the problem?",
       "messagePlaceholder": "Please, give us details",
+      "message-empty": "Please write a message before sending.",
+      "error": "We couldn't send your report. Please try again.",
       "confirmation": "We apologize for the inconvenience.\n\nOur app is still in development, so we appreciate your feedback.\n\nWe will work to resolve it as soon as possible."
     },
     "signOutConfirm": {
@@ -332,13 +343,17 @@
     "confirm-password-holder": "One more time",
     "button": "Create",
     "have-account": "Already have an account? Sign in",
-    "password-no-match": "The password doesn't match, try again.",
+    "terms": {
+      "accept": "I accept the terms and conditions",
+      "required": "You must accept the terms and conditions to continue."
+    },
     "errors": {
       "short-password": "Oops! Password must be at least 8 characters long.",
       "email-wrong": "Your email is not valid, please check it.",
       "accountExists": "Oops! Looks like this email is already in use. Try logging in or use a different one",
       "password-empty": "Oops! Did you forget write a password?",
-      "email-empty": "Oops! Did you forget write an email?"
+      "email-empty": "Oops! Did you forget write an email?",
+      "password-no-match": "Passwords do not match."
     }
   },
   "check-email": {
@@ -380,5 +395,39 @@
       "updateError": "Failed to update saving goal."
     }
   },
-  "privacy-policy": "Privacy policy"
+  "privacy-policy": "Privacy policy",
+  "editProfile": {
+    "title": "Edit profile",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "save": "Save",
+    "success": "Profile updated successfully.",
+    "error": "We couldn't save your name. Please try again.",
+    "name-empty": "The name cannot be empty."
+  },
+  "changePassword": {
+    "title": "Change password",
+    "currentPassword": "Current password",
+    "currentPasswordPlaceholder": "Your current password",
+    "newPassword": "New password",
+    "newPasswordPlaceholder": "At least 8 characters",
+    "confirmPassword": "Confirm new password",
+    "confirmPasswordPlaceholder": "Repeat your new password",
+    "button": "Change password",
+    "success": "Password updated successfully.",
+    "error": "We couldn't change your password. Please try again.",
+    "wrong-current-password": "Your current password is incorrect.",
+    "current-password-empty": "Enter your current password."
+  },
+  "deleteAccount": {
+    "title": "Delete account",
+    "message": "This will permanently delete your account and all your data. This cannot be undone.",
+    "delete": "Delete",
+    "error": "We couldn't delete your account. Please try again."
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "message": "An unexpected error occurred. Please try again.",
+    "retry": "Try again"
+  }
 }
