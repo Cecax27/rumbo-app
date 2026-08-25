@@ -6,10 +6,10 @@
 
 ## Phase 0 — Audit
 
-- [ ] **0.1** Conduct systematic audit of the existing implementation against `spec.md`, covering both platforms and shared packages.
-- [ ] **0.2** Record each finding (bad practice, inconsistency, failure point) with file path, severity, and the corrective task it maps to.
-- [ ] **0.3** Write `docs/foundation-audit.md` with the complete findings table.
-- [ ] **0.4** Flag stale documentation (AGENTS.md `(tabs)/` references, `tech-stack.md` layout notes, `docs/getting-started.md` test-suite claims) in the audit.
+- [x] **0.1** Conduct systematic audit of the existing implementation against `spec.md`, covering both platforms and shared packages.
+- [x] **0.2** Record each finding (bad practice, inconsistency, failure point) with file path, severity, and the corrective task it maps to.
+- [x] **0.3** Write `docs/foundation-audit.md` with the complete findings table.
+- [x] **0.4** Flag stale documentation (AGENTS.md `(tabs)/` references, `tech-stack.md` layout notes, `docs/getting-started.md` test-suite claims) in the audit.
 
 ---
 
