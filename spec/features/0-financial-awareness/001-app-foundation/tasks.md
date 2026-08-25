@@ -90,29 +90,29 @@
 ## Phase 3 — Web Consolidation & Correction
 
 ### Auth context & session gating
-- [ ] **3.1** Create `apps/web/src/contexts/AuthContext.tsx` + `useSession` hook: load session on mount, single `onAuthStateChange` listener, expose `session`/`user`/`loading`.
-- [ ] **3.2** Add session guard in `src/app/app/layout.tsx`: redirect to `/login` when `loading` is false and `session` is null.
-- [ ] **3.3** Read Supabase URL + anon key from `NEXT_PUBLIC_*` env vars in the web client; remove hardcoded literals.
+- [x] **3.1** Created `apps/web/src/contexts/AuthContext.tsx` + `useSession` hook: loads session on mount, single `onAuthStateChange` listener, exposes `session`/`user`/`loading`.
+- [x] **3.2** Added session guard via new `src/components/require-auth.tsx` (`RequireAuth`) wrapped in `AuthProvider` in `src/app/app/layout.tsx`; redirects to `/login` when `loading` is false and `session` is null, renders `null` while loading.
+- [x] **3.3** Supabase URL + anon key read from `NEXT_PUBLIC_*` env in `@repo/supabase/client.ts` (done in Phase 1); `.env.local` (gitignored) + `.env.example` (committed) added.
 
 ### Error surface unification (web)
-- [ ] **3.4** Fix swallowed logout error in `src/app/app/settings/page.tsx` → `toast.error` (not `console.error` only).
-- [ ] **3.5** Fix swallowed forgot-password errors in `src/app/forgot-password/page.tsx` → `toast.error` for Supabase errors (not `console.error` only); remove leftover `console.log` debug logging.
-- [ ] **3.6** Fix `src/app/forgot-password/check-email/page.tsx` resend: actually call `resendConfirmation(email)` (not just navigate back).
-- [ ] **3.7** Add a timeout to the "exchanging" state in `src/app/auth/callback/*` and `src/app/reset-password/*` (show an error instead of hanging forever).
+- [x] **3.4** Fixed swallowed logout error in `src/app/app/settings/page.tsx` → `toast.error` (was `console.error` only).
+- [x] **3.5** Fixed swallowed forgot-password errors in `src/app/forgot-password/page.tsx` → `toast.error`; removed leftover `console.log` debug logging; stores email in `sessionStorage` for the resend flow.
+- [x] **3.6** Fixed resend: `forgot-password/check-email` now actually resends via `resetPasswordForEmail`; `login/check-email` now uses `resendConfirmation` + `toast` feedback (was `console.error` only).
+- [x] **3.7** Added a 15s timeout to the "Verificando enlace…" state in `auth/callback/callback-form.tsx` and `reset-password/reset-password-form.tsx` (shows an error instead of hanging forever).
 
 ### Error boundaries (web)
-- [ ] **3.8** Add `src/app/error.tsx` and `src/app/global-error.tsx` (Next.js App Router error boundaries), localized and themed, with a recovery action.
+- [x] **3.8** Added `src/app/error.tsx` (Tailwind-themed, recovery button) and `src/app/global-error.tsx` (self-contained inline styles, since the root layout is replaced).
 
 ### Registration & terms
-- [ ] **3.9** Add terms-and-conditions acceptance to registration in `src/app/login/subpage.tsx`; block submission until checked; pass `terms_accepted` in `signUp` options data.
+- [x] **3.9** Added terms-and-conditions acceptance to `login/subpage.tsx`: checkbox in register mode, submission blocked until checked (`toast.error`), passes `data: { terms_accepted: true }` in `signUp` options.
 
 ### New capabilities (web settings)
-- [ ] **3.10** Add **password change** UI to settings: current-password + new-password + confirm; zod-validated; call `changePassword`; toast feedback.
-- [ ] **3.11** Add **name editing** UI to settings: edit `full_name`; validate non-empty; call `updateProfile`; reflect change; toast feedback.
-- [ ] **3.12** Add **account deletion** UI to settings: explicit confirm (not a single tap); call `deleteAccount()`; on success → `router.push('/login')`; on failure → `toast.error`, account intact.
+- [x] **3.10** Added password change UI: new `src/app/app/settings/password/page.tsx` (react-hook-form + zod, current/new/confirm, `changePassword`, toast feedback, wrong-current-password mapping).
+- [x] **3.11** Added name editing UI: new `src/app/app/settings/account/page.tsx` (edit `full_name`, non-empty validation, `updateProfile`, toast feedback).
+- [x] **3.12** Added account deletion UI to `account/page.tsx`: explicit `window.confirm` (not single tap), `deleteAccount()`, success → `router.push('/login')`, failure → `toast.error`, account intact.
 
 ### Phase 3 verification
-- [ ] **3.13** Run `pnpm run lint --filter=web`, `pnpm run check-types --filter=web`, `pnpm run dev --filter=web` and exercise the flows manually.
+- [x] **3.13** `tsc --noEmit` (web) passes; `pnpm --filter web build` (`next build --turbopack`) succeeds with all routes (incl. new `/app/settings/account` and `/app/settings/password`). Web `eslint` remains at 47 pre-existing problems (no new issues introduced). Manual flow testing deferred to Phase 4.
 
 ---
 

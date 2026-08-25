@@ -30,18 +30,18 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (values: ForgotPasswordValues) => {
     try {
       const redirectTo = `${window.location.origin}/reset-password`;
-      console.log(`[forgot-password] Sending reset email with redirectTo: ${redirectTo}`);
       const { error } = await resetPasswordForEmail(values.email, { redirectTo });
       if (error) {
-        console.error("Error sending reset email:", error.message);
+        toast.error(
+          "No pudimos enviar el enlace. Verifica tu conexión e inténtalo de nuevo."
+        );
+        return;
       }
-    } catch (err) {
-      console.error("Network error:", err);
+      sessionStorage.setItem("resetEmail", values.email);
+      router.push("/forgot-password/check-email");
+    } catch {
       toast.error("Error de conexión. Intenta de nuevo.");
-      return;
     }
-
-    router.push("/forgot-password/check-email");
   };
 
   return (
