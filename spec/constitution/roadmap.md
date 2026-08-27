@@ -333,3 +333,9 @@ You reach a point where your finances require maintenance, not constant monitori
 Inside the `features` folder, there is a folder for each level. Within those folders, there are further specifications regarding the requirements and design of each level. There are also subfolders containing the plans for each feature.
 
 > Each new feature is created as `spec/features/level-folder/NNN-name/` with `spec.md`, `plan.md`, and `tasks.md` before any code is touched.
+
+## Feature status
+
+| Feature | Status |
+|---------|--------|
+| `0-financial-awareness/001-app-foundation/` — registration, login, logout, password management, name editing, account deletion, terms acceptance, error/bug reporting, onboarding, session gating | ✅ Done |

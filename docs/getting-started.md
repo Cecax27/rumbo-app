@@ -56,14 +56,24 @@ workspace (defined in `pnpm-workspace.yaml`: `apps/*` and `packages/*`).
 
 ### Environment variables
 
-**You do not need any `.env` files for local development.** The Supabase URL and
-anon key are hardcoded in:
+The Supabase URL and anon key are provided **via environment variables** (not
+hardcoded). Create local env files from the committed examples:
 
-- `apps/mobile/lib/supabase/client.js` (mobile)
-- `packages/supabase/src/client.ts` (web, via the `@repo/supabase` package)
+```bash
+# Web (Next.js) — copy and fill in
+cp apps/web/.env.example apps/web/.env.local
+# Mobile (Expo) — copy and fill in
+cp apps/mobile/.env.example apps/mobile/.env
+```
 
-If you ever need real env vars (e.g. for a different Supabase project), the
-`.gitignore` already excludes `.env*`, so create local files safely.
+| Platform | Variables |
+|----------|-----------|
+| Web | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| Mobile | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` |
+
+The `@repo/supabase` client (`packages/supabase/src/client.ts`) reads both
+prefixes and throws a descriptive error if either is missing. `.env*` files are
+gitignored (except `.env.example`), so these never enter version control.
 
 ---
 
@@ -107,11 +117,14 @@ pnpm --filter web lint      # ESLint (flat config: eslint.config.mjs)
 - **Authenticated routes:** everything under `/app/*` (`/app/home`,
   `/app/transactions`, `/app/accounts`, `/app/tools`, `/app/settings`).
   The `/app/*` layout renders a sidebar and wraps children in
-  `ToolsProvider > TransactionsProvider > AccountsProvider`
+  `AuthProvider > RequireAuth > ToolsProvider > TransactionsProvider > AccountsProvider`
   (`apps/web/src/app/app/layout.tsx`).
 
 > There is **no auth middleware** (`middleware.ts` doesn't exist). Route
-> protection is handled client-side via the Supabase session + contexts.
+> protection is handled client-side: `AuthProvider`/`useSession`
+> (`src/contexts/AuthContext.tsx`) holds the session, and `RequireAuth`
+> (`src/components/require-auth.tsx`) redirects unauthenticated users to
+> `/login`.
 
 ---
 
@@ -163,7 +176,7 @@ redirects to `/(app)/` (logged in + welcome seen) or `/welcome`.
   - `dashboard/` — budgets & saving goals
   - `transactions/` — list, add, edit, details
   - `accounts/` — list, new, edit
-  - `settings/` — config + bug report
+  - `settings/` — config, edit profile, change password, bug report
 
 ### Scanning QR / opening on a physical device
 
@@ -192,11 +205,12 @@ pnpm run check-types
 
 ## 7. Tests
 
-Only two packages have real test suites, both with **Vitest v4**:
+Three packages have real test suites, all with **Vitest v4**:
 
 ```bash
 pnpm --filter @repo/retirement-plan-calculation test
 pnpm --filter @repo/transactions-parser test
+pnpm --filter @repo/shared test           # shared validation schemas
 ```
 
 All other packages have a placeholder `test` script. The `web` and `mobile`
