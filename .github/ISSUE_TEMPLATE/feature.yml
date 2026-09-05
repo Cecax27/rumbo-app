@@ -1,0 +1,88 @@
+name: ✨ Feature
+description: A new capability or user-facing functionality rumbo could not do before.
+title: "[feature] "
+labels: ["feature"]
+type: Feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **AI agents:** follow spec-driven development. Before coding, create `spec/features/<level>/NNN-name/` with `spec.md`, then get user approval for `plan.md` and `tasks.md` as defined in the feature-specification-workflow skill. Do not implement until the spec folder is complete and approved.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences describing what Rumbo gains.
+      placeholder: "e.g. Allow users to attach a receipt photo to a transaction."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem & purpose
+      description: What problem does this solve? Why is it necessary? What pain point or opportunity motivates it? What outcome indicates success?
+    validations:
+      required: true
+
+  - type: textarea
+    id: normal-flow
+    attributes:
+      label: Normal flow
+      description: Step-by-step primary flow from the user's perspective (how they start, what they do, how the system responds, what happens on success).
+    validations:
+      required: true
+
+  - type: textarea
+    id: business-rules
+    attributes:
+      label: Business rules
+      description: Conditions, restrictions, state transitions, calculations, or relationships that must always hold. Clear enough to translate into code and tests.
+    validations:
+      required: false
+
+  - type: textarea
+    id: data
+    attributes:
+      label: Data involved
+      description: What data is required, where it comes from, and whether it is created/read/updated/deleted.
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: Testable, observable conditions (Given/When/Then). The feature is not done until all are met.
+      placeholder: "- [ ] Given X, when the user does Y, then Z happens."
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What this feature intentionally does NOT include (postponed ideas, related-but-excluded functionality).
+    validations:
+      required: false
+
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: Platforms affected
+      multiple: true
+      options:
+        - "Web (apps/web)"
+        - "Mobile (apps/mobile)"
+        - "Shared packages (@repo/*)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, screenshots, designs, related issues/specs, or level of the roadmap this belongs to.
+    validations:
+      required: false

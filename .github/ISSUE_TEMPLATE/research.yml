@@ -1,0 +1,53 @@
+name: 🔬 Research
+description: Investigation or exploration needed before deciding how to implement something.
+title: "[research] "
+labels: ["research"]
+type: Research
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **AI agents:** the outcome is a decision, comparison, or recommendation — NOT implementation. Do not write application code. Produce findings (ideally as a `spec/features/*/research*.md` doc or issue comment) before any planning begins.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question / goal
+      description: What do we need to figure out? State it as a concrete question or decision to make.
+      placeholder: "e.g. Which charting library should we use for reports on web + mobile?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: Background / context
+      description: Why do we need this? What feature or decision depends on it?
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Options to evaluate
+      description: Candidate approaches/libraries/solutions to compare, if known.
+      placeholder: "- Option A\n- Option B\n- Option C"
+    validations:
+      required: false
+
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Evaluation criteria / constraints
+      description: What makes one option better than another (e.g. React Native + web support, bundle size, license, maintenance).
+    validations:
+      required: true
+
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Expected deliverables
+      description: What should the research produce?
+      placeholder: "- [ ] Comparison matrix of options.\n- [ ] Recommendation with rationale.\n- [ ] Prototype or spike (if applicable)."
+    validations:
+      required: true

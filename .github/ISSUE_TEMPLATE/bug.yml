@@ -1,0 +1,81 @@
+name: 🐛 Bug
+description: Something is not working as intended.
+title: "[bug] "
+labels: ["bug"]
+type: Bug Report
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **AI agents:** reproduce the bug first, find the root cause, then fix the smallest change possible. If the fix affects behavior documented in `spec/features/**`, update that spec/tasks accordingly.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is broken, in one or two sentences.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happens instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered, minimal steps to reproduce from a clean state.
+      placeholder: "1. ...\n2. ...\n3. ..."
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Platform, device/emulator, and app version.
+      placeholder: "Android emulator, Expo SDK 53, app v1.0.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Suspected location
+      description: File/component/path you believe is responsible, if known.
+      placeholder: "apps/mobile/app/transactions.js:42"
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Error messages, stack traces, console output, or screenshots.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true

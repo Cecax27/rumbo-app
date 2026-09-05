@@ -1,0 +1,78 @@
+name: 🔧 Improvement
+description: An enhancement to an existing feature or user experience.
+title: "[improvement] "
+labels: ["improvement"]
+type: Improvement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **AI agents:** the functionality already exists — enhance it, don't rebuild it. Reference the existing spec (`spec/features/**/spec.md`) if one exists, and update it rather than creating a conflicting new one.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What currently exists and how it should be better, easier, faster, or clearer.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current behavior
+      description: How the feature works today, ideally with the code/screen reference.
+      placeholder: "e.g. apps/mobile/app/transactions.js renders ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired-behavior
+    attributes:
+      label: Desired behavior
+      description: How it should behave after the improvement.
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why this change matters (user pain, performance, clarity). What signals success?
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: Testable, observable conditions for the improvement.
+      placeholder: "- [ ] Given X, when the user does Y, then Z happens."
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-areas
+    attributes:
+      label: Affected areas
+      description: Screens, components, packages, or spec files that will change.
+      placeholder: "- apps/mobile/components/...\n- packages/supabase/src/..."
+    validations:
+      required: false
+
+  - type: input
+    id: related-spec
+    attributes:
+      label: Related spec
+      description: Link or path to the spec folder for this feature, if one exists.
+      placeholder: "spec/features/001-forgot-password"
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Screenshots, before/after, benchmarks, or related issues.
+    validations:
+      required: false

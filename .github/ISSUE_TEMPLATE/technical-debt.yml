@@ -1,0 +1,60 @@
+name: ♻️ Technical debt
+description: Technical work to improve maintainability, reliability, or architecture.
+title: "[technical-debt] "
+labels: ["technical-debt"]
+type: Technical Debt
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **AI agents:** this benefits the codebase, not the user — do NOT change user-visible behavior. Reference the repo conventions in `spec/constitution/tech-stack.md`.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What technical problem exists and why it hurts maintainability, reliability, or architecture.
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected
+    attributes:
+      label: Affected code
+      description: Files, packages, or subsystems involved.
+      placeholder: "- packages/supabase/src/client.ts\n- apps/mobile/lib/supabase/client.js"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed approach
+      description: How you'd resolve it, and any trade-offs or risks (migration, regression, compatibility).
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-now
+    attributes:
+      label: Why now / impact
+      description: What breaks or slows down if this stays unaddressed? Does it block another feature?
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: How to verify the debt is resolved. Include the verification commands.
+      placeholder: "- [ ] `pnpm run lint` and `pnpm run check-types` pass.\n- [ ] No user-visible behavior changed."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links to issues, benchmarks, or existing discussions.
+    validations:
+      required: false

@@ -1,0 +1,51 @@
+name: 💡 Idea
+description: A possible future feature or concept, not yet ready to be implemented.
+title: "[idea] "
+labels: ["idea"]
+type: Idea
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **AI agents:** do NOT implement, spec, or plan this. It's a backlog concept. Only park it for later evaluation.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Concept
+      description: The "wouldn't it be cool if…" idea.
+    validations:
+      required: true
+
+  - type: textarea
+    id: value
+    attributes:
+      label: Value
+      description: Why this might matter to users or the mission. What problem would it solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: feasibility
+    attributes:
+      label: Open questions / feasibility concerns
+      description: What would need to be figured out before this becomes a `feature` or `research` issue?
+    validations:
+      required: false
+
+  - type: input
+    id: roadmap
+    attributes:
+      label: Roadmap level (if known)
+      description: Which level of the financial curriculum this relates to (0-6), if any.
+      placeholder: "e.g. Level 4 — Wealth growth"
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: References, inspiration, or related issues.
+    validations:
+      required: false

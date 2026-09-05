@@ -1,0 +1,43 @@
+name: 📝 Documentation
+description: Changes or additions to project documentation.
+title: "[documentation] "
+labels: ["documentation"]
+type: Documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **AI agents:** docs live across `spec/` (mission, tech-stack, roadmap, feature specs), `AGENTS.md`, package READMEs, and inline code docs. Keep them accurate and consistent with each other.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What documentation needs to change or be added, and why.
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: File(s) or folder(s) to update.
+      placeholder: "spec/constitution/roadmap.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: content
+    attributes:
+      label: Content notes
+      description: Key facts, sections, or corrections to capture. Reference the source of truth.
+    validations:
+      required: false
+
+  - type: textarea
+    id: audience
+    attributes:
+      label: Audience
+      description: Who is this documentation for (users, AI agents, contributors)?
+    validations:
+      required: false
