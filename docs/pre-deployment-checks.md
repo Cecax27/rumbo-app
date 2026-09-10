@@ -125,3 +125,51 @@ Fill in the pass/fail columns above. A release is blocked if any ❌ remains unr
 - Account deletion depends on the `delete-user` Edge Function being deployed; test 8.x will fail if it is not.
 - Mobile `expo lint` is currently broken (ESLint 9 + legacy `standard` config incompatibility) — not a functional blocker for these checks.
 - Terms-acceptance backfill: users registered before this feature have `terms_accepted_at = null`; acceptable for now.
+
+---
+
+# Learning Section Checks (feature 002)
+
+> Manual verification for the learning section (levels, topics, habits, intro, tutorials, infographics, resets, content sync, offline). Run after the app-foundation checks above. The learning section is not "safe to ship" until every item passes on **both** platforms.
+
+## Prerequisites
+
+- [ ] Migrations applied: `learning_meta`, `learning_levels`, `learning_topics`, `learning_topic_progress`, `learning_habit_progress` tables exist; `profiles.learning_intro_seen` column exists; the `learning-assets` storage bucket exists (see `supabase/migrations/`).
+- [ ] Seed content applied (Awareness level + two sample topics) via `supabase/migrations/20260905000001_learning_seed.sql`.
+- [ ] A test user with a few recorded transactions (≥ 3) available, and a second user with none.
+
+## 14. Learning section
+
+| # | Precondition | Steps | Expected result | Mobile | Web |
+|---|---|---|---|---|---|
+| 14.1 | Authenticated user | Open the navigation and enter the learning section | Learning entry point exists (5th sidebar item on mobile, sidebar "Aprende" on web) and loads the levels overview | | |
+| 14.2 | First entry | Enter the learning section as a user who has never seen it | The intro screen (recommended approach) is shown before the curriculum | | |
+| 14.3 | Intro | Complete the intro (or use the always-accessible link) | Intro is marked seen; returning to the section shows the overview, not the intro | | |
+| 14.4 | Overview | View the levels overview | Current level, total levels, and per-level completion % are visible; only levels with content appear | | |
+| 14.5 | Topic reading | Open a topic | All block types render: headings, concepts, explanations, tips, warnings, examples, reflections, exercises, quotes, tables, infographics, illustrations | | |
+| 14.6 | Infographic | Open a topic with an infographic | Download and share actions are available | | |
+| 14.7 | Illustration | Open a topic with an illustration | No download or share action is offered | | |
+| 14.8 | Tutorial | Open a topic with a tutorial | A separate step-by-step tutorial screen opens with screenshots | | |
+| 14.9 | Habit start | Open the habit-based sample topic | A "start habit" button is present; the habit is **not** auto-started by browsing | | |
+| 14.10 | Habit tracking | Start the habit | The habit shows "in tracking" with a progress indicator | | |
+| 14.11 | Habit auto-completion | Record 3 transactions (user with ≥3) then revisit the section | The habit completes automatically, the topic is marked finished, and no manual completion path exists for it | | |
+| 14.12 | Manual completion | Open the habit-less sample topic | A "mark as complete" button exists and marks the topic finished | | |
+| 14.13 | Habit immutability | With a completed habit, record more transactions / change behavior | The habit's completed status never reverts | | |
+| 14.14 | Terminology | Inspect every learning screen | The concept is always called "hábito"/"habit", never "challenge" | | |
+| 14.15 | Global reset | In settings, trigger "reset learning progress" and confirm | All levels, topics, and habits return to unstarted on both platforms | | |
+| 14.16 | Content sync | Bump `learning_meta.content_version` (edit/publish a topic) and reopen the app | New content is downloaded and cached in the background | | |
+| 14.17 | Offline reading | Sync content, then go offline and open a topic | The topic still renders from cache | | |
+| 14.18 | Cross-platform progress | Complete a habit on one platform | The same progress reflects on the other platform | | |
+| 14.19 | Error states | First open with no cache and offline (or block network) | A clear error/retry state is shown, never a blank screen | | |
+
+---
+
+## Results (learning)
+
+Fill in the pass/fail columns above. A release is blocked if any ❌ remains unresolved.
+
+## Notes / known limitations
+
+- Sample content ships with `is_sample = true`; unpublish it (and bump the content version) when real curriculum content lands.
+- Infographic/illustration/tutorial assets must be uploaded to the `learning-assets` bucket; the seed references their public URLs. Offline guarantees cover text content; images are best-effort via the platform disk cache.
+- Applying migrations/seed requires the Supabase CLI or dashboard (the local MCP SQL role cannot run DDL).

@@ -339,3 +339,4 @@ Inside the `features` folder, there is a folder for each level. Within those fol
 | Feature | Status |
 |---------|--------|
 | `0-financial-awareness/001-app-foundation/` — registration, login, logout, password management, name editing, account deletion, terms acceptance, error/bug reporting, onboarding, session gating | ✅ Done |
+| `0-financial-awareness/002-learning-section/` — learning section: levels, topics, habits, tutorials, infographics, intro, progress, content sync/offline, resets | ✅ Done |
