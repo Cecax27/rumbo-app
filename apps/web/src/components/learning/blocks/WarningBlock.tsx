@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
-import type { MockBlock } from "@/app/app/learning/mock-data"
+import type { WarningBlock as WarningBlockType } from "@repo/learning/types";
+import InlineText from "../InlineText";
 
 interface Props {
-  block: MockBlock
+  block: WarningBlockType;
 }
 
 export default function WarningBlock({ block }: Props) {
@@ -12,8 +13,12 @@ export default function WarningBlock({ block }: Props) {
       className="border-l-4 rounded-r-lg p-4"
       style={{ borderLeftColor: "#f97316", backgroundColor: "rgba(249,115,22,0.1)" }}
     >
-      <h3 className="font-semibold">{block.payload.title}</h3>
-      <p className="text-neutral-600 dark:text-neutral-400 mt-1">{block.payload.body}</p>
+      <h3 className="font-semibold">
+        <InlineText>{block.payload.title}</InlineText>
+      </h3>
+      <p className="text-neutral-600 dark:text-neutral-400 mt-1">
+        <InlineText>{block.payload.body}</InlineText>
+      </p>
     </div>
-  )
+  );
 }

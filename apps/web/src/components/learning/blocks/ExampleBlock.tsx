@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
-import type { MockBlock } from "@/app/app/learning/mock-data"
+import type { ExampleBlock as ExampleBlockType } from "@repo/learning/types";
+import InlineText from "../InlineText";
 
 interface Props {
-  block: MockBlock
+  block: ExampleBlockType;
 }
 
 export default function ExampleBlock({ block }: Props) {
@@ -12,8 +13,12 @@ export default function ExampleBlock({ block }: Props) {
       <span className="text-xs uppercase tracking-wide font-semibold text-teal-600 dark:text-teal-400">
         Ejemplo
       </span>
-      <h3 className="font-semibold text-lg mt-1">{block.payload.title}</h3>
-      <p className="text-neutral-600 dark:text-neutral-400 mt-2">{block.payload.body}</p>
+      <h3 className="font-semibold text-lg mt-1">
+        <InlineText>{block.payload.title}</InlineText>
+      </h3>
+      <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+        <InlineText>{block.payload.body}</InlineText>
+      </p>
     </div>
-  )
+  );
 }

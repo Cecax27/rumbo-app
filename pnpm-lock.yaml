@@ -210,6 +210,9 @@ importers:
       '@repo/formatters':
         specifier: 'workspace:'
         version: link:../../packages/formatters
+      '@repo/learning':
+        specifier: workspace:*
+        version: link:../../packages/learning
       '@repo/retirement-plan-calculation':
         specifier: 'workspace:'
         version: link:../../packages/retirement-plan-calculation

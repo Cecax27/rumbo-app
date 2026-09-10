@@ -7,17 +7,35 @@ import { quicksand } from "../../ui/fonts";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { signOut } from "@repo/supabase/auth";
+import { useLearning } from "@/contexts/LearningContext";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Moon, Sun, Monitor, User, KeyRound } from "lucide-react";
+import { Moon, Sun, Monitor, User, KeyRound, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function SettingsPage() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const { reset } = useLearning();
   const [mounted, setMounted] = React.useState(false);
   const [isSigningOut, setIsSigningOut] = React.useState(false);
+  const [isResetting, setIsResetting] = React.useState(false);
+
+  const handleResetLearning = async () => {
+    const confirmed = window.confirm(
+      "¿Reiniciar todo tu progreso de aprendizaje? Esta acción no se puede deshacer.",
+    );
+    if (!confirmed) return;
+    setIsResetting(true);
+    const { error } = await reset({ kind: "all" });
+    setIsResetting(false);
+    if (error) {
+      toast.error("No pudimos reiniciar tu progreso. Inténtalo de nuevo.");
+      return;
+    }
+    toast.success("Progreso de aprendizaje reiniciado.");
+  };
 
   // useEffect only runs on the client, so now we can safely show the UI
   React.useEffect(() => {
@@ -79,6 +97,26 @@ export default function SettingsPage() {
               <KeyRound className="h-4 w-4" />
               Cambiar contraseña
             </Link>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className={quicksand.className}>Aprendizaje</CardTitle>
+            <CardDescription>
+              Gestiona tu progreso en la sección de aprendizaje
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleResetLearning}
+              disabled={isResetting}
+              className="inline-flex items-center gap-2 w-fit"
+            >
+              <RotateCcw className="h-4 w-4" />
+              {isResetting ? "Reiniciando..." : "Reiniciar progreso de aprendizaje"}
+            </Button>
           </CardContent>
         </Card>
         <Card>

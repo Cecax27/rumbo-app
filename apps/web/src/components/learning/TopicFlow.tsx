@@ -1,63 +1,71 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import type { MockTopic, MockBlock, MockProgress } from "@/app/app/learning/mock-data"
-import { MOCK_PROGRESS } from "@/app/app/learning/mock-data"
-import ConceptBlock from "./blocks/ConceptBlock"
-import ExplanationBlock from "./blocks/ExplanationBlock"
-import TipBlock from "./blocks/TipBlock"
-import WarningBlock from "./blocks/WarningBlock"
-import ExampleBlock from "./blocks/ExampleBlock"
-import ReflectionBlock from "./blocks/ReflectionBlock"
-import ExerciseBlock from "./blocks/ExerciseBlock"
-import TaskBlock from "./blocks/TaskBlock"
-import EmptyState from "./EmptyState"
+import Link from "next/link";
+import type { Block, LearningTopic } from "@repo/learning/types";
+import { useLearning } from "@/contexts/LearningContext";
+import ConceptBlock from "./blocks/ConceptBlock";
+import ExplanationBlock from "./blocks/ExplanationBlock";
+import TipBlock from "./blocks/TipBlock";
+import WarningBlock from "./blocks/WarningBlock";
+import ExampleBlock from "./blocks/ExampleBlock";
+import ReflectionBlock from "./blocks/ReflectionBlock";
+import ExerciseBlock from "./blocks/ExerciseBlock";
+import HeadingBlock from "./blocks/HeadingBlock";
+import QuoteBlock from "./blocks/QuoteBlock";
+import TableBlock from "./blocks/TableBlock";
+import InfographicBlock from "./blocks/InfographicBlock";
+import IllustrationBlock from "./blocks/IllustrationBlock";
+import TutorialBlock from "./blocks/TutorialBlock";
+import HabitBlock from "./blocks/HabitBlock";
+import EmptyState from "./EmptyState";
 
-function BlockRenderer({ block }: { block: MockBlock }) {
-  const taskProgress = MOCK_PROGRESS.taskStatus[block.id]
-
+function BlockRenderer({ block, topicId, index }: { block: Block; topicId: string; index: number }) {
   switch (block.type) {
     case "concept":
-      return <ConceptBlock block={block} />
-
+      return <ConceptBlock block={block} />;
     case "explanation":
-      return <ExplanationBlock block={block} />
-
+      return <ExplanationBlock block={block} />;
     case "tip":
-      return <TipBlock block={block} />
-
+      return <TipBlock block={block} />;
     case "warning":
-      return <WarningBlock block={block} />
-
+      return <WarningBlock block={block} />;
     case "example":
-      return <ExampleBlock block={block} />
-
+      return <ExampleBlock block={block} />;
     case "reflection":
-      return <ReflectionBlock block={block} />
-
+      return <ReflectionBlock block={block} />;
     case "exercise":
-      return <ExerciseBlock block={block} />
-
-    case "task":
-      return <TaskBlock block={block} taskProgress={taskProgress} />
-
+      return <ExerciseBlock block={block} />;
+    case "heading":
+      return <HeadingBlock block={block} />;
+    case "quote":
+      return <QuoteBlock block={block} />;
+    case "table":
+      return <TableBlock block={block} />;
+    case "infographic":
+      return <InfographicBlock block={block} />;
+    case "illustration":
+      return <IllustrationBlock block={block} />;
+    case "tutorial":
+      return <TutorialBlock block={block} topicId={topicId} index={index} />;
+    case "habit":
+      return <HabitBlock block={block} topicId={topicId} />;
     default:
       return (
         <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900 opacity-70">
-          <h3 className="font-semibold">{block.payload.title || "Bloque"}</h3>
-          <p className="text-sm text-neutral-400 mt-1">Tipo de bloque no soportado: {block.type}</p>
+          <h3 className="font-semibold">Bloque</h3>
+          <p className="text-sm text-neutral-400 mt-1">Tipo de bloque no soportado.</p>
         </div>
-      )
+      );
   }
 }
 
 interface Props {
-  topic: MockTopic
-  progress: MockProgress
+  topic: LearningTopic;
 }
 
-export default function TopicFlow({ topic, progress }: Props) {
-  const tp = progress.topicStatus[topic.id]
+export default function TopicFlow({ topic }: Props) {
+  const { topicProgress } = useLearning();
+  const tp = topicProgress.get(topic.id);
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -95,11 +103,34 @@ export default function TopicFlow({ topic, progress }: Props) {
         {topic.blocks.length === 0 ? (
           <EmptyState message="Este tema aún no tiene contenido." />
         ) : (
-          topic.blocks.map((block) => (
-            <BlockRenderer key={block.id} block={block} />
+          topic.blocks.map((block, index) => (
+            <BlockRenderer key={block.id} block={block} topicId={topic.id} index={index} />
           ))
         )}
       </div>
+
+      <TopicCompletion topic={topic} />
     </div>
-  )
+  );
+}
+
+function TopicCompletion({ topic }: { topic: LearningTopic }) {
+  const { topicProgress, markComplete } = useLearning();
+  const hasHabit = topic.blocks.some((b) => b.type === "habit");
+  const tp = topicProgress.get(topic.id);
+
+  if (tp?.status === "completed") return null;
+  if (hasHabit) return null;
+
+  return (
+    <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900 text-center">
+      <button
+        type="button"
+        onClick={() => markComplete(topic.id)}
+        className="text-sm px-3 py-2 bg-navy-blue-600 text-white rounded-md hover:bg-navy-blue-700"
+      >
+        Marcar tema como completado
+      </button>
+    </div>
+  );
 }

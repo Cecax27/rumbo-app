@@ -7,6 +7,7 @@ import { TransactionsProvider } from "@/contexts/TransactionsContext";
 import { AccountsProvider } from "@/contexts/AccountsContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { RequireAuth } from "@/components/require-auth";
+import { LearningProvider } from "@/contexts/LearningContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <ToolsProvider>
           <TransactionsProvider>
             <AccountsProvider>
+              <LearningProvider>
               <div className="flex h-full fixed inset-0">
                 <aside className="inset-0 flex-1 h-full p-10 bg-background-light border-r-2 border-r-neutral-100 dark:border-r-neutral-900 dark:bg-neutral-950">
                   <div id="logo" className="flex items-center gap-3">
@@ -34,6 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   {children}
                 </main>
               </div>
+            </LearningProvider>
             </AccountsProvider>
           </TransactionsProvider>
         </ToolsProvider>
