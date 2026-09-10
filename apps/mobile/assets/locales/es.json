@@ -193,7 +193,8 @@
     "dashboard": "Inicio",
     "transactions": "Transacciones",
     "accounts": "Cuentas",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "learning": "Aprendizaje"
   },
   "accounts": {
     "title": "Cuentas",
@@ -429,5 +430,20 @@
     "title": "Algo salió mal",
     "message": "Ocurrió un error inesperado. Inténtalo de nuevo.",
     "retry": "Intentar de nuevo"
+  },
+  "learning": {
+    "title": "Camino de aprendizaje",
+    "level": "Nivel",
+    "of": "de",
+    "comingSoon": "Próximamente habrá contenido disponible.",
+    "empty": "Aún no hay contenido disponible.",
+    "error": "No pudimos cargar el contenido. Reintenta más tarde.",
+    "reset": {
+      "title": "Reiniciar progreso de aprendizaje",
+      "message": "¿Reiniciar todo tu progreso de aprendizaje? Esta acción no se puede deshacer.",
+      "confirm": "Reiniciar",
+      "success": "Progreso de aprendizaje reiniciado.",
+      "error": "No pudimos reiniciar tu progreso. Inténtalo de nuevo."
+    }
   }
 }

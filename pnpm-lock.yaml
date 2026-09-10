@@ -47,6 +47,9 @@ importers:
       '@react-native-picker/picker':
         specifier: 2.11.1
         version: 2.11.1(react-native@0.79.6(@babel/core@7.29.0)(@types/react@19.0.0)(react@19.0.0))(react@19.0.0)
+      '@repo/learning':
+        specifier: workspace:*
+        version: link:../../packages/learning
       '@supabase/supabase-js':
         specifier: 2.50.5
         version: 2.50.5

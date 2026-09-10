@@ -3,6 +3,7 @@ import { makeStyles } from '../../../assets/uiStyles'
 import PageContainer from '../../../components/layout/PageContainer'
 import { supabase } from '../../../lib/supabase/client'
 import { signOut as supabaseSignOut, deleteAccount } from '../../../lib/supabase/auth'
+import { resetProgress } from '../../../lib/supabase/learning'
 import { useRouter } from 'expo-router'
 import { useThemeColors } from '../../../theme/useThemeColors'
 import { useMemo, useState, useEffect } from 'react'
@@ -111,6 +112,28 @@ export default function Configuration() {
     );
   }
 
+  function confirmResetLearning() {
+    Alert.alert(
+      t('learning.reset.title'),
+      t('learning.reset.message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('learning.reset.confirm'),
+          style: 'destructive',
+          onPress: async () => {
+            const { error } = await resetProgress({ kind: 'all' })
+            if (error) {
+              global.showSnackbar(t('learning.reset.error'), 3000, theme.coral)
+            } else {
+              global.showSnackbar(t('learning.reset.success'), 3000, theme.success)
+            }
+          },
+        },
+      ]
+    )
+  }
+
   const displayName = fullName || user?.user_metadata?.full_name || user?.email || t('configuration.guestUser');
 
   return (
@@ -151,6 +174,12 @@ export default function Configuration() {
                 {t(`common.language.${i18n.language}`)}
               </Text>
             }
+            />
+          <View style={styles.divider} />
+          <SettingItem
+            icon={<Ionicons name="refresh" size={24} color={theme.subtext} />}
+            title={t('learning.reset.title')}
+            onPress={confirmResetLearning}
             />
         </View>
       </View>

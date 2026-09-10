@@ -1,8 +1,17 @@
-//const path = require('path');
+const path = require('path');
 const { getDefaultConfig } = require('expo/metro-config');
 const { withNativeWind } = require('nativewind/metro');
 
 const config = getDefaultConfig(__dirname);
+
+// Monorepo support: resolve workspace packages (`@repo/*`) from the hoisted
+// root node_modules and watch the workspace so changes are picked up.
+const workspaceRoot = path.resolve(__dirname, '../..');
+config.watchFolders = [workspaceRoot];
+config.resolver.nodeModulesPaths = [
+  path.resolve(__dirname, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules'),
+];
 
 // Ensure font and other asset extensions are always registered
 const { assetExts, sourceExts } = config.resolver;

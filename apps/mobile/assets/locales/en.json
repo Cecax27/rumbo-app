@@ -193,7 +193,8 @@
     "dashboard": "Dashboard",
     "transactions": "Transactions",
     "accounts": "Accounts",
-    "settings": "Settings"
+    "settings": "Settings",
+    "learning": "Learning"
   },
   "accounts": {
     "title": "Accounts",
@@ -429,5 +430,20 @@
     "title": "Something went wrong",
     "message": "An unexpected error occurred. Please try again.",
     "retry": "Try again"
+  },
+  "learning": {
+    "title": "Learning path",
+    "level": "Level",
+    "of": "of",
+    "comingSoon": "Content coming soon.",
+    "empty": "No content available yet.",
+    "error": "We couldn't load the content. Try again later.",
+    "reset": {
+      "title": "Reset learning progress",
+      "message": "Reset all your learning progress? This cannot be undone.",
+      "confirm": "Reset",
+      "success": "Learning progress reset.",
+      "error": "Could not reset your progress. Try again."
+    }
   }
 }
