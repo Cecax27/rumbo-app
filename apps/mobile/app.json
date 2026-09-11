@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Rumbo",
-    "slug": "Fundwise",
-    "version": "0.2.0",
+    "slug": "Rumbo",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "automatic",
@@ -21,7 +21,7 @@
       "icon": "./assets/logo.png",
       "edgeToEdgeEnabled": true,
       "userInterfaceStyle": "automatic",
-      "package": "com.cecax27.rumbo"
+      "package": "com.bitabit.rumbo"
     },
     "web": {
       "favicon": "./assets/favicon.png"
