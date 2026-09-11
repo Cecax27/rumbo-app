@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { MailCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { supabase } from "@repo/supabase/client";
+import { resendConfirmation } from "@repo/supabase/auth";
 
 export default function CheckEmailPage() {
   const router = useRouter();
@@ -25,14 +26,13 @@ export default function CheckEmailPage() {
 
   const handleResend = async () => {
     if (!email) return;
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email,
-    });
+    const { error } = await resendConfirmation(email);
     if (error) {
-      console.error("Error resending confirmation email:", error.message);
+      toast.error("No pudimos reenviar el enlace. Inténtalo de nuevo.");
+      return;
     }
     setResent(true);
+    toast.success("Se ha reenviado el enlace de confirmación.");
   };
 
   return (

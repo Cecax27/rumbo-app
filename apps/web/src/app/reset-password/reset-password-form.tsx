@@ -116,6 +116,17 @@ export default function ResetPasswordForm() {
     };
   }, [searchParams]);
 
+  // Prevent an indefinite "Verificando enlace..." state if session
+  // establishment stalls (e.g. network drop during code exchange).
+  useEffect(() => {
+    if (!exchanging) return;
+    const timer = setTimeout(() => {
+      setExchanging(false);
+      setError("El enlace tardó demasiado. Solicita un nuevo restablecimiento.");
+    }, 15000);
+    return () => clearTimeout(timer);
+  }, [exchanging]);
+
   const handleSubmit = async (values: ResetPasswordValues) => {
     try {
       const { error: updateError } = await updateUserPassword(values.password);

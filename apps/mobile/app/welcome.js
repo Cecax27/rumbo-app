@@ -21,7 +21,7 @@ export default function Welcome() {
 
   const handleGetStarted = async () => {
     await setWelcomeSeen();
-    router.replace("/(app)/accounts/");
+    router.replace("/(app)/dashboard");
   };
 
   return (
@@ -96,54 +96,6 @@ export default function Welcome() {
         </View>
 
         {/* Paso 3 */}
-        <View
-          style={{
-            backgroundColor: theme.surface,
-            padding: 20,
-            borderRadius: 20,
-            marginBottom: 15,
-            width: "100%",
-            shadowColor: "#000",
-            shadowOpacity: 0.05,
-            shadowRadius: 5,
-          }}
-        >
-          <Text
-            style={[
-              styles.p,
-              { fontSize: 14, fontWeight: "bold", marginBottom: 8 },
-            ]}
-          >
-            {t("welcome.steps.exploreDashboard.title")}
-          </Text>
-          <Text style={[styles.p, { fontSize: 12 }]}>
-            {t("welcome.steps.exploreDashboard.description")}
-          </Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: theme.surface,
-            padding: 20,
-            borderRadius: 20,
-            marginBottom: 15,
-            width: "100%",
-            shadowColor: "#000",
-            shadowOpacity: 0.05,
-            shadowRadius: 5,
-          }}
-        >
-          <Text
-            style={[
-              styles.p,
-              { fontSize: 14, fontWeight: "bold", marginBottom: 8 },
-            ]}
-          >
-            {t("welcome.steps.exploreDashboard.title")}
-          </Text>
-          <Text style={[styles.p, { fontSize: 12 }]}>
-            {t("welcome.steps.exploreDashboard.description")}
-          </Text>
-        </View>
         <View
           style={{
             backgroundColor: theme.surface,

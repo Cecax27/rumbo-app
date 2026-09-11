@@ -3,7 +3,6 @@ import {
   Text,
   View,
   Image,
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -20,7 +19,6 @@ import LanguageSelector from "../components/languageSelector";
 import { useTranslation } from "react-i18next";
 import { failIf, validateEmail } from "../lib/utils";
 import Input from "../components/input";
-import Snackbar from "../components/Snackbar";
 import Button from "../components/button";
 import { resetPassword } from "../lib/supabase/auth";
 import { useFadeSlideIn } from "../lib/animations";
@@ -59,7 +57,7 @@ export default function ForgotPassword() {
     const { error } = await resetPassword(email);
 
     if (error) {
-      Alert.alert(error.message);
+      global.showSnackbar(t("forgot-password.error"), 3000, theme.coral);
       setLoading(false);
       return;
     }
@@ -79,7 +77,6 @@ export default function ForgotPassword() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Snackbar />
         <View className="w-full flex-1 flex flex-col items-center justify-between">
           <View className="w-full flex flex-col items-center justify-start gap-10">
             <Animated.View style={[{ width: "100%" }]}>

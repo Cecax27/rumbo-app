@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const registerSchema = z
   .object({
@@ -61,6 +62,7 @@ function LoginFormInner({
 }) {
   const router = useRouter();
   const schema = mode === "register" ? registerSchema : loginSchema;
+  const [termsAccepted, setTermsAccepted] = React.useState(false);
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -69,8 +71,13 @@ function LoginFormInner({
 
   const handleSubmit = async (values: FormValues) => {
     if (mode === "register") {
+      if (!termsAccepted) {
+        toast.error("Debes aceptar los términos y condiciones.");
+        return;
+      }
       const { data, error } = await signUp(values.email, values.password, {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: { terms_accepted: true },
       });
       if (error) {
         toast.error(error.message);
@@ -149,6 +156,15 @@ function LoginFormInner({
                 </FormItem>
               )}
             />
+          )}
+          {mode === "register" && (
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={termsAccepted}
+                onCheckedChange={(checked) => setTermsAccepted(checked)}
+              />
+              <span className="text-sm">Acepto los términos y condiciones</span>
+            </div>
           )}
           <Button type="submit" className="mt-4">
             {mode === "register" ? "Regístrate" : "Iniciar sesión"}

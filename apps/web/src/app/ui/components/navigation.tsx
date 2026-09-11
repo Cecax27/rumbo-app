@@ -8,6 +8,7 @@ import {
   SwapHoriz,
   AccountBalanceWallet,
   Settings,
+  School,
   MenuBook,
   OpenInNew,
 } from "@mui/icons-material";
@@ -26,6 +27,9 @@ export default function Navigation() {
         </Item>
         <Item href="/app/accounts">
           <AccountBalanceWallet /> Cuentas
+        </Item>
+        <Item href="/app/learning">
+          <School /> Aprende
         </Item>
         <Item href="/app/settings">
           <Settings /> Ajustes

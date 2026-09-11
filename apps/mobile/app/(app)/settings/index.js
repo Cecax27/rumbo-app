@@ -2,6 +2,8 @@ import { View, Text, Pressable, Alert, ScrollView, Image } from 'react-native'
 import { makeStyles } from '../../../assets/uiStyles'
 import PageContainer from '../../../components/layout/PageContainer'
 import { supabase } from '../../../lib/supabase/client'
+import { signOut as supabaseSignOut, deleteAccount } from '../../../lib/supabase/auth'
+import { resetProgress } from '../../../lib/supabase/learning'
 import { useRouter } from 'expo-router'
 import { useThemeColors } from '../../../theme/useThemeColors'
 import { useMemo, useState, useEffect } from 'react'
@@ -41,14 +43,23 @@ export default function Configuration() {
   const { t, i18n} = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [fullName, setFullName] = useState('');
 
   useEffect(() => {
-    const getUser = async () => {
+    const loadUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .single();
+        setFullName(profile?.full_name || '');
+      }
     };
     
-    getUser();
+    loadUser();
   }, []);
 
   async function signOut() {
@@ -63,11 +74,11 @@ export default function Configuration() {
         {
           text: t('common.signOut'),
           onPress: async () => {
-            const { error } = await supabase.auth.signOut();
+            const { error } = await supabaseSignOut();
             if (error) {
-              Alert.alert(t('configuration.signOutError'));
+              global.showSnackbar(t('configuration.signOutError'), 3000, theme.coral);
             } else {
-              router.replace('/signUp');
+              router.replace('/');
             }
           },
           style: 'destructive',
@@ -76,7 +87,54 @@ export default function Configuration() {
     );
   }
 
+  function confirmDeleteAccount() {
+    Alert.alert(
+      t('deleteAccount.title'),
+      t('deleteAccount.message'),
+      [
+        {
+          text: t('common.cancel'),
+          style: 'cancel',
+        },
+        {
+          text: t('deleteAccount.delete'),
+          style: 'destructive',
+          onPress: async () => {
+            const { error } = await deleteAccount();
+            if (error) {
+              global.showSnackbar(t('deleteAccount.error'), 3000, theme.coral);
+            } else {
+              router.replace('/');
+            }
+          },
+        },
+      ]
+    );
+  }
 
+  function confirmResetLearning() {
+    Alert.alert(
+      t('learning.reset.title'),
+      t('learning.reset.message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('learning.reset.confirm'),
+          style: 'destructive',
+          onPress: async () => {
+            const { error } = await resetProgress({ kind: 'all' })
+            if (error) {
+              global.showSnackbar(t('learning.reset.error'), 3000, theme.coral)
+            } else {
+              global.showSnackbar(t('learning.reset.success'), 3000, theme.success)
+            }
+          },
+        },
+      ]
+    )
+  }
+
+  const displayName = fullName || user?.user_metadata?.full_name || user?.email || t('configuration.guestUser');
 
   return (
     <PageContainer>
@@ -92,13 +150,13 @@ export default function Configuration() {
           ) : (
             <View style={[styles.avatar, { backgroundColor: theme.primary }]}>
               <Text style={styles.avatarText}>
-                {user?.email?.charAt(0).toUpperCase() || 'U'}
+                {displayName.charAt(0).toUpperCase() || 'U'}
               </Text>
             </View>
           )}
         </View>
         <Text style={styles.userName}>
-          {user?.user_metadata?.full_name || user?.email || t('configuration.guestUser')}
+          {displayName}
         </Text>
         <Text style={styles.userEmail}>{user?.email || ''}</Text>
       </View>
@@ -117,6 +175,12 @@ export default function Configuration() {
               </Text>
             }
             />
+          <View style={styles.divider} />
+          <SettingItem
+            icon={<Ionicons name="refresh" size={24} color={theme.subtext} />}
+            title={t('learning.reset.title')}
+            onPress={confirmResetLearning}
+            />
         </View>
       </View>
 
@@ -127,13 +191,13 @@ export default function Configuration() {
           <SettingItem
             icon={<Ionicons name="person" size={24} color={theme.subtext} />}
             title={t('configuration.editProfile')}
-            onPress={() => {}}
+            onPress={() => {router.push('/settings/editProfile')}}
             />
           <View style={styles.divider} />
           <SettingItem
-            icon={<Ionicons name="notifications" size={24} color={theme.subtext} />}
-            title={t('configuration.notifications')}
-            onPress={() => {}}
+            icon={<Ionicons name="lock-closed" size={24} color={theme.subtext} />}
+            title={t('configuration.changePassword')}
+            onPress={() => {router.push('/settings/changePassword')}}
             />
           <View style={styles.divider} />
           <SettingItem
@@ -152,6 +216,13 @@ export default function Configuration() {
       {/* Support Section */}
       <View style={[styles.section, { marginBottom: 30 }]}>
         <View style={styles.sectionContent}>
+          <SettingItem
+            icon={<Ionicons name="trash" size={24} color={theme.error} />}
+            title={t('configuration.deleteAccount')}
+            titleStyle={{ color: theme.error }}
+            onPress={confirmDeleteAccount}
+            />
+          <View style={styles.divider} />
           <SettingItem
             icon={<Ionicons name="log-out" size={24} color={theme.subtext} />}
             title={t('configuration.signOut')}

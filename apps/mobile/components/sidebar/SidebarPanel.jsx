@@ -56,6 +56,12 @@ export default function SidebarPanel({ visible, onClose }) {
       label: t('tabs.accounts'),
     },
     {
+      route: '/learning',
+      icon: 'school-outline',
+      iconActive: 'school',
+      label: t('tabs.learning'),
+    },
+    {
       route: '/settings',
       icon: 'settings-outline',
       iconActive: 'settings',

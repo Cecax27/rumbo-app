@@ -3,7 +3,6 @@ import {
   Text,
   View,
   Image,
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -19,7 +18,6 @@ import { useThemeColors } from "../theme/useThemeColors";
 import { useTranslation } from "react-i18next";
 import { failIf } from "../lib/utils";
 import Input from "../components/input";
-import Snackbar from "../components/Snackbar";
 import Button from "../components/button";
 import { updateUserPassword } from "../lib/supabase/auth";
 import { useFadeSlideIn } from "../lib/animations";
@@ -62,7 +60,7 @@ export default function UpdatePassword() {
     if (
       failIf(
         password !== passwordConfirmation,
-        t("signup.password-no-match"),
+        t("signup.errors.password-no-match"),
         theme,
         () => setLoading(false),
       )
@@ -72,15 +70,14 @@ export default function UpdatePassword() {
     const { error } = await updateUserPassword(password);
 
     if (error) {
-      Alert.alert(error.message);
+      global.showSnackbar(t("update-password.error"), 3000, theme.coral);
       setLoading(false);
       return;
     }
 
     setLoading(false);
-    Alert.alert(t("common.success"), t("update-password.success"), [
-      { text: "OK", onPress: () => router.replace("/") },
-    ]);
+    global.showSnackbar(t("update-password.success"), 3000, theme.primary);
+    router.replace("/");
   }
 
   return (
@@ -94,7 +91,6 @@ export default function UpdatePassword() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Snackbar />
         <View className="w-full flex-1 flex flex-col items-center justify-between">
           <View className="w-full flex flex-col items-center justify-start gap-10">
             <Animated.View style={[{ width: "100%" }]}>

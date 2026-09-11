@@ -6,7 +6,6 @@ import { Picker } from '@react-native-picker/picker'
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useThemeColors } from '../../../theme/useThemeColors';
-import Snackbar from '../../../components/Snackbar';
 import { useTranslation } from 'react-i18next';
 import FButton from '../../../components/fbutton'
 import { Sections } from '../../../components/categoriesMenu';
@@ -217,7 +216,6 @@ export default function AddTransaction() {
             </ScrollView>
             
             </>}
-            <Snackbar />
         </KeyboardAvoidingView>
     )
 }
