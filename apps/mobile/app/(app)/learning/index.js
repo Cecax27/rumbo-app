@@ -1,9 +1,10 @@
-import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, Pressable, ActivityIndicator, Alert } from 'react-native'
 import { useEffect } from 'react'
 import { useRouter } from 'expo-router'
 import { useThemeColors } from '../../../theme/useThemeColors'
 import { useLearning } from '../../../contexts/LearningContext'
 import { useTranslation } from 'react-i18next'
+import { Ionicons } from '@expo/vector-icons'
 import PageContainer from '../../../components/layout/PageContainer'
 import {
   computePosition,
@@ -14,6 +15,30 @@ import {
 
 function LevelCard({ level, topics, isCurrent, percent, completedMap, inProgressMap, theme }) {
   const router = useRouter()
+  const { reset } = useLearning()
+  const { t } = useTranslation()
+
+  const confirmResetLevel = () => {
+    Alert.alert(
+      t('learning.reset.levelTitle') ?? 'Reiniciar nivel',
+      t('learning.reset.levelMessage') ?? '¿Reiniciar el progreso de este nivel? Esta acción no se puede deshacer.',
+      [
+        { text: t('common.cancel') ?? 'Cancelar', style: 'cancel' },
+        {
+          text: t('learning.reset.confirm') ?? 'Reiniciar',
+          style: 'destructive',
+          onPress: async () => {
+            const { error } = await reset({ kind: 'level', levelId: level.id })
+            if (error) {
+              global.showSnackbar(t('learning.reset.error') ?? 'No pudimos reiniciar tu progreso. Inténtalo de nuevo.', 3000, theme.coral)
+            } else {
+              global.showSnackbar(t('learning.reset.success') ?? 'Progreso de aprendizaje reiniciado.', 3000, theme.success)
+            }
+          },
+        },
+      ]
+    )
+  }
 
   return (
     <View style={{ marginBottom: 24 }}>
@@ -49,9 +74,14 @@ function LevelCard({ level, topics, isCurrent, percent, completedMap, inProgress
             </Text>
           )}
         </View>
-        <Text style={{ color: theme.subtext, fontSize: 14, fontFamily: 'Quicksand-Bold' }}>
-          {percent}%
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Text style={{ color: theme.subtext, fontSize: 14, fontFamily: 'Quicksand-Bold' }}>
+            {percent}%
+          </Text>
+          <Pressable onPress={confirmResetLevel} hitSlop={8}>
+            <Ionicons name="refresh" size={18} color={theme.subtext} />
+          </Pressable>
+        </View>
       </View>
 
       <View style={{ height: 8, backgroundColor: theme.background, borderRadius: 4, overflow: 'hidden' }}>

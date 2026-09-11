@@ -211,7 +211,7 @@ export async function completeHabit(
 
 export type ResetScope =
   | { kind: "topic"; topicId: string }
-  | { kind: "level"; levelIds: string[] }
+  | { kind: "topics"; topicIds: string[] }
   | { kind: "all" };
 
 /** Clears progress for the given scope (habit progress first, then topics). */
@@ -228,15 +228,15 @@ export async function resetProgress(scope: ResetScope): Promise<{ error: string 
 function buildTopicQuery(scope: ResetScope) {
   const base = supabase.from("learning_topic_progress").delete();
   if (scope.kind === "topic") return base.eq("topic_id", scope.topicId);
-  if (scope.kind === "level") return base.in("topic_id", scope.levelIds);
-  return base;
+  if (scope.kind === "topics") return base.in("topic_id", scope.topicIds);
+  return base.not("id", "is", null);
 }
 
 function buildHabitQuery(scope: ResetScope) {
   const base = supabase.from("learning_habit_progress").delete();
   if (scope.kind === "topic") return base.eq("topic_id", scope.topicId);
-  if (scope.kind === "level") return base.in("topic_id", scope.levelIds);
-  return base;
+  if (scope.kind === "topics") return base.in("topic_id", scope.topicIds);
+  return base.not("id", "is", null);
 }
 
 // ---------------------------------------------------------------------------

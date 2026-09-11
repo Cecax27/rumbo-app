@@ -57,7 +57,7 @@ alter table public.profiles
 -- ---------------------------------------------------------------------------
 create table if not exists public.learning_topic_progress (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users (id) on delete cascade,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
   topic_id uuid not null references public.learning_topics (id) on delete cascade,
   status text not null check (status in ('in_progress', 'completed')),
   started_at timestamptz,
@@ -73,7 +73,7 @@ create table if not exists public.learning_topic_progress (
 -- ---------------------------------------------------------------------------
 create table if not exists public.learning_habit_progress (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users (id) on delete cascade,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
   topic_id uuid not null references public.learning_topics (id) on delete cascade,
   habit_slug text not null,
   status text not null check (status in ('tracking', 'completed')),

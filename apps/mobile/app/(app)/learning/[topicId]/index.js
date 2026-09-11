@@ -1,16 +1,41 @@
-import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, Pressable, ActivityIndicator, Alert } from 'react-native'
 import { Stack, useLocalSearchParams } from 'expo-router'
 import { useThemeColors } from '../../../../theme/useThemeColors'
 import { useLearning } from '../../../../contexts/LearningContext'
+import { useTranslation } from 'react-i18next'
+import { Ionicons } from '@expo/vector-icons'
 import BlockRenderer from '../../../../components/learning/BlockRenderer'
 import { hasHabit } from '@repo/learning/progress'
 
 export default function TopicScreen() {
   const { colors: theme } = useThemeColors()
+  const { t } = useTranslation()
   const { topicId } = useLocalSearchParams()
-  const { content, topicProgress, markComplete, loading } = useLearning()
+  const { content, topicProgress, markComplete, loading, reset } = useLearning()
 
   const topic = content?.topics.find((t) => t.id === topicId)
+
+  const confirmResetTopic = () => {
+    Alert.alert(
+      t('learning.reset.topicTitle') ?? 'Reiniciar tema',
+      t('learning.reset.topicMessage') ?? '¿Reiniciar el progreso de este tema? Esta acción no se puede deshacer.',
+      [
+        { text: t('common.cancel') ?? 'Cancelar', style: 'cancel' },
+        {
+          text: t('learning.reset.confirm') ?? 'Reiniciar',
+          style: 'destructive',
+          onPress: async () => {
+            const { error } = await reset({ kind: 'topic', topicId })
+            if (error) {
+              global.showSnackbar(t('learning.reset.error') ?? 'No pudimos reiniciar tu progreso. Inténtalo de nuevo.', 3000, theme.coral)
+            } else {
+              global.showSnackbar(t('learning.reset.success') ?? 'Progreso de aprendizaje reiniciado.', 3000, theme.success)
+            }
+          },
+        },
+      ]
+    )
+  }
 
   if (loading && !content) {
     return (
@@ -44,9 +69,21 @@ export default function TopicScreen() {
         <Text style={{ color: theme.subtext, fontSize: 14, marginBottom: 8 }}>{topic.description}</Text>
       ) : null}
       {tp ? (
-        <Text style={{ color: statusColor, fontSize: 12, fontFamily: 'Quicksand-Bold', marginBottom: 16 }}>
-          {statusLabel}
-        </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 16,
+          }}
+        >
+          <Text style={{ color: statusColor, fontSize: 12, fontFamily: 'Quicksand-Bold' }}>
+            {statusLabel}
+          </Text>
+          <Pressable onPress={confirmResetTopic} hitSlop={8}>
+            <Ionicons name="refresh" size={18} color={theme.subtext} />
+          </Pressable>
+        </View>
       ) : null}
 
       <View style={{ gap: 14 }}>

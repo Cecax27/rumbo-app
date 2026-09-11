@@ -230,11 +230,20 @@ export function LearningProvider({ children }) {
 
   const reset = useCallback(
     async (scope) => {
-      const { error } = await resetProgressDb(scope)
+      const dbScope =
+        scope.kind === 'level'
+          ? {
+              kind: 'topics',
+              topicIds: (content?.topics ?? [])
+                .filter((t) => t.levelId === scope.levelId)
+                .map((t) => t.id),
+            }
+          : scope
+      const { error } = await resetProgressDb(dbScope)
       if (!error) await loadProgress()
       return { error }
     },
-    [loadProgress]
+    [content, loadProgress]
   )
 
   const markIntroSeen = useCallback(async () => {

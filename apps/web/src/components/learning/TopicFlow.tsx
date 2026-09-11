@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import type { Block, LearningTopic } from "@repo/learning/types";
+import { toast } from "sonner";
+import { RotateCcw } from "lucide-react";
 import { useLearning } from "@/contexts/LearningContext";
 import ConceptBlock from "./blocks/ConceptBlock";
 import ExplanationBlock from "./blocks/ExplanationBlock";
@@ -64,11 +66,24 @@ interface Props {
 }
 
 export default function TopicFlow({ topic }: Props) {
-  const { topicProgress } = useLearning();
+  const { topicProgress, reset } = useLearning();
   const tp = topicProgress.get(topic.id);
 
+  const handleReset = async () => {
+    const confirmed = window.confirm(
+      "¿Reiniciar el progreso de este tema? Esta acción no se puede deshacer.",
+    );
+    if (!confirmed) return;
+    const { error } = await reset({ kind: "topic", topicId: topic.id });
+    if (error) {
+      toast.error("No pudimos reiniciar el progreso. Inténtalo de nuevo.");
+      return;
+    }
+    toast.success("Progreso del tema reiniciado.");
+  };
+
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full overflow-y-auto">
       <div>
         <Link
           href="/app/learning"
@@ -76,9 +91,22 @@ export default function TopicFlow({ topic }: Props) {
         >
           ← Volver al camino
         </Link>
-        <h1 className="text-2xl font-bold mt-2" style={{ fontFamily: "Quicksand, sans-serif" }}>
-          {topic.title}
-        </h1>
+        <div className="flex items-start justify-between gap-2">
+          <h1 className="text-2xl font-bold mt-2" style={{ fontFamily: "Quicksand, sans-serif" }}>
+            {topic.title}
+          </h1>
+          {tp && (
+            <button
+              type="button"
+              onClick={handleReset}
+              aria-label="Reiniciar tema"
+              title="Reiniciar tema"
+              className="inline-flex items-center justify-center h-8 w-8 rounded-md text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 dark:hover:text-neutral-200 dark:hover:bg-neutral-800 shrink-0"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          )}
+        </div>
         <p className="text-neutral-500 dark:text-neutral-400 mt-1">{topic.description}</p>
         {tp && (
           <span

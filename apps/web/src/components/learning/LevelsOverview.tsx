@@ -8,6 +8,8 @@ import {
   hasHabit,
   levelCompletionPercentage,
 } from "@repo/learning/progress";
+import { toast } from "sonner";
+import { RotateCcw } from "lucide-react";
 import { useLearning } from "@/contexts/LearningContext";
 import EmptyState from "./EmptyState";
 
@@ -55,6 +57,21 @@ interface LevelCardProps {
 }
 
 function LevelCard({ level, topics, isCurrent, percent, completedMap, inProgressMap }: LevelCardProps) {
+  const { reset } = useLearning();
+
+  const handleReset = async () => {
+    const confirmed = window.confirm(
+      "¿Reiniciar el progreso de este nivel? Esta acción no se puede deshacer.",
+    );
+    if (!confirmed) return;
+    const { error } = await reset({ kind: "level", levelId: level.id });
+    if (error) {
+      toast.error("No pudimos reiniciar el progreso. Inténtalo de nuevo.");
+      return;
+    }
+    toast.success("Progreso del nivel reiniciado.");
+  };
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -66,9 +83,20 @@ function LevelCard({ level, topics, isCurrent, percent, completedMap, inProgress
             </span>
           )}
         </h2>
-        <span className="text-sm text-neutral-500 dark:text-neutral-400 font-medium">
-          {percent}%
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-neutral-500 dark:text-neutral-400 font-medium">
+            {percent}%
+          </span>
+          <button
+            type="button"
+            onClick={handleReset}
+            aria-label="Reiniciar nivel"
+            title="Reiniciar nivel"
+            className="inline-flex items-center justify-center h-7 w-7 rounded-md text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 dark:hover:text-neutral-200 dark:hover:bg-neutral-800"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </button>
+        </div>
       </div>
       <div className="h-2 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
         <div

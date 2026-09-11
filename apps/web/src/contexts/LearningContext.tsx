@@ -36,6 +36,7 @@ import {
 import type {
   HabitProgressRow,
   LearningTopicRow,
+  ResetScope,
   TopicProgressRow,
 } from "@repo/supabase/learning";
 import { TransactionsContext } from "@/contexts/TransactionsContext";
@@ -159,7 +160,7 @@ interface LearningContextType {
   markComplete: (topicId: string) => Promise<void>;
   reset: (scope:
     | { kind: "topic"; topicId: string }
-    | { kind: "level"; levelIds: string[] }
+    | { kind: "level"; levelId: string }
     | { kind: "all" }) => Promise<{ error: string | null }>;
   markIntroSeen: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -323,14 +324,23 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
     async (
       scope:
         | { kind: "topic"; topicId: string }
-        | { kind: "level"; levelIds: string[] }
+        | { kind: "level"; levelId: string }
         | { kind: "all" },
     ) => {
-      const { error } = await resetProgressDb(scope);
+      const dbScope: ResetScope =
+        scope.kind === "level"
+          ? {
+              kind: "topics",
+              topicIds: (content?.topics ?? [])
+                .filter((t) => t.levelId === scope.levelId)
+                .map((t) => t.id),
+            }
+          : scope;
+      const { error } = await resetProgressDb(dbScope);
       if (!error) await loadProgress();
       return { error };
     },
-    [loadProgress],
+    [content, loadProgress],
   );
 
   const markIntroSeen = useCallback(async () => {

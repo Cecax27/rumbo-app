@@ -133,15 +133,15 @@ export async function completeHabit(topicId, habitSlug, note) {
 function buildTopicQuery(scope) {
   const base = supabase.from('learning_topic_progress').delete()
   if (scope.kind === 'topic') return base.eq('topic_id', scope.topicId)
-  if (scope.kind === 'level') return base.in('topic_id', scope.levelIds)
-  return base
+  if (scope.kind === 'topics') return base.in('topic_id', scope.topicIds)
+  return base.not('id', 'is', null)
 }
 
 function buildHabitQuery(scope) {
   const base = supabase.from('learning_habit_progress').delete()
   if (scope.kind === 'topic') return base.eq('topic_id', scope.topicId)
-  if (scope.kind === 'level') return base.in('topic_id', scope.levelIds)
-  return base
+  if (scope.kind === 'topics') return base.in('topic_id', scope.topicIds)
+  return base.not('id', 'is', null)
 }
 
 export async function resetProgress(scope) {

@@ -441,6 +441,10 @@
     "reset": {
       "title": "Reset learning progress",
       "message": "Reset all your learning progress? This cannot be undone.",
+      "levelTitle": "Reset level",
+      "levelMessage": "Reset the progress of this level? This cannot be undone.",
+      "topicTitle": "Reset topic",
+      "topicMessage": "Reset the progress of this topic? This cannot be undone.",
       "confirm": "Reset",
       "success": "Learning progress reset.",
       "error": "Could not reset your progress. Try again."
