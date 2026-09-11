@@ -11,11 +11,13 @@ export default function HeadingBlock({ block }: Props) {
   const Tag = block.payload.level === 2 ? "h2" : "h3";
   const className =
     block.payload.level === 2
-      ? "text-xl font-bold mt-4"
-      : "text-lg font-semibold mt-2";
+      ? "text-2xl font-bold text-stone-900 dark:text-stone-100 tracking-tight"
+      : "text-xl font-semibold text-stone-800 dark:text-stone-200";
   return (
-    <Tag className={className}>
-      <InlineText>{block.payload.text}</InlineText>
-    </Tag>
+    <div className="py-6 px-8">
+      <Tag className={className} style={{ fontFamily: "Quicksand, sans-serif" }}>
+        <InlineText>{block.payload.text}</InlineText>
+      </Tag>
+    </div>
   );
 }

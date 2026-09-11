@@ -14,7 +14,7 @@ export default function LearningIntro() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 20 }}>
+    <ScrollView style={{ backgroundColor: theme.background }} contentContainerStyle={{ padding: 20 }}>
       <Text style={{ color: theme.text, fontFamily: 'Quicksand-Bold', fontSize: 24, marginBottom: 16 }}>
         Antes de empezar
       </Text>

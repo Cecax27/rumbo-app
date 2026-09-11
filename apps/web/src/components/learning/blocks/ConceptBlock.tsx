@@ -9,11 +9,11 @@ interface Props {
 
 export default function ConceptBlock({ block }: Props) {
   return (
-    <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900">
-      <h3 className="font-semibold text-lg">
+    <div className="py-8 px-8">
+      <h3 className="font-semibold text-xl text-stone-900 dark:text-stone-100 leading-snug">
         <InlineText>{block.payload.title}</InlineText>
       </h3>
-      <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+      <p className="text-stone-600 dark:text-stone-400 mt-4 leading-[1.75]">
         <InlineText>{block.payload.body}</InlineText>
       </p>
     </div>

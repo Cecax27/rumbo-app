@@ -1,6 +1,7 @@
 "use client";
 
 import type { QuoteBlock as QuoteBlockType } from "@repo/learning/types";
+import { Quote } from "lucide-react";
 import InlineText from "../InlineText";
 
 interface Props {
@@ -9,15 +10,18 @@ interface Props {
 
 export default function QuoteBlock({ block }: Props) {
   return (
-    <blockquote className="border-l-4 border-l-teal-400 pl-4 py-1 italic text-neutral-600 dark:text-neutral-400">
-      <p>
-        <InlineText>{block.payload.text}</InlineText>
-      </p>
-      {block.payload.author && (
-        <footer className="mt-1 text-sm not-italic text-neutral-400">
-          — {block.payload.author}
-        </footer>
-      )}
-    </blockquote>
+    <div className="py-8 px-8">
+      <figure className="relative">
+        <Quote className="w-8 h-8 text-stone-200 dark:text-stone-800 mb-3" />
+        <blockquote className="text-xl italic text-stone-700 dark:text-stone-300 leading-relaxed pl-2">
+          <InlineText>{block.payload.text}</InlineText>
+        </blockquote>
+        {block.payload.author && (
+          <figcaption className="mt-4 pl-2 text-sm text-stone-400 dark:text-stone-500">
+            — {block.payload.author}
+          </figcaption>
+        )}
+      </figure>
+    </div>
   );
 }

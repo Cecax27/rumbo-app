@@ -17,7 +17,7 @@
 - [x] Add RLS policies: content tables + `learning_meta` SELECT for authenticated only; progress tables user-scoped CRUD (`user_id = auth.uid()`).
 - [x] Create public `learning-assets` Storage bucket with the `levels/{level_slug}/topics/{topic_slug}/…` path convention.
 - [x] Seed the Awareness level (published) + sample habit topic (all block types, habit `record_n_transactions` with `{ n: 3 }`) + sample habit-less topic + sample infographic/illustration/tutorial assets in the bucket.
-- [ ] Verify: advisors clean, version bump fires on content edit, RLS blocks cross-user access and content writes from clients. *(blocked — requires applying migrations via Supabase CLI/dashboard; the MCP SQL role cannot run DDL)*
+- [ ] Verify: advisors clean, version bump fires on content edit, RLS blocks cross-user access and content writes from clients. *(migrations applied 2026-09-10 via MCP; runtime verification still pending)*
 
 ## Phase 2: Shared Domain (`@repo/learning` + `@repo/supabase/learning.ts`)
 
@@ -77,4 +77,4 @@
 - **Web content cache** uses `localStorage` rather than IndexedDB (sufficient at this content scale; the plan listed either).
 - **Mobile infographic share** uses React Native's built-in `Share` API instead of adding `expo-sharing`/`expo-media-library` (avoids a new native dependency and an EAS rebuild).
 - **Mobile habit evidence** is a direct `getTransactionCount()` query (spendings + incomes + transfers) rather than reading the section-scoped `TransactionsContext` (which isn't mounted globally and doesn't fetch on mount). Re-evaluated whenever progress reloads.
-- **Migrations/seed** are authored as tracked SQL files but not yet applied to the live project (the MCP SQL role lacks DDL permissions). Apply via `supabase db push` or the dashboard before the end-to-end checks.
+- **Migrations/seed** were applied to the live project on 2026-09-10 via MCP (`supabase_apply_migration`). The seeded infographic/illustration/tutorial asset URLs still use the literal `<project>` placeholder and must be replaced with the real host (`vnvosctyzocafkhgrvfl.supabase.co`) and the assets uploaded to the `learning-assets` bucket before images render.

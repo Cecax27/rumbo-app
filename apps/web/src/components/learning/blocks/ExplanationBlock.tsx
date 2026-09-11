@@ -9,13 +9,15 @@ interface Props {
 
 export default function ExplanationBlock({ block }: Props) {
   return (
-    <div className="border rounded-lg p-4 bg-white dark:bg-neutral-900 border-l-4 border-l-teal-500">
-      <h3 className="font-semibold text-lg">
-        <InlineText>{block.payload.title}</InlineText>
-      </h3>
-      <p className="text-neutral-600 dark:text-neutral-400 mt-2">
-        <InlineText>{block.payload.body}</InlineText>
-      </p>
+    <div className="py-8 px-8">
+      <div className="border-l-2 border-navy-blue-400 dark:border-navy-blue-600 pl-6">
+        <h3 className="font-semibold text-xl text-stone-900 dark:text-stone-100 leading-snug">
+          <InlineText>{block.payload.title}</InlineText>
+        </h3>
+        <p className="text-stone-600 dark:text-stone-400 mt-4 leading-[1.75]">
+          <InlineText>{block.payload.body}</InlineText>
+        </p>
+      </div>
     </div>
   );
 }

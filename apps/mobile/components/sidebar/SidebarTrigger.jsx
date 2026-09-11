@@ -14,14 +14,18 @@ export default function SidebarTrigger() {
       onPress={open}
       style={({ pressed }) => ({
         position: 'absolute',
-        top: insets.top + 16,
+        top: insets.top + 12,
         left: 16,
         zIndex: 101,
         padding: 10,
-        borderRadius: 10,
+        borderRadius: 12,
         backgroundColor: theme.surface,
         opacity: pressed ? 0.7 : 1,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 4,
+        elevation: 4,
       })}
     >
       <Ionicons name="menu" size={24} color={theme.text} />

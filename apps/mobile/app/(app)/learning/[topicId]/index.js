@@ -7,6 +7,19 @@ import { Ionicons } from '@expo/vector-icons'
 import BlockRenderer from '../../../../components/learning/BlockRenderer'
 import { hasHabit } from '@repo/learning/progress'
 
+function Separator({ theme }) {
+  return (
+    <View
+      style={{
+        height: 1,
+        backgroundColor: theme.border,
+        opacity: 0.35,
+        marginHorizontal: 16,
+      }}
+    />
+  )
+}
+
 export default function TopicScreen() {
   const { colors: theme } = useThemeColors()
   const { t } = useTranslation()
@@ -66,7 +79,7 @@ export default function TopicScreen() {
         {topic.title}
       </Text>
       {topic.description ? (
-        <Text style={{ color: theme.subtext, fontSize: 14, marginBottom: 8 }}>{topic.description}</Text>
+        <Text style={{ color: theme.subtext, fontSize: 14, marginBottom: 8, lineHeight: 20 }}>{topic.description}</Text>
       ) : null}
       {tp ? (
         <View
@@ -86,28 +99,65 @@ export default function TopicScreen() {
         </View>
       ) : null}
 
-      <View style={{ gap: 14 }}>
+      {/* Unified article sheet */}
+      <View
+        style={{
+          backgroundColor: theme.surface,
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: theme.border,
+          overflow: 'hidden',
+        }}
+      >
         {topic.blocks.map((block, index) => (
-          <BlockRenderer key={block.id} block={block} topicId={topic.id} index={index} />
+          <View key={block.id}>
+            <View style={{ paddingHorizontal: 16 }}>
+              <BlockRenderer block={block} topicId={topic.id} index={index} />
+            </View>
+            {index < topic.blocks.length - 1 && <Separator theme={theme} />}
+          </View>
         ))}
-      </View>
 
-      {tp?.status !== 'completed' && !topicHasHabit ? (
-        <Pressable
-          onPress={() => markComplete(topic.id)}
-          style={{
-            marginTop: 20,
-            paddingVertical: 12,
-            borderRadius: 10,
-            backgroundColor: theme.primary,
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: '#1A1A1A', fontSize: 15, fontFamily: 'Quicksand-Bold' }}>
-            Marcar tema como completado
-          </Text>
-        </Pressable>
-      ) : null}
+        {/* Completion footer */}
+        {tp?.status !== 'completed' && !topicHasHabit ? (
+          <>
+            <Separator theme={theme} />
+            <View style={{ padding: 16, alignItems: 'center' }}>
+              <Pressable
+                onPress={() => markComplete(topic.id)}
+                style={{
+                  paddingVertical: 12,
+                  paddingHorizontal: 20,
+                  borderRadius: 10,
+                  backgroundColor: theme.primary,
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: '#1A1A1A', fontSize: 15, fontFamily: 'Quicksand-Bold' }}>
+                  Marcar tema como completado
+                </Text>
+              </Pressable>
+            </View>
+          </>
+        ) : tp?.status === 'completed' ? (
+          <>
+            <Separator theme={theme} />
+            <View
+              style={{
+                padding: 16,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
+              <Ionicons name="checkmark-circle" size={18} color={theme.success} />
+              <Text style={{ color: theme.success, fontSize: 13, fontFamily: 'Quicksand-Bold' }}>
+                Tema completado
+              </Text>
+            </View>
+          </>
+        ) : null}
+      </View>
     </ScrollView>
   )
 }

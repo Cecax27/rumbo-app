@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <AccountsProvider>
               <LearningProvider>
               <div className="flex h-full fixed inset-0">
-                <aside className="inset-0 flex-1 h-full p-10 bg-background-light border-r-2 border-r-neutral-100 dark:border-r-neutral-900 dark:bg-neutral-950">
+                <aside className="flex-1 h-full p-10 bg-background-light border-r-2 border-r-neutral-100 dark:border-r-neutral-900 dark:bg-neutral-950 overflow-y-auto">
                   <div id="logo" className="flex items-center gap-3">
                     <Image src="/logo.png" alt="logo" width={30} height={30} />
                     <h1 className={`${quicksand.className} font-bold text-2xl`}>
@@ -27,12 +27,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </div>
                   <Navigation />
                   <footer
-                    className={`absolute bottom-5 text-center font-semibold ${figtree.className} text-sm text-neutral-400`}
+                    className={`mt-auto pt-10 text-center font-semibold ${figtree.className} text-sm text-neutral-400`}
                   >
                     Rumbo - Open Source
                   </footer>
                 </aside>
-                <main className="flex-4 flex flex-col items-left p-10 gap-6 max-h-screen overflow-hidden">
+                <main className="flex-[4] flex flex-col items-start p-10 gap-6 h-screen overflow-y-auto">
                   {children}
                 </main>
               </div>
