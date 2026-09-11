@@ -4,10 +4,12 @@ import type { RuleEvaluator } from "../habits"
  * `record_n_transactions`
  *
  * Completes once the user has recorded at least `n` transactions in Rumbo.
- * Evidence comes from the transactions context as a simple count.
+ * Only activity performed while the habit is being tracked counts: the app
+ * supplies `transactionCount` already time-boxed to transactions created on or
+ * after `tracking_started_at`.
  *
  * params: { n: number } (required, positive integer)
- * snapshot: { transactionCount: number }
+ * snapshot: { transactionCount: number } (transactions recorded since tracking began)
  */
 export const recordNTimes: RuleEvaluator = (params, snapshot) => {
   const n = params.n

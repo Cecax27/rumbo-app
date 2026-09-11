@@ -94,6 +94,22 @@ function mapTopicProgress(row: TopicProgressRow): TopicProgress {
   };
 }
 
+function countTransactionsSince(
+  transactions: { created_at?: string }[],
+  since: string | null | undefined,
+): number {
+  if (!since) return 0;
+  const sinceMs = new Date(since).getTime();
+  if (Number.isNaN(sinceMs)) return 0;
+  let count = 0;
+  for (const t of transactions) {
+    if (!t.created_at) continue;
+    const createdMs = new Date(t.created_at).getTime();
+    if (!Number.isNaN(createdMs) && createdMs >= sinceMs) count += 1;
+  }
+  return count;
+}
+
 function mapHabitProgress(row: HabitProgressRow): HabitProgress {
   return {
     userId: row.user_id,
@@ -155,7 +171,6 @@ interface LearningContextType {
   topicProgress: Map<string, TopicProgress>;
   habitProgress: Map<string, HabitProgress>;
   introSeen: boolean;
-  transactionCount: number;
   startHabit: (topicId: string, habitSlug: string) => Promise<void>;
   markComplete: (topicId: string) => Promise<void>;
   reset: (scope:
@@ -191,8 +206,6 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
   );
   const [introSeen, setIntroSeenState] = useState<boolean>(false);
   const { data: transactions } = useContext(TransactionsContext);
-
-  const transactionCount = transactions.length;
 
   const registry = useMemo(() => createDefaultRegistry(), []);
 
@@ -263,10 +276,14 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
           const progress = habitProgress.get(key);
           if (!progress || progress.status !== "tracking") continue;
 
+          const count = countTransactionsSince(
+            transactions,
+            progress.trackingStartedAt,
+          );
           const evaluation = evaluateHabit(
             payload.ruleKey,
             payload.ruleParams ?? {},
-            { transactionCount },
+            { transactionCount: count },
             registry,
           );
           if (evaluation.completed) {
@@ -301,7 +318,7 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
         await loadProgress();
       }
     })();
-  }, [content, habitProgress, transactionCount, registry, loadProgress]);
+  }, [content, habitProgress, transactions, registry, loadProgress]);
 
   const startHabit = useCallback(
     async (topicId: string, habitSlug: string) => {
@@ -362,15 +379,19 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
       if (progress?.status === "completed") {
         return { progress: 1, completed: true } as const;
       }
+      const count = countTransactionsSince(
+        transactions,
+        progress?.trackingStartedAt,
+      );
       const evaluation = evaluateHabit(
         payload.ruleKey,
         payload.ruleParams ?? {},
-        { transactionCount },
+        { transactionCount: count },
         registry,
       );
       return evaluation;
     },
-    [habitProgress, transactionCount, registry],
+    [habitProgress, transactions, registry],
   );
 
   const value = useMemo<LearningContextType>(
@@ -382,7 +403,6 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
       topicProgress,
       habitProgress,
       introSeen,
-      transactionCount,
       startHabit,
       markComplete,
       reset,
@@ -398,7 +418,6 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
       topicProgress,
       habitProgress,
       introSeen,
-      transactionCount,
       startHabit,
       markComplete,
       reset,

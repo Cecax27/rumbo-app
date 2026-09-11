@@ -176,13 +176,24 @@ export async function setIntroSeen() {
   return wrapError(error)
 }
 
-// Total number of transactions recorded by the user (spendings + incomes +
-// transfers). Used as evidence by habit rules (e.g. record_n_transactions).
-export async function getTransactionCount() {
+// Number of transactions recorded by the user (spendings + incomes +
+// transfers) on or after `since`. Used as evidence by habit rules (e.g.
+// record_n_transactions) so pre-existing transactions don't count toward a
+// habit that was started later.
+export async function getTransactionCountSince(since) {
   const [spendings, incomes, transfers] = await Promise.all([
-    supabase.from('spendings').select('id', { count: 'exact', head: true }),
-    supabase.from('incomes').select('id', { count: 'exact', head: true }),
-    supabase.from('transfers').select('id', { count: 'exact', head: true }),
+    supabase
+      .from('spendings')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', since),
+    supabase
+      .from('incomes')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', since),
+    supabase
+      .from('transfers')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', since),
   ])
   return (spendings.count ?? 0) + (incomes.count ?? 0) + (transfers.count ?? 0)
 }

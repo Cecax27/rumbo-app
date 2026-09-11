@@ -125,7 +125,7 @@ Habit blocks:
 
 | `ruleKey` | Description | `ruleParams` |
 |---|---|---|
-| `record_n_transactions` | Completes once the user has recorded `n` transactions (spendings + incomes + transfers). | `{ "n": <positive integer> }` |
+| `record_n_transactions` | Completes once the user has recorded `n` transactions (spendings + incomes + transfers) *after starting the habit*. Transactions recorded before the habit started do not count. | `{ "n": <positive integer> }` |
 
 Habit lifecycle is enforced by the app: a user explicitly **starts** a habit, it
 enters *tracking*, and completes automatically when the rule's condition is met.

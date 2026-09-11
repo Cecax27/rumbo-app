@@ -10,7 +10,7 @@ import {
   getHabitProgress,
   getIntroSeen,
   getTopicProgress,
-  getTransactionCount,
+  getTransactionCountSince,
   markTopicInProgress,
   resetProgress as resetProgressDb,
   setIntroSeen,
@@ -116,7 +116,7 @@ export function LearningProvider({ children }) {
   const [topicProgress, setTopicProgress] = useState(new Map())
   const [habitProgress, setHabitProgress] = useState(new Map())
   const [introSeen, setIntroSeenState] = useState(false)
-  const [transactionCount, setTransactionCount] = useState(0)
+  const [habitCounts, setHabitCounts] = useState(new Map())
 
   const registry = useMemo(() => createDefaultRegistry(), [])
 
@@ -133,11 +133,7 @@ export function LearningProvider({ children }) {
   }, [])
 
   const loadProgress = useCallback(async () => {
-    const [topics, habits, count] = await Promise.all([
-      getTopicProgress(),
-      getHabitProgress(),
-      getTransactionCount(),
-    ])
+    const [topics, habits] = await Promise.all([getTopicProgress(), getHabitProgress()])
     if (topics.progress) {
       setTopicProgress(new Map(topics.progress.map((p) => [p.topic_id, mapTopicProgress(p)])))
     }
@@ -146,7 +142,6 @@ export function LearningProvider({ children }) {
         new Map(habits.progress.map((p) => [`${p.topic_id}:${p.habit_slug}`, mapHabitProgress(p)]))
       )
     }
-    setTransactionCount(count)
   }, [])
 
   const loadIntro = useCallback(async () => {
@@ -166,6 +161,7 @@ export function LearningProvider({ children }) {
   useEffect(() => {
     if (!content) return
     ;(async () => {
+      const counts = new Map()
       let completedAny = false
       for (const topic of content.topics) {
         for (const block of topic.blocks) {
@@ -175,10 +171,12 @@ export function LearningProvider({ children }) {
           const progress = habitProgress.get(key)
           if (!progress || progress.status !== 'tracking') continue
 
+          const count = await getTransactionCountSince(progress.trackingStartedAt)
+          counts.set(key, count)
           const evaluation = evaluateHabit(
             payload.ruleKey,
             payload.ruleParams ?? {},
-            { transactionCount },
+            { transactionCount: count },
             registry
           )
           if (evaluation.completed) {
@@ -187,6 +185,7 @@ export function LearningProvider({ children }) {
           }
         }
       }
+      setHabitCounts(counts)
 
       if (completedAny) {
         const { progress } = await getHabitProgress()
@@ -209,7 +208,7 @@ export function LearningProvider({ children }) {
         await loadProgress()
       }
     })()
-  }, [content, habitProgress, transactionCount, registry, loadProgress])
+  }, [content, habitProgress, registry, loadProgress])
 
   const startHabit = useCallback(
     async (topicId, habitSlug) => {
@@ -255,16 +254,18 @@ export function LearningProvider({ children }) {
     (block, topicId) => {
       if (block.type !== 'habit') return { progress: 0, completed: false }
       const payload = block.payload
-      const progress = habitProgress.get(`${topicId}:${payload.habitSlug}`)
+      const key = `${topicId}:${payload.habitSlug}`
+      const progress = habitProgress.get(key)
       if (progress?.status === 'completed') return { progress: 1, completed: true }
+      const count = habitCounts.get(key) ?? 0
       return evaluateHabit(
         payload.ruleKey,
         payload.ruleParams ?? {},
-        { transactionCount },
+        { transactionCount: count },
         registry
       )
     },
-    [habitProgress, transactionCount, registry]
+    [habitProgress, habitCounts, registry]
   )
 
   const value = useMemo(
@@ -275,7 +276,7 @@ export function LearningProvider({ children }) {
       topicProgress,
       habitProgress,
       introSeen,
-      transactionCount,
+      habitCounts,
       startHabit,
       markComplete,
       reset,
@@ -290,7 +291,7 @@ export function LearningProvider({ children }) {
       topicProgress,
       habitProgress,
       introSeen,
-      transactionCount,
+      habitCounts,
       startHabit,
       markComplete,
       reset,
