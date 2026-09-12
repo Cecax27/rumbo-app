@@ -173,3 +173,38 @@ Fill in the pass/fail columns above. A release is blocked if any ❌ remains unr
 - Sample content ships with `is_sample = true`; unpublish it (and bump the content version) when real curriculum content lands.
 - Infographic/illustration/tutorial assets must be uploaded to the `learning-assets` bucket; the seed references their public URLs. Offline guarantees cover text content; images are best-effort via the platform disk cache.
 - Applying migrations/seed requires the Supabase CLI or dashboard (the local MCP SQL role cannot run DDL).
+
+---
+
+# Initial Account Checks (feature 003)
+
+> Manual verification for the auto-created initial account (a default cash account on signup). Run after the checks above. The feature is not "safe to ship" until every item passes on **both** platforms.
+
+## Prerequisites
+
+- [ ] Migration applied: `handle_new_user()` inserts a `public.accounts` row (`name = 'Cartera'`, `account_type = 3`, `icon = 'monetization-on'`, `color = '#546E7A'`, `is_primary_account = true`) in addition to the `profiles` row (see `supabase/migrations/20260912000000_create_initial_account.sql`).
+
+## 15. Initial account
+
+| # | Precondition | Steps | Expected result | Mobile | Web |
+|---|---|---|---|---|---|
+| 15.1 | New signup | Complete registration | Exactly one "Cartera" account exists and appears in the accounts list with no client action | | |
+| 15.2 | New signup | Immediately record an income/expense | The initial account is available in the account picker; transaction is recorded with no account-setup step | | |
+| 15.3 | Email confirmation required | Sign up, then log in after confirming email | The account already exists before first login | | |
+| 15.4 | Naming | Inspect the account anywhere it is shown | Name is "Cartera", never "Default" | | |
+| 15.5 | Editable/deletable | Rename, edit, then delete the initial account | All succeed; deleting does not recreate the account | | |
+| 15.6 | No duplication | Sign up on both platforms (or multiple users) | Only one initial account per user is ever created | | |
+| 15.7 | Existing user | Log in as a pre-feature user | Their accounts are unchanged (no backfill) | | |
+| 15.8 | Account deletion | Delete the whole account via settings | The `delete-user` Edge Function also removes the initial account row | | |
+
+---
+
+## Results (initial account)
+
+Fill in the pass/fail columns above. A release is blocked if any ❌ remains unresolved.
+
+## Notes / known limitations
+
+- The initial account is created server-side in `handle_new_user()`, so it works for both platforms and for the email-confirmation path with no client changes.
+- The account name is a fixed literal in the migration; changing it later requires a new migration.
+- Existing users do not receive an initial account (no backfill is performed).
